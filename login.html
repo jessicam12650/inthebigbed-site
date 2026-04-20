@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Log in — inthebigbed</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:#F2EDE6;color:#1C1C1A;min-height:100vh}
+nav{position:sticky;top:0;z-index:100;background:#F2EDE6;border-bottom:1px solid #1C1C1A;padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:56px}
+.nav-logo{font-weight:900;font-size:20px;letter-spacing:-0.5px;text-decoration:none;color:#1C1C1A}
+.nav-links{display:flex;align-items:center;gap:20px}
+.nav-links a{font-size:13px;font-weight:500;color:#1C1C1A;text-decoration:none}
+.btn-emergency{background:#C84B31;color:#fff;padding:6px 14px;border-radius:4px;font-size:13px;font-weight:700;text-decoration:none}
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:4px}
+.hamburger span{display:block;width:22px;height:2px;background:#1C1C1A}
+.mobile-menu{display:none;position:fixed;top:56px;left:0;right:0;background:#F2EDE6;border-bottom:1px solid #1C1C1A;padding:16px 24px;z-index:99;flex-direction:column;gap:14px}
+.mobile-menu.open{display:flex}
+.mobile-menu a{font-size:15px;font-weight:500;color:#1C1C1A;text-decoration:none}
+.page{display:flex;align-items:flex-start;justify-content:center;padding:48px 24px;min-height:calc(100vh - 56px)}
+.card{background:#fff;border:1px solid #1C1C1A;border-radius:4px;padding:36px;width:100%;max-width:440px}
+.card-title{font-size:26px;font-weight:900;color:#1C1C1A;margin-bottom:6px}
+.card-sub{font-size:14px;color:#666;margin-bottom:28px}
+.form-group{margin-bottom:18px}
+.form-group label{display:block;font-size:13px;font-weight:700;color:#1C1C1A;margin-bottom:6px}
+.form-group input{width:100%;border:1px solid #1C1C1A;background:#F2EDE6;padding:12px 14px;font-size:15px;border-radius:4px;font-family:'DM Sans',sans-serif;outline:none;transition:border-color 0.15s}
+.form-group input:focus{border-color:#D4845A;background:#fff}
+.forgot{display:block;text-align:right;font-size:12px;color:#888;text-decoration:none;margin-top:-12px;margin-bottom:18px}
+.forgot:hover{color:#1C1C1A}
+.btn-submit{width:100%;background:#1C1C1A;color:#F2EDE6;border:none;padding:14px;font-size:16px;font-weight:700;border-radius:4px;cursor:pointer;font-family:'DM Sans',sans-serif;transition:opacity 0.15s}
+.btn-submit:hover{opacity:0.85}
+.btn-submit:disabled{opacity:0.5;cursor:not-allowed}
+.link-row{text-align:center;font-size:14px;color:#666;margin-top:16px}
+.link-row a{color:#1C1C1A;font-weight:700;text-decoration:none}
+.error-msg{background:#FCEBEB;border:1px solid #F09595;border-radius:4px;padding:10px 14px;font-size:13px;color:#791F1F;margin-bottom:16px;display:none}
+.success-msg{background:#F0F7F4;border:1px solid #9FE1CB;border-radius:4px;padding:10px 14px;font-size:13px;color:#085041;margin-bottom:16px;display:none}
+footer{background:#1C1C1A;padding:24px;text-align:center}
+.footer-logo{font-size:18px;font-weight:900;color:#F2EDE6;margin-bottom:4px}
+.footer-copy{font-size:12px;color:#555}
+@media(max-width:768px){
+.nav-links{display:none}.hamburger{display:flex}
+.page{padding:24px 16px}
+.card{padding:24px}
+}
+</style>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="nav-logo">inthebigbed</a>
+  <div class="nav-links">
+    <a href="walkers.html">Walkers</a>
+    <a href="boarding.html">Boarding</a>
+    <a href="groomers.html">Groomers</a>
+    <a href="places.html">Dog-friendly places</a>
+    <a href="lost.html" class="btn-emergency">Find my dog</a>
+    <a href="signup.html">Sign up</a>
+  </div>
+  <div class="hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></div>
+</nav>
+<div class="mobile-menu" id="mobileMenu">
+  <a href="walkers.html">Walkers</a>
+  <a href="boarding.html">Boarding</a>
+  <a href="groomers.html">Groomers</a>
+  <a href="places.html">Dog-friendly places</a>
+  <a href="lost.html" style="color:#C84B31;font-weight:700;">Find my dog</a>
+  <a href="signup.html">Sign up</a>
+</div>
+
+<div class="page">
+  <div class="card">
+    <div class="card-title">Welcome back 🐾</div>
+    <div class="card-sub">Log in to your In The Big Bed account.</div>
+
+    <div class="error-msg" id="errorMsg"></div>
+    <div class="success-msg" id="successMsg"></div>
+
+    <form id="loginForm">
+      <div class="form-group">
+        <label>Email address</label>
+        <input type="email" id="email" placeholder="jessica@example.com" required>
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" id="password" placeholder="Your password" required>
+      </div>
+      <a href="#" class="forgot" onclick="handleForgotPassword(event)">Forgot your password?</a>
+      <button type="submit" class="btn-submit" id="submitBtn">Log in</button>
+    </form>
+
+    <div class="link-row">Don't have an account? <a href="signup.html">Sign up free</a></div>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-logo">inthebigbed</div>
+  <div class="footer-copy">© 2026 In The Big Bed Ltd. Liverpool. · 10% to Carla Lane Animals in Need</div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const { createClient } = supabase;
+const sb = createClient(
+  'https://cvhutjpxflynrfcvszdy.supabase.co',
+  'sb_publishable_wTpL7pv8qYUnaWGEKbgiug_HknftCj4'
+);
+
+function toggleMenu(){document.getElementById('mobileMenu').classList.toggle('open')}
+
+function showError(msg){
+  const el=document.getElementById('errorMsg');
+  el.textContent=msg;el.style.display='block';
+  document.getElementById('successMsg').style.display='none';
+}
+function showSuccess(msg){
+  const el=document.getElementById('successMsg');
+  el.textContent=msg;el.style.display='block';
+  document.getElementById('errorMsg').style.display='none';
+}
+
+async function handleForgotPassword(e){
+  e.preventDefault();
+  const email=document.getElementById('email').value.trim();
+  if(!email){showError('Enter your email address first.');return;}
+  const {error}=await sb.auth.resetPasswordForEmail(email,{redirectTo:window.location.origin+'/profile.html'});
+  if(error){showError(error.message);}
+  else{showSuccess('Password reset email sent — check your inbox.');}
+}
+
+document.getElementById('loginForm').addEventListener('submit', async function(e){
+  e.preventDefault();
+  const email=document.getElementById('email').value.trim();
+  const password=document.getElementById('password').value;
+  const btn=document.getElementById('submitBtn');
+
+  btn.disabled=true;btn.textContent='Logging in...';
+
+  const {data,error}=await sb.auth.signInWithPassword({email,password});
+
+  if(error){
+    showError(error.message==='Invalid login credentials'?'Incorrect email or password. Try again.':error.message);
+    btn.disabled=false;btn.textContent='Log in';
+  } else {
+    showSuccess('Logged in! Taking you to your profile...');
+    setTimeout(()=>{window.location.href='profile.html';},1000);
+  }
+});
+</script>
+</body>
+</html>

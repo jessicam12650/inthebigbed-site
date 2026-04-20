@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dog Walkers Liverpool — inthebigbed</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,700;9..40,900&display=swap');
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: #F2EDE6;
+      color: #1C1C1A;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── NAV ── */
+    .nav {
+      position: sticky; top: 0; z-index: 200;
+      background: #F2EDE6; border-bottom: 1px solid #1C1C1A;
+      height: 64px; padding: 0 48px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .nav-logo { font-weight: 900; font-size: 22px; letter-spacing: -1px; color: #1C1C1A; text-decoration: none; }
+    .nav-links { display: flex; align-items: center; gap: 28px; }
+    .nav-link {
+      font-weight: 700; font-size: 14px; color: #1C1C1A;
+      text-decoration: none; transition: opacity 0.15s;
+    }
+    .nav-link:hover { opacity: 0.55; }
+    .nav-cta {
+      font-family: 'DM Sans', sans-serif; font-weight: 700; font-size: 14px;
+      background: #D4845A; color: #fff; padding: 9px 18px; border-radius: 4px;
+      text-decoration: none; display: inline-block; transition: opacity 0.15s;
+    }
+    .nav-cta:hover { opacity: 0.88; }
+    .nav-emergency {
+      font-family: 'DM Sans', sans-serif; font-weight: 700; font-size: 14px;
+      background: #C84B31; color: #fff; padding: 9px 18px; border-radius: 4px;
+      text-decoration: none; display: inline-block; transition: opacity 0.15s;
+    }
+    .nav-emergency:hover { opacity: 0.88; }
+    .nav-hamburger {
+      display: none; background: none; border: none;
+      cursor: pointer; padding: 4px; flex-direction: column; gap: 5px;
+    }
+    .nav-hamburger span {
+      display: block; width: 22px; height: 2px;
+      background: #1C1C1A; border-radius: 1px;
+      transition: transform 0.2s, opacity 0.2s;
+    }
+    .nav.open .nav-hamburger span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .nav.open .nav-hamburger span:nth-child(2) { opacity: 0; }
+    .nav.open .nav-hamburger span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+    /* ── HERO ── */
+    .hero { background: #1C1C1A; padding: 96px 48px 88px; }
+    .hero-inner { max-width: 900px; margin: 0 auto; }
+    .hero-heading {
+      font-weight: 900; font-size: clamp(44px, 7.5vw, 84px);
+      line-height: 1.0; color: #F2EDE6; margin-bottom: 24px;
+    }
+    .hero-heading span { color: #D4845A; display: block; }
+    .hero-sub {
+      font-size: clamp(16px, 2vw, 20px); color: rgba(242,237,230,0.72);
+      max-width: 520px; line-height: 1.6; margin-bottom: 40px;
+    }
+    .hero-btns { display: flex; gap: 14px; flex-wrap: wrap; }
+    .btn-primary {
+      font-family: 'DM Sans', sans-serif; font-weight: 700; font-size: 15px;
+      background: #D4845A; color: #fff; padding: 14px 28px; border-radius: 4px;
+      text-decoration: none; border: none; cursor: pointer;
+      transition: opacity 0.15s; display: inline-block;
+    }
+    .btn-primary:hover { opacity: 0.88; }
+    .btn-outline-light {
+      font-family: 'DM Sans', sans-serif; font-weight: 700; font-size: 15px;
+      background: transparent; color: #F2EDE6; padding: 14px 28px; border-radius: 4px;
+      text-decoration: none; border: 1.5px solid rgba(242,237,230,0.4);
+      cursor: pointer; transition: border-color 0.15s; display: inline-block;
+    }
+    .btn-outline-light:hover { border-color: #F2EDE6; }
+
+    /* ── TRUST STRIP ── */
+    .trust-strip {
+      background: #D4845A; padding: 16px 48px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .trust-strip-text {
+      font-weight: 700; font-size: 14px; color: #fff;
+      text-align: center; letter-spacing: 0.02em;
+    }
+    .trust-strip-text .sep { opacity: 0.55; margin: 0 16px; }
+
+    /* ── TIERS ── */
+    .tiers-section { max-width: 1100px; margin: 0 auto; padding: 72px 48px 0; }
+    .section-heading { font-weight: 900; font-size: clamp(22px, 3vw, 32px); line-height: 1.2; margin-bottom: 10px; }
+    .section-sub { font-size: 17px; color: #555; line-height: 1.5; margin-bottom: 40px; }
+
+    .tier-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+    .tier-card {
+      border-radius: 4px; padding: 28px 24px;
+      background: #fff; border: 1.5px solid #1C1C1A;
+      display: flex; flex-direction: column; gap: 10px;
+    }
+    .tier-card.gold { border-color: #D4845A; background: #FDF7F2; }
+    .tier-badge {
+      display: inline-flex; align-items: center;
+      font-size: 11px; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase;
+      padding: 4px 10px; border-radius: 2px; width: fit-content;
+    }
+    .tier-badge.silver { background: #e8e4df; color: #555; }
+    .tier-badge.gold   { background: #D4845A; color: #fff; }
+    .tier-badge.pro    { background: #1C1C1A; color: #F2EDE6; }
+    .tier-title { font-weight: 900; font-size: 20px; color: #1C1C1A; }
+    .tier-desc  { font-size: 14px; color: #555; line-height: 1.6; }
+    .tier-features { list-style: none; display: flex; flex-direction: column; gap: 7px; margin-top: 4px; }
+    .tier-features li {
+      font-size: 14px; color: #333;
+      display: flex; align-items: flex-start; gap: 8px;
+    }
+    .tier-features li::before { content: '✓'; color: #6B9E7A; font-weight: 700; flex-shrink: 0; margin-top: 1px; }
+
+    /* ── HOW IT WORKS ── */
+    .how-section { background: #fff; margin-top: 72px; padding: 72px 48px; }
+    .how-inner { max-width: 1100px; margin: 0 auto; }
+    .steps-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; margin-top: 40px; }
+    .step { display: flex; flex-direction: column; gap: 12px; }
+    .step-num {
+      font-weight: 900; font-size: 13px; letter-spacing: 0.1em; text-transform: uppercase;
+      color: #D4845A;
+    }
+    .step-title { font-weight: 700; font-size: 18px; color: #1C1C1A; }
+    .step-desc  { font-size: 15px; color: #555; line-height: 1.6; }
+
+    /* ── SEARCH / FILTER ── */
+    .search-wrap { max-width: 1100px; margin: 0 auto; padding: 72px 48px 0; }
+    .search-controls { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; margin-top: 20px; margin-bottom: 32px; }
+    .filter-btn {
+      font-family: 'DM Sans', sans-serif; font-weight: 700; font-size: 14px;
+      padding: 9px 18px; border-radius: 4px; border: 1.5px solid #1C1C1A;
+      background: transparent; color: #1C1C1A; cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+    }
+    .filter-btn:hover { background: rgba(28,28,26,0.08); }
+    .filter-btn.active { background: #1C1C1A; color: #F2EDE6; }
+    .search-input {
+      font-family: 'DM Sans', sans-serif; font-size: 14px;
+      padding: 9px 16px; border-radius: 4px; border: 1.5px solid #1C1C1A;
+      background: #fff; color: #1C1C1A; min-width: 260px; outline: none;
+      transition: border-color 0.15s;
+    }
+    .search-input:focus { border-color: #D4845A; }
+    .search-input::placeholder { color: #aaa; }
+
+    /* ── WALKER CARDS ── */
+    .walkers-wrap { max-width: 1100px; margin: 0 auto; padding: 32px 48px 96px; }
+    .walker-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(310px, 1fr)); gap: 24px; }
+
+    .walker-card {
+      background: #fff; border: 1px solid #1C1C1A; border-radius: 4px;
+      padding: 24px; display: flex; flex-direction: column; gap: 12px;
+    }
+    .walker-header { display: flex; justify-content: space-between; align-items: flex-start; }
+    .walker-name   { font-weight: 900; font-size: 20px; color: #1C1C1A; line-height: 1.2; }
+    .walker-area   { font-size: 13px; color: #777; margin-top: 3px; }
+
+    .walker-badge { font-size: 11px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; padding: 4px 10px; border-radius: 2px; flex-shrink: 0; }
+    .walker-badge.silver { background: #e8e4df; color: #555; }
+    .walker-badge.gold   { background: #D4845A; color: #fff; }
+    .walker-badge.pro    { background: #1C1C1A; color: #F2EDE6; }
+
+    .walker-rating { font-size: 13px; color: #555; display: flex; align-items: center; gap: 6px; }
+    .stars { color: #E8C84A; letter-spacing: 1px; }
+
+    .walker-bio { font-size: 13px; color: #555; line-height: 1.6; }
+
+    .walker-details { display: flex; flex-wrap: wrap; gap: 8px; }
+    .detail-pill { font-size: 12px; color: #555; background: #F2EDE6; padding: 4px 10px; border-radius: 2px; }
+
+    .walker-price  { font-weight: 900; font-size: 20px; color: #1C1C1A; }
+    .walker-price span { font-size: 14px; font-weight: 400; color: #777; }
+
+    .walker-avail  { font-size: 13px; font-weight: 700; }
+    .avail-yes { color: #6B9E7A; }
+    .avail-no  { color: #aaa; }
+
+    .walker-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+    .tag {
+      font-size: 12px; color: #1C1C1A; border: 1px solid #d0cbc4;
+      padding: 3px 9px; border-radius: 20px;
+    }
+
+    .walker-btns { display: flex; gap: 10px; margin-top: 4px; }
+    .btn-view {
+      font-family: 'DM Sans', sans-serif; font-weight: 700; font-size: 14px;
+      background: transparent; color: #1C1C1A; padding: 11px 16px; border-radius: 4px;
+      border: 1.5px solid #1C1C1A; cursor: pointer; text-decoration: none;
+      flex: 1; text-align: center; transition: background 0.15s, color 0.15s;
+      display: block;
+    }
+    .btn-view:hover { background: rgba(28,28,26,0.06); }
+    .btn-book {
+      font-family: 'DM Sans', sans-serif; font-weight: 700; font-size: 14px;
+      background: #1C1C1A; color: #F2EDE6; padding: 11px 16px; border-radius: 4px;
+      border: none; cursor: pointer; text-decoration: none;
+      flex: 1; text-align: center; transition: opacity 0.15s; display: block;
+    }
+    .btn-book:hover { opacity: 0.82; }
+
+    .divider { border: none; border-top: 1px solid #eee; }
+
+    /* ── WHY SECTION ── */
+    .why-section { background: #1C1C1A; padding: 72px 48px; }
+    .why-inner { max-width: 1100px; margin: 0 auto; }
+    .why-heading { font-weight: 900; font-size: clamp(22px, 3vw, 32px); color: #F2EDE6; margin-bottom: 40px; }
+    .why-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; }
+    .why-box {
+      background: rgba(255,255,255,0.05); border: 1px solid rgba(242,237,230,0.12);
+      border-radius: 4px; padding: 28px 22px;
+      display: flex; flex-direction: column; gap: 10px;
+    }
+    .why-box-title { font-weight: 900; font-size: 16px; color: #F2EDE6; }
+    .why-box-text  { font-size: 14px; color: rgba(242,237,230,0.6); line-height: 1.65; }
+    .why-box-icon  { font-size: 24px; }
+
+    /* ── FOOTER ── */
+    .footer { background: #1C1C1A; padding: 56px 48px; border-top: 1px solid rgba(242,237,230,0.1); }
+    .footer-inner { max-width: 1100px; margin: 0 auto; display: flex; flex-direction: column; gap: 16px; }
+    .footer-logo   { font-weight: 900; font-size: 22px; letter-spacing: -1px; color: #F2EDE6; }
+    .footer-tagline { font-size: 15px; color: rgba(242,237,230,0.55); max-width: 440px; line-height: 1.6; }
+    .footer-bottom  { display: flex; gap: 24px; flex-wrap: wrap; align-items: center; margin-top: 8px; }
+    .footer-copy    { font-size: 13px; color: rgba(242,237,230,0.38); }
+    .footer-charity { font-size: 13px; color: #6B9E7A; font-weight: 700; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 960px) {
+      .why-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 900px) {
+      .tier-grid { grid-template-columns: 1fr; }
+      .steps-grid { grid-template-columns: 1fr; gap: 28px; }
+    }
+    @media (max-width: 768px) {
+      .nav { padding: 0 20px; height: 56px; flex-wrap: wrap; align-content: flex-start; }
+      .nav.open { height: auto; }
+      .nav-logo { font-size: 18px; }
+      .nav-links {
+        display: none; width: 100%; flex-direction: column;
+        align-items: flex-start; gap: 16px;
+        padding: 12px 0 16px; border-top: 1px solid rgba(28,28,26,0.1);
+      }
+      .nav.open .nav-links { display: flex; }
+      .nav-hamburger { display: flex; }
+      .hero { padding: 64px 20px 56px; }
+      .trust-strip { padding: 14px 20px; }
+      .tiers-section { padding: 48px 20px 0; }
+      .how-section { padding: 48px 20px; }
+      .search-wrap { padding: 48px 20px 0; }
+      .walkers-wrap { padding: 24px 20px 64px; }
+      .walker-grid { grid-template-columns: 1fr; }
+      .why-section { padding: 48px 20px; }
+      .why-grid { grid-template-columns: 1fr; }
+      .footer { padding: 40px 20px; }
+      .search-controls { flex-direction: column; align-items: flex-start; }
+      .search-input { min-width: 100%; width: 100%; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── NAV ── -->
+  <nav class="nav" id="nav">
+    <a class="nav-logo" href="index.html">inthebigbed</a>
+    <div class="nav-links" id="nav-links">
+      <a class="nav-link" href="walkers.html">Walkers</a>
+      <a class="nav-link" href="boarding.html">Boarding</a>
+      <a class="nav-link" href="groomers.html">Groomers</a>
+      <a class="nav-link" href="places.html">Dog-friendly places</a>
+      <a class="nav-emergency" href="lost.html">Find my dog</a>
+      <a class="nav-cta" href="index.html#waitlist">Join the waitlist</a>
+    </div>
+    <button class="nav-hamburger" id="nav-hamburger" aria-label="Open menu">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <!-- ── HERO ── -->
+  <section class="hero">
+    <div class="hero-inner">
+      <h1 class="hero-heading">
+        Verified dog walkers
+        <span>Liverpool.</span>
+      </h1>
+      <p class="hero-sub">Every walker DBS checked and insured. No surge pricing. Ever.</p>
+      <div class="hero-btns">
+        <a href="#walkers" class="btn-primary">Find a walker</a>
+        <a href="#" class="btn-outline-light">Join as a walker</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── TRUST STRIP ── -->
+  <div class="trust-strip">
+    <p class="trust-strip-text">
+      Every walker DBS checked
+      <span class="sep">·</span>
+      Fully insured
+      <span class="sep">·</span>
+      No surge pricing on bank holidays or Christmas
+    </p>
+  </div>
+
+  <!-- ── VERIFICATION TIERS ── -->
+  <div class="tiers-section">
+    <h2 class="section-heading">Every walker verified before they can list.</h2>
+    <p class="section-sub">We don't just ask walkers to tick a box. We check.</p>
+    <div class="tier-grid">
+
+      <div class="tier-card">
+        <span class="tier-badge silver">Silver</span>
+        <div class="tier-title">Foundation verified</div>
+        <div class="tier-desc">The minimum required to list. Identity confirmed, basics checked.</div>
+        <ul class="tier-features">
+          <li>Government ID verified</li>
+          <li>Address confirmed</li>
+          <li>Platform code of conduct signed</li>
+        </ul>
+      </div>
+
+      <div class="tier-card gold">
+        <span class="tier-badge gold">Gold</span>
+        <div class="tier-title">Enhanced verified</div>
+        <div class="tier-desc">Our most popular tier. What most owners look for as a minimum.</div>
+        <ul class="tier-features">
+          <li>Everything in Silver</li>
+          <li>Enhanced DBS criminal record check</li>
+          <li>Pet first aid certified</li>
+          <li>Public liability insurance verified</li>
+        </ul>
+      </div>
+
+      <div class="tier-card">
+        <span class="tier-badge pro">Pro</span>
+        <div class="tier-title">Professional verified</div>
+        <div class="tier-desc">For full-time professional walkers. The highest standard on the platform.</div>
+        <ul class="tier-features">
+          <li>Everything in Gold</li>
+          <li>Three references checked and contacted</li>
+          <li>Specialist canine first aid certified</li>
+          <li>Annual re-verification</li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── HOW IT WORKS ── -->
+  <div class="how-section">
+    <div class="how-inner">
+      <h2 class="section-heading">How it works</h2>
+      <div class="steps-grid">
+
+        <div class="step">
+          <div class="step-num">Step 01</div>
+          <div class="step-title">Find your walker</div>
+          <div class="step-desc">Browse verified walkers near you. Filter by price, tier and availability. Every profile shows their real verification badges — not just a self-reported tick.</div>
+        </div>
+
+        <div class="step">
+          <div class="step-num">Step 02</div>
+          <div class="step-title">Meet and greet</div>
+          <div class="step-desc">Every first booking includes a free meet and greet before you commit. Your dog gets to decide too.</div>
+        </div>
+
+        <div class="step">
+          <div class="step-num">Step 03</div>
+          <div class="step-title">Walk tracked live</div>
+          <div class="step-desc">GPS tracked walks with live map updates and a post-walk report. Start time, end time and full route all logged automatically.</div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SEARCH + FILTER ── -->
+  <div id="walkers" class="search-wrap">
+    <h2 class="section-heading">Available walkers in Liverpool</h2>
+    <div class="search-controls">
+      <button class="filter-btn active">All</button>
+      <button class="filter-btn">Gold and Pro only</button>
+      <button class="filter-btn">Available today</button>
+      <input class="search-input" type="text" placeholder="Search by area e.g. Allerton, Mossley Hill" />
+    </div>
+  </div>
+
+  <!-- ── WALKER CARDS ── -->
+  <div class="walkers-wrap">
+    <div class="walker-grid">
+
+      <!-- 1: Marcus T. — Gold, Wavertree, Available -->
+      <div class="walker-card">
+        <div class="walker-header">
+          <div>
+            <div class="walker-name">Marcus T.</div>
+            <div class="walker-area">Wavertree · 0.6 miles away</div>
+          </div>
+          <span class="walker-badge gold">Gold</span>
+        </div>
+        <div class="walker-rating"><span class="stars">★★★★★</span> 4.9 · 63 reviews</div>
+        <div class="walker-bio">Lifelong dog owner with 3 years professional walking experience. Specialises in high-energy breeds.</div>
+        <hr class="divider" />
+        <div class="walker-details">
+          <span class="detail-pill">30 min / 60 min</span>
+          <span class="detail-pill">Max 4 dogs</span>
+        </div>
+        <div class="walker-price">£16<span>/walk</span></div>
+        <div class="walker-avail avail-yes">● Available today</div>
+        <div class="walker-tags">
+          <span class="tag">GPS tracked</span>
+          <span class="tag">Group walks</span>
+          <span class="tag">Large breeds</span>
+          <span class="tag">Puppy experience</span>
+        </div>
+        <div class="walker-btns">
+          <a href="#" class="btn-view">View profile</a>
+          <a href="#" class="btn-book">Book a walk</a>
+        </div>
+      </div>
+
+      <!-- 2: Priya S. — Pro, Allerton, Available -->
+      <div class="walker-card">
+        <div class="walker-header">
+          <div>
+            <div class="walker-name">Priya S.</div>
+            <div class="walker-area">Allerton · 1.1 miles away</div>
+          </div>
+          <span class="walker-badge pro">Pro</span>
+        </div>
+        <div class="walker-rating"><span class="stars">★★★★★</span> 5.0 · 41 reviews</div>
+        <div class="walker-bio">Former veterinary nurse. Solo walks only — your dog gets full, undivided attention on every outing.</div>
+        <hr class="divider" />
+        <div class="walker-details">
+          <span class="detail-pill">60 min</span>
+          <span class="detail-pill">Max 1 dog</span>
+        </div>
+        <div class="walker-price">£20<span>/walk</span></div>
+        <div class="walker-avail avail-yes">● Available today</div>
+        <div class="walker-tags">
+          <span class="tag">GPS tracked</span>
+          <span class="tag">Solo walks available</span>
+          <span class="tag">Reactive dog experience</span>
+          <span class="tag">Dog care passport required</span>
+        </div>
+        <div class="walker-btns">
+          <a href="#" class="btn-view">View profile</a>
+          <a href="#" class="btn-book">Book a walk</a>
+        </div>
+      </div>
+
+      <!-- 3: Ryan O. — Silver, Aigburth, Fully booked -->
+      <div class="walker-card">
+        <div class="walker-header">
+          <div>
+            <div class="walker-name">Ryan O.</div>
+            <div class="walker-area">Aigburth · 1.4 miles away</div>
+          </div>
+          <span class="walker-badge silver">Silver</span>
+        </div>
+        <div class="walker-rating"><span class="stars">★★★★☆</span> 4.6 · 22 reviews</div>
+        <div class="walker-bio">Dog walker for 2 years. Loves big groups and long routes through Sefton Park.</div>
+        <hr class="divider" />
+        <div class="walker-details">
+          <span class="detail-pill">30 min / 60 min</span>
+          <span class="detail-pill">Max 5 dogs</span>
+        </div>
+        <div class="walker-price">£12<span>/walk</span></div>
+        <div class="walker-avail avail-no">● Fully booked today</div>
+        <div class="walker-tags">
+          <span class="tag">GPS tracked</span>
+          <span class="tag">Group walks</span>
+          <span class="tag">Large breeds</span>
+        </div>
+        <div class="walker-btns">
+          <a href="#" class="btn-view">View profile</a>
+          <a href="#" class="btn-book">Book a walk</a>
+        </div>
+      </div>
+
+      <!-- 4: Chloe M. — Gold, Mossley Hill, Available -->
+      <div class="walker-card">
+        <div class="walker-header">
+          <div>
+            <div class="walker-name">Chloe M.</div>
+            <div class="walker-area">Mossley Hill · 1.8 miles away</div>
+          </div>
+          <span class="walker-badge gold">Gold</span>
+        </div>
+        <div class="walker-rating"><span class="stars">★★★★★</span> 4.8 · 57 reviews</div>
+        <div class="walker-bio">Specialises in puppies and nervous dogs. Patient, calm approach — ideal for first-time dog owners.</div>
+        <hr class="divider" />
+        <div class="walker-details">
+          <span class="detail-pill">30 min / 60 min</span>
+          <span class="detail-pill">Max 3 dogs</span>
+        </div>
+        <div class="walker-price">£15<span>/walk</span></div>
+        <div class="walker-avail avail-yes">● Available today</div>
+        <div class="walker-tags">
+          <span class="tag">GPS tracked</span>
+          <span class="tag">Puppy experience</span>
+          <span class="tag">Solo walks available</span>
+          <span class="tag">Reactive dog experience</span>
+        </div>
+        <div class="walker-btns">
+          <a href="#" class="btn-view">View profile</a>
+          <a href="#" class="btn-book">Book a walk</a>
+        </div>
+      </div>
+
+      <!-- 5: Ben A. — Pro, Woolton, Available -->
+      <div class="walker-card">
+        <div class="walker-header">
+          <div>
+            <div class="walker-name">Ben A.</div>
+            <div class="walker-area">Woolton · 2.3 miles away</div>
+          </div>
+          <span class="walker-badge pro">Pro</span>
+        </div>
+        <div class="walker-rating"><span class="stars">★★★★★</span> 4.9 · 109 reviews</div>
+        <div class="walker-bio">Full-time professional walker for 6 years. Fully insured, DBS checked, canine first aid qualified.</div>
+        <hr class="divider" />
+        <div class="walker-details">
+          <span class="detail-pill">30 min / 60 min / 90 min</span>
+          <span class="detail-pill">Max 6 dogs</span>
+        </div>
+        <div class="walker-price">£18<span>/walk</span></div>
+        <div class="walker-avail avail-yes">● Available today</div>
+        <div class="walker-tags">
+          <span class="tag">GPS tracked</span>
+          <span class="tag">Group walks</span>
+          <span class="tag">Large breeds</span>
+          <span class="tag">All sizes welcome</span>
+        </div>
+        <div class="walker-btns">
+          <a href="#" class="btn-view">View profile</a>
+          <a href="#" class="btn-book">Book a walk</a>
+        </div>
+      </div>
+
+      <!-- 6: Jade F. — Silver, Childwall, Fully booked -->
+      <div class="walker-card">
+        <div class="walker-header">
+          <div>
+            <div class="walker-name">Jade F.</div>
+            <div class="walker-area">Childwall · 2.7 miles away</div>
+          </div>
+          <span class="walker-badge silver">Silver</span>
+        </div>
+        <div class="walker-rating"><span class="stars">★★★★☆</span> 4.5 · 18 reviews</div>
+        <div class="walker-bio">Small breeds specialist. Gentle and attentive walker, great for dogs who prefer a quieter pace.</div>
+        <hr class="divider" />
+        <div class="walker-details">
+          <span class="detail-pill">30 min / 60 min</span>
+          <span class="detail-pill">Max 2 dogs</span>
+        </div>
+        <div class="walker-price">£12<span>/walk</span></div>
+        <div class="walker-avail avail-no">● Fully booked today</div>
+        <div class="walker-tags">
+          <span class="tag">GPS tracked</span>
+          <span class="tag">Solo walks available</span>
+          <span class="tag">Small breeds only</span>
+        </div>
+        <div class="walker-btns">
+          <a href="#" class="btn-view">View profile</a>
+          <a href="#" class="btn-book">Book a walk</a>
+        </div>
+      </div>
+
+      <!-- 7: Liam C. — Gold, Crosby, Available -->
+      <div class="walker-card">
+        <div class="walker-header">
+          <div>
+            <div class="walker-name">Liam C.</div>
+            <div class="walker-area">Crosby · 3.1 miles away</div>
+          </div>
+          <span class="walker-badge gold">Gold</span>
+        </div>
+        <div class="walker-rating"><span class="stars">★★★★★</span> 4.8 · 34 reviews</div>
+        <div class="walker-bio">Coast and park route specialist. Takes dogs on Crosby Beach when tides allow — your dog will love it.</div>
+        <hr class="divider" />
+        <div class="walker-details">
+          <span class="detail-pill">60 min / 90 min</span>
+          <span class="detail-pill">Max 4 dogs</span>
+        </div>
+        <div class="walker-price">£17<span>/walk</span></div>
+        <div class="walker-avail avail-yes">● Available today</div>
+        <div class="walker-tags">
+          <span class="tag">GPS tracked</span>
+          <span class="tag">Group walks</span>
+          <span class="tag">Large breeds</span>
+          <span class="tag">Puppy experience</span>
+        </div>
+        <div class="walker-btns">
+          <a href="#" class="btn-view">View profile</a>
+          <a href="#" class="btn-book">Book a walk</a>
+        </div>
+      </div>
+
+      <!-- 8: Amara B. — Pro, City Centre, Available -->
+      <div class="walker-card">
+        <div class="walker-header">
+          <div>
+            <div class="walker-name">Amara B.</div>
+            <div class="walker-area">City Centre · 0.4 miles away</div>
+          </div>
+          <span class="walker-badge pro">Pro</span>
+        </div>
+        <div class="walker-rating"><span class="stars">★★★★★</span> 5.0 · 76 reviews</div>
+        <div class="walker-bio">City walking specialist with extensive reactive dog experience. Calm, confident handler with excellent reviews.</div>
+        <hr class="divider" />
+        <div class="walker-details">
+          <span class="detail-pill">30 min / 60 min</span>
+          <span class="detail-pill">Max 3 dogs</span>
+        </div>
+        <div class="walker-price">£19<span>/walk</span></div>
+        <div class="walker-avail avail-yes">● Available today</div>
+        <div class="walker-tags">
+          <span class="tag">GPS tracked</span>
+          <span class="tag">Reactive dog experience</span>
+          <span class="tag">Solo walks available</span>
+          <span class="tag">Dog care passport required</span>
+        </div>
+        <div class="walker-btns">
+          <a href="#" class="btn-view">View profile</a>
+          <a href="#" class="btn-book">Book a walk</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── WHY CHOOSE US ── -->
+  <div class="why-section">
+    <div class="why-inner">
+      <h2 class="why-heading">Why In The Big Bed walkers?</h2>
+      <div class="why-grid">
+
+        <div class="why-box">
+          <div class="why-box-icon">💸</div>
+          <div class="why-box-title">13% commission</div>
+          <div class="why-box-text">We take 13%. Rover takes 20–25%. Better walkers come to us because they earn more here. That means better care for your dog.</div>
+        </div>
+
+        <div class="why-box">
+          <div class="why-box-icon">🚫</div>
+          <div class="why-box-title">No surge pricing</div>
+          <div class="why-box-text">Fixed rates on bank holidays and Christmas. Always. What you see is what you pay — no surprises on Boxing Day.</div>
+        </div>
+
+        <div class="why-box">
+          <div class="why-box-icon">🪪</div>
+          <div class="why-box-title">DBS checked</div>
+          <div class="why-box-text">Every Gold and Pro walker has a criminal record check. Not just an ID photo. We verify the certificate directly, not just take their word for it.</div>
+        </div>
+
+        <div class="why-box">
+          <div class="why-box-icon">📍</div>
+          <div class="why-box-title">GPS tracked</div>
+          <div class="why-box-text">Live walk tracking with start and end alerts. You can watch the route in real time. Every walk logged automatically.</div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ── FOOTER ── -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-logo">inthebigbed</div>
+      <div class="footer-tagline">Everything for dogs. And the people they allow in the bed.</div>
+      <div class="footer-bottom">
+        <span class="footer-copy">© 2026 In The Big Bed Ltd. Liverpool.</span>
+        <span class="footer-charity">10% to Carla Lane Animals in Need</span>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    document.querySelectorAll('.filter-btn').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        document.querySelectorAll('.filter-btn').forEach(function(b) { b.classList.remove('active'); });
+        btn.classList.add('active');
+      });
+    });
+    document.getElementById('nav-hamburger').addEventListener('click', function() {
+      document.getElementById('nav').classList.toggle('open');
+    });
+  </script>
+
+</body>
+</html>

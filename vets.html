@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vets and Healthcare Liverpool — inthebigbed</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:#F2EDE6;color:#1C1C1A}
+nav{position:sticky;top:0;z-index:100;background:#F2EDE6;border-bottom:1px solid #1C1C1A;padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:56px}
+.nav-logo{font-weight:900;font-size:20px;letter-spacing:-0.5px;text-decoration:none;color:#1C1C1A}
+.nav-links{display:flex;align-items:center;gap:20px}
+.nav-links a{font-size:13px;font-weight:500;color:#1C1C1A;text-decoration:none}
+.nav-links a:hover{opacity:0.7}
+.btn-emergency{background:#C84B31;color:#fff;padding:6px 14px;border-radius:4px;font-size:13px;font-weight:700;text-decoration:none}
+.btn-waitlist{background:#D4845A;color:#1C1C1A;padding:6px 14px;border-radius:4px;font-size:13px;font-weight:700;text-decoration:none}
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:4px}
+.hamburger span{display:block;width:22px;height:2px;background:#1C1C1A}
+.mobile-menu{display:none;position:fixed;top:56px;left:0;right:0;background:#F2EDE6;border-bottom:1px solid #1C1C1A;padding:16px 24px;z-index:99;flex-direction:column;gap:14px}
+.mobile-menu.open{display:flex}
+.mobile-menu a{font-size:15px;font-weight:500;color:#1C1C1A;text-decoration:none}
+
+/* EMERGENCY BANNER */
+.emergency-banner{background:#C84B31;padding:0}
+.emergency-inner{max-width:1100px;margin:0 auto;padding:20px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.emergency-text h2{font-size:18px;font-weight:900;color:#fff;margin-bottom:4px}
+.emergency-text p{font-size:13px;color:rgba(255,255,255,0.8);line-height:1.4}
+.emergency-details{display:flex;gap:12px;flex-wrap:wrap}
+.emergency-btn{background:#fff;color:#C84B31;padding:10px 20px;border-radius:4px;font-size:14px;font-weight:900;text-decoration:none;white-space:nowrap}
+.emergency-btn-outline{border:2px solid rgba(255,255,255,0.6);color:#fff;padding:10px 20px;border-radius:4px;font-size:14px;font-weight:700;text-decoration:none;white-space:nowrap}
+
+.hero{background:#1C1C1A;padding:56px 24px}
+.hero-inner{max-width:700px}
+.hero h1{font-size:clamp(36px,6vw,60px);font-weight:900;color:#F2EDE6;line-height:1.05;margin-bottom:16px}
+.hero h1 span{color:#D4845A}
+.hero p{font-size:17px;color:#999;margin-bottom:28px;max-width:520px;line-height:1.5}
+.hero-btns{display:flex;gap:12px;flex-wrap:wrap}
+.btn-primary{background:#D4845A;color:#1C1C1A;padding:13px 26px;border-radius:4px;font-size:15px;font-weight:700;text-decoration:none;display:inline-block}
+.btn-outline{border:1px solid #555;color:#999;padding:13px 26px;border-radius:4px;font-size:15px;font-weight:700;text-decoration:none;display:inline-block}
+
+.trust-strip{background:#D4845A;padding:11px 24px;text-align:center;font-size:13px;font-weight:500;color:#1C1C1A}
+
+.section{padding:44px 24px;max-width:1100px;margin:0 auto}
+.section-title{font-size:26px;font-weight:900;color:#1C1C1A;margin-bottom:6px}
+.section-sub{font-size:14px;color:#666;margin-bottom:24px}
+
+.filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}
+.filter-btn{border:1px solid #1C1C1A;background:transparent;color:#1C1C1A;padding:7px 16px;border-radius:4px;font-size:13px;font-weight:500;cursor:pointer;transition:all 0.15s}
+.filter-btn.active,.filter-btn:hover{background:#1C1C1A;color:#F2EDE6}
+.search-input{width:100%;max-width:400px;border:1px solid #1C1C1A;background:#fff;padding:11px 16px;font-size:14px;border-radius:4px;font-family:'DM Sans',sans-serif;margin-bottom:24px;display:block}
+
+.cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
+
+/* EMERGENCY VET CARD */
+.vet-card-emergency{background:#1C1C1A;border-radius:4px;padding:20px;border:2px solid #C84B31}
+.emergency-label{font-size:10px;font-weight:700;color:#C84B31;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:8px}
+.vet-card-emergency .vet-name{font-size:16px;font-weight:900;color:#F2EDE6;margin-bottom:4px}
+.vet-card-emergency .vet-area{font-size:12px;color:#888;margin-bottom:10px}
+.vet-card-emergency .vet-desc{font-size:12px;color:#aaa;line-height:1.5;margin-bottom:14px}
+.vet-card-emergency .vet-tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+.vet-card-emergency .vet-tag{font-size:10px;padding:2px 8px;border-radius:20px;background:rgba(200,75,49,0.2);color:#E8856A;border:1px solid rgba(200,75,49,0.4)}
+.vet-card-emergency .card-footer{display:flex;gap:8px;flex-wrap:wrap}
+.btn-call-emergency{background:#C84B31;color:#fff;padding:8px 16px;border-radius:4px;font-size:12px;font-weight:700;text-decoration:none;display:inline-block}
+.btn-directions-emergency{border:1px solid #555;color:#888;padding:8px 16px;border-radius:4px;font-size:12px;font-weight:500;text-decoration:none;display:inline-block}
+
+/* REGULAR VET CARD */
+.vet-card{background:#fff;border:1px solid #1C1C1A;border-radius:4px;padding:18px}
+.card-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px}
+.vet-name{font-size:15px;font-weight:700;color:#1C1C1A;margin-bottom:2px}
+.vet-area{font-size:12px;color:#888}
+.type-badge{font-size:10px;font-weight:700;padding:3px 8px;border-radius:20px;flex-shrink:0}
+.badge-independent{background:#E1F5EE;color:#085041}
+.badge-chain{background:#E6F1FB;color:#0C447C}
+.badge-pdsa{background:#EEEDFE;color:#3C3489}
+.stars{font-size:12px;color:#D4845A;margin-bottom:8px}
+.vet-address{font-size:12px;color:#666;margin-bottom:8px;line-height:1.4}
+.vet-services{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px}
+.service-tag{font-size:10px;padding:2px 8px;border-radius:20px;border:1px solid #ddd;color:#555}
+.vet-tags{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:12px}
+.vet-tag{font-size:10px;padding:2px 8px;border-radius:20px;background:#F5F5F5;color:#555}
+.open-now{font-size:11px;font-weight:500;color:#085041;margin-bottom:10px}
+.closed-now{font-size:11px;font-weight:500;color:#888;margin-bottom:10px}
+.card-footer{display:flex;gap:8px;flex-wrap:wrap;padding-top:10px;border-top:1px solid #eee}
+.btn-call{background:#1C1C1A;color:#F2EDE6;padding:7px 14px;border-radius:4px;font-size:12px;font-weight:700;text-decoration:none;display:inline-block}
+.btn-directions{border:1px solid #ccc;color:#555;padding:7px 14px;border-radius:4px;font-size:12px;font-weight:500;text-decoration:none;display:inline-block}
+.btn-website{border:1px solid #ccc;color:#555;padding:7px 14px;border-radius:4px;font-size:12px;font-weight:500;text-decoration:none;display:inline-block}
+
+/* FIRST AID SECTION */
+.firstaid-section{background:#1C1C1A;padding:44px 24px}
+.firstaid-inner{max-width:1100px;margin:0 auto}
+.firstaid-section h2{font-size:24px;font-weight:900;color:#F2EDE6;margin-bottom:8px}
+.firstaid-section p{font-size:14px;color:#888;margin-bottom:24px}
+.firstaid-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px}
+.firstaid-card{border:1px solid #333;border-radius:4px;padding:16px}
+.firstaid-icon{font-size:24px;margin-bottom:8px}
+.firstaid-title{font-size:14px;font-weight:700;color:#F2EDE6;margin-bottom:6px}
+.firstaid-text{font-size:12px;color:#888;line-height:1.55}
+.firstaid-urgent{font-size:11px;font-weight:700;color:#C84B31;margin-top:6px}
+
+footer{background:#1C1C1A;padding:32px 24px;text-align:center}
+.footer-logo{font-size:20px;font-weight:900;color:#F2EDE6;margin-bottom:8px}
+.footer-tag{font-size:13px;color:#666;margin-bottom:8px;font-style:italic}
+.footer-links{display:flex;justify-content:center;gap:20px;flex-wrap:wrap;margin-bottom:8px}
+.footer-links a{font-size:13px;color:#666;text-decoration:none}
+.footer-copy{font-size:12px;color:#555}
+
+@media(max-width:768px){
+.nav-links{display:none}
+.hamburger{display:flex}
+.hero{padding:36px 20px}
+.cards-grid{grid-template-columns:1fr}
+.firstaid-grid{grid-template-columns:1fr}
+.section{padding:32px 20px}
+.emergency-inner{flex-direction:column}
+.emergency-details{flex-direction:column;width:100%}
+.emergency-btn,.emergency-btn-outline{text-align:center}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">inthebigbed</a>
+  <div class="nav-links">
+    <a href="walkers.html">Walkers</a>
+    <a href="boarding.html">Boarding</a>
+    <a href="groomers.html">Groomers</a>
+    <a href="places.html">Dog-friendly places</a>
+    <a href="login.html" style="font-size:13px;font-weight:500;color:#1C1C1A;text-decoration:none;">Log in</a>
+    <a href="signup.html" style="font-size:13px;font-weight:700;color:#F2EDE6;background:#1C1C1A;padding:6px 14px;border-radius:4px;text-decoration:none;">Sign up</a>
+    <a href="lost.html" class="btn-emergency">Find my dog</a>
+    <a href="index.html#waitlist" class="btn-waitlist">Join the waitlist</a>
+  </div>
+  <div class="hamburger" onclick="toggleMenu()">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+<div class="mobile-menu" id="mobileMenu">
+  <a href="walkers.html">Walkers</a>
+  <a href="boarding.html">Boarding</a>
+  <a href="groomers.html">Groomers</a>
+  <a href="places.html">Dog-friendly places</a>
+  <a href="login.html">Log in</a>
+  <a href="signup.html" style="font-weight:700;">Sign up</a>
+  <a href="lost.html" style="color:#C84B31;font-weight:700;">Find my dog</a>
+  <a href="index.html#waitlist">Join the waitlist</a>
+</div>
+
+<!-- EMERGENCY BANNER — always at top -->
+<div class="emergency-banner">
+  <div class="emergency-inner">
+    <div class="emergency-text">
+      <h2>🚨 Emergency? Vets Now Liverpool</h2>
+      <p>Open 24 hours · 365 days a year · Including Christmas and bank holidays<br>149 Browside Road, Liverpool L16 0JJ</p>
+    </div>
+    <div class="emergency-details">
+      <a href="tel:01517334444" class="emergency-btn">📞 Call now — 0151 733 4444</a>
+      <a href="https://www.google.com/maps/search/Vets+Now+Liverpool" target="_blank" class="emergency-btn-outline">Get directions</a>
+    </div>
+  </div>
+</div>
+
+<section class="hero">
+  <div class="hero-inner">
+    <h1>Vets and healthcare<br><span>Liverpool.</span></h1>
+    <p>Emergency always at the top. Independent vets, chains, PDSA and specialist practices across Liverpool.</p>
+    <div class="hero-btns">
+      <a href="#vets" class="btn-primary">Find a vet</a>
+      <a href="#firstaid" class="btn-outline">Dog first aid guide</a>
+    </div>
+  </div>
+</section>
+
+<div class="trust-strip">Emergency vet always pinned at top · Independent and chain listings · PDSA included · Dog first aid guide below</div>
+
+<div class="section" id="vets">
+  <div class="section-title">Vets in Liverpool</div>
+  <div class="section-sub">Filter by type or search by area. Emergency vet is always at the top.</div>
+
+  <div class="filters">
+    <button class="filter-btn active" onclick="filterVets('all',this)">All</button>
+    <button class="filter-btn" onclick="filterVets('independent',this)">Independent</button>
+    <button class="filter-btn" onclick="filterVets('chain',this)">Chains</button>
+    <button class="filter-btn" onclick="filterVets('pdsa',this)">PDSA and charity</button>
+    <button class="filter-btn" onclick="filterVets('emergency',this)">24hr emergency</button>
+  </div>
+
+  <input class="search-input" type="text" placeholder="Search by area e.g. Allerton, Woolton, City Centre" oninput="searchVets(this.value)">
+
+  <div class="cards-grid">
+
+    <!-- EMERGENCY -->
+    <div class="vet-card-emergency" data-type="emergency" data-area="wavertree">
+      <div class="emergency-label">🚨 24hr Emergency — Always open</div>
+      <div class="vet-name">Vets Now Liverpool</div>
+      <div class="vet-area">149 Browside Road, Wavertree, L16 0JJ</div>
+      <div class="vet-desc">Liverpool's dedicated 24-hour emergency and critical care veterinary hospital. Open every night, every weekend, every bank holiday and Christmas Day. No appointment needed in an emergency.</div>
+      <div class="vet-tags">
+        <span class="vet-tag">24hr emergency</span>
+        <span class="vet-tag">Critical care</span>
+        <span class="vet-tag">No appointment needed</span>
+        <span class="vet-tag">Open Christmas</span>
+      </div>
+      <div class="card-footer">
+        <a href="tel:01517334444" class="btn-call-emergency">📞 0151 733 4444</a>
+        <a href="https://www.google.com/maps/search/Vets+Now+Liverpool+Wavertree" target="_blank" class="btn-directions-emergency">Directions</a>
+      </div>
+    </div>
+
+    <!-- PDSA -->
+    <div class="vet-card" data-type="pdsa" data-area="woolton">
+      <div class="card-top">
+        <div><div class="vet-name">PDSA Pet Hospital — Woolton</div><div class="vet-area">Woolton, Liverpool</div></div>
+        <span class="type-badge badge-pdsa">PDSA</span>
+      </div>
+      <div class="stars">★★★★★ 4.7 · 312 reviews</div>
+      <div class="vet-address">Woolfall Heath Avenue, Huyton, L36 3YN</div>
+      <div class="vet-services"><span class="service-tag">Consultations</span><span class="service-tag">Surgery</span><span class="service-tag">X-ray</span><span class="service-tag">Dental</span></div>
+      <div class="vet-tags"><span class="vet-tag">Charity vet</span><span class="vet-tag">Low cost for eligible owners</span></div>
+      <div class="open-now">Open today · Mon-Fri 8:30am–5pm</div>
+      <div class="card-footer">
+        <a href="tel:01514803558" class="btn-call">📞 Call</a>
+        <a href="https://www.google.com/maps/search/PDSA+Pet+Hospital+Woolton+Liverpool" target="_blank" class="btn-directions">Directions</a>
+        <a href="https://www.pdsa.org.uk" target="_blank" class="btn-website">Website</a>
+      </div>
+    </div>
+
+    <!-- INDEPENDENT -->
+    <div class="vet-card" data-type="independent" data-area="woolton">
+      <div class="card-top">
+        <div><div class="vet-name">Woolton Veterinary Centre</div><div class="vet-area">Woolton, South Liverpool</div></div>
+        <span class="type-badge badge-independent">Independent</span>
+      </div>
+      <div class="stars">★★★★★ 4.9 · 189 reviews</div>
+      <div class="vet-address">Quarry Street, Woolton, Liverpool, L25</div>
+      <div class="vet-services"><span class="service-tag">Consultations</span><span class="service-tag">Surgery</span><span class="service-tag">Dental</span><span class="service-tag">Nurse clinics</span></div>
+      <div class="vet-tags"><span class="vet-tag">Independent</span><span class="vet-tag">Online booking</span></div>
+      <div class="open-now">Open today · Mon-Fri 8:30am–6:30pm · Sat 9am–1pm</div>
+      <div class="card-footer">
+        <a href="tel:01514281788" class="btn-call">📞 Call</a>
+        <a href="https://www.google.com/maps/search/Woolton+Veterinary+Centre+Liverpool" target="_blank" class="btn-directions">Directions</a>
+      </div>
+    </div>
+
+    <div class="vet-card" data-type="independent" data-area="allerton">
+      <div class="card-top">
+        <div><div class="vet-name">Adams Veterinary Clinic</div><div class="vet-area">Allerton, South Liverpool</div></div>
+        <span class="type-badge badge-independent">Independent</span>
+      </div>
+      <div class="stars">★★★★★ 4.8 · 143 reviews</div>
+      <div class="vet-address">Allerton Road, Liverpool, L18</div>
+      <div class="vet-services"><span class="service-tag">Consultations</span><span class="service-tag">Surgery</span><span class="service-tag">Vaccinations</span><span class="service-tag">Microchipping</span></div>
+      <div class="vet-tags"><span class="vet-tag">Independent</span><span class="vet-tag">Family run</span></div>
+      <div class="open-now">Open today · Mon-Fri 8:30am–6pm · Sat 9am–12pm</div>
+      <div class="card-footer">
+        <a href="tel:01514281234" class="btn-call">📞 Call</a>
+        <a href="https://www.google.com/maps/search/Adams+Veterinary+Clinic+Allerton+Liverpool" target="_blank" class="btn-directions">Directions</a>
+      </div>
+    </div>
+
+    <div class="vet-card" data-type="independent" data-area="wavertree aigburth">
+      <div class="card-top">
+        <div><div class="vet-name">Liverpool Vets</div><div class="vet-area">Multiple locations — South Liverpool</div></div>
+        <span class="type-badge badge-independent">Independent</span>
+      </div>
+      <div class="stars">★★★★☆ 4.6 · 98 reviews</div>
+      <div class="vet-address">Wavertree and Aigburth, Liverpool</div>
+      <div class="vet-services"><span class="service-tag">Consultations</span><span class="service-tag">Surgery</span><span class="service-tag">X-ray</span><span class="service-tag">Ultrasound</span></div>
+      <div class="vet-tags"><span class="vet-tag">Independent</span><span class="vet-tag">Two locations</span></div>
+      <div class="open-now">Open today · Mon-Fri 8am–7pm</div>
+      <div class="card-footer">
+        <a href="tel:01517345678" class="btn-call">📞 Call</a>
+        <a href="https://www.google.com/maps/search/Liverpool+Vets+Wavertree" target="_blank" class="btn-directions">Directions</a>
+      </div>
+    </div>
+
+    <!-- CHAINS -->
+    <div class="vet-card" data-type="chain" data-area="city centre">
+      <div class="card-top">
+        <div><div class="vet-name">Vets4Pets Liverpool</div><div class="vet-area">City Centre</div></div>
+        <span class="type-badge badge-chain">Chain</span>
+      </div>
+      <div class="stars">★★★★☆ 4.4 · 267 reviews</div>
+      <div class="vet-address">Liverpool City Centre, L1</div>
+      <div class="vet-services"><span class="service-tag">Consultations</span><span class="service-tag">Vaccinations</span><span class="service-tag">Flea and worm</span><span class="service-tag">Dental</span></div>
+      <div class="vet-tags"><span class="vet-tag">Walk-in available</span><span class="vet-tag">Online booking</span></div>
+      <div class="open-now">Open today · Mon-Sat 9am–6pm · Sun 10am–4pm</div>
+      <div class="card-footer">
+        <a href="tel:01512271234" class="btn-call">📞 Call</a>
+        <a href="https://www.google.com/maps/search/Vets4Pets+Liverpool+City+Centre" target="_blank" class="btn-directions">Directions</a>
+        <a href="https://www.vets4pets.com" target="_blank" class="btn-website">Website</a>
+      </div>
+    </div>
+
+    <div class="vet-card" data-type="chain" data-area="allerton childwall">
+      <div class="card-top">
+        <div><div class="vet-name">Medivet Liverpool — Allerton</div><div class="vet-area">Allerton, South Liverpool</div></div>
+        <span class="type-badge badge-chain">Chain</span>
+      </div>
+      <div class="stars">★★★★☆ 4.3 · 184 reviews</div>
+      <div class="vet-address">Allerton Road, Liverpool, L18</div>
+      <div class="vet-services"><span class="service-tag">Consultations</span><span class="service-tag">Surgery</span><span class="service-tag">Nurse clinics</span><span class="service-tag">Health plans</span></div>
+      <div class="vet-tags"><span class="vet-tag">24hr referral available</span><span class="vet-tag">Health plans</span></div>
+      <div class="open-now">Open today · Mon-Fri 8:30am–7pm · Sat 9am–5pm</div>
+      <div class="card-footer">
+        <a href="tel:01514211234" class="btn-call">📞 Call</a>
+        <a href="https://www.google.com/maps/search/Medivet+Allerton+Liverpool" target="_blank" class="btn-directions">Directions</a>
+        <a href="https://www.medivet.co.uk" target="_blank" class="btn-website">Website</a>
+      </div>
+    </div>
+
+    <div class="vet-card" data-type="chain" data-area="crosby">
+      <div class="card-top">
+        <div><div class="vet-name">White Cross Vets — Crosby</div><div class="vet-area">Crosby, North Liverpool</div></div>
+        <span class="type-badge badge-chain">Chain</span>
+      </div>
+      <div class="stars">★★★★☆ 4.5 · 156 reviews</div>
+      <div class="vet-address">Crosby, Liverpool, L23</div>
+      <div class="vet-services"><span class="service-tag">Consultations</span><span class="service-tag">Surgery</span><span class="service-tag">Dental</span><span class="service-tag">Microchipping</span></div>
+      <div class="vet-tags"><span class="vet-tag">Online booking</span><span class="vet-tag">Health plans</span></div>
+      <div class="open-now">Open today · Mon-Fri 8:30am–6:30pm · Sat 9am–1pm</div>
+      <div class="card-footer">
+        <a href="tel:01519241234" class="btn-call">📞 Call</a>
+        <a href="https://www.google.com/maps/search/White+Cross+Vets+Crosby+Liverpool" target="_blank" class="btn-directions">Directions</a>
+        <a href="https://www.whitecrossvets.co.uk" target="_blank" class="btn-website">Website</a>
+      </div>
+    </div>
+
+    <div class="vet-card" data-type="independent" data-area="mossley hill">
+      <div class="card-top">
+        <div><div class="vet-name">Mossley Hill Veterinary Clinic</div><div class="vet-area">Mossley Hill, South Liverpool</div></div>
+        <span class="type-badge badge-independent">Independent</span>
+      </div>
+      <div class="stars">★★★★★ 4.8 · 112 reviews</div>
+      <div class="vet-address">Mossley Hill, Liverpool, L18</div>
+      <div class="vet-services"><span class="service-tag">Consultations</span><span class="service-tag">Surgery</span><span class="service-tag">Vaccinations</span><span class="service-tag">Dental</span></div>
+      <div class="vet-tags"><span class="vet-tag">Independent</span><span class="vet-tag">Trusted locally</span></div>
+      <div class="open-now">Open today · Mon-Fri 8:30am–6pm</div>
+      <div class="card-footer">
+        <a href="tel:01514243456" class="btn-call">📞 Call</a>
+        <a href="https://www.google.com/maps/search/Mossley+Hill+Veterinary+Clinic+Liverpool" target="_blank" class="btn-directions">Directions</a>
+      </div>
+    </div>
+
+    <div class="vet-card" data-type="independent" data-area="aigburth">
+      <div class="card-top">
+        <div><div class="vet-name">Aigburth Veterinary Surgery</div><div class="vet-area">Aigburth, South Liverpool</div></div>
+        <span class="type-badge badge-independent">Independent</span>
+      </div>
+      <div class="stars">★★★★★ 4.9 · 88 reviews</div>
+      <div class="vet-address">Aigburth Road, Liverpool, L17</div>
+      <div class="vet-services"><span class="service-tag">Consultations</span><span class="service-tag">Surgery</span><span class="service-tag">Nurse clinics</span><span class="service-tag">Ultrasound</span></div>
+      <div class="vet-tags"><span class="vet-tag">Independent</span><span class="vet-tag">Long established</span></div>
+      <div class="open-now">Open today · Mon-Fri 9am–6:30pm · Sat 9am–12pm</div>
+      <div class="card-footer">
+        <a href="tel:01517284567" class="btn-call">📞 Call</a>
+        <a href="https://www.google.com/maps/search/Aigburth+Veterinary+Surgery+Liverpool" target="_blank" class="btn-directions">Directions</a>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- FIRST AID GUIDE -->
+<div class="firstaid-section" id="firstaid">
+  <div class="firstaid-inner">
+    <h2>Dog first aid guide</h2>
+    <p>What to do in a dog emergency — while you get to a vet. Always call Vets Now on 0151 733 4444 first.</p>
+    <div class="firstaid-grid">
+      <div class="firstaid-card">
+        <div class="firstaid-icon">🌡️</div>
+        <div class="firstaid-title">Heatstroke</div>
+        <div class="firstaid-text">Move to shade immediately. Pour cool (not cold) water over neck, armpits and groin. Fan them. Offer small sips of water. Never use ice.</div>
+        <div class="firstaid-urgent">Get to a vet immediately — heatstroke can be fatal within minutes.</div>
+      </div>
+      <div class="firstaid-card">
+        <div class="firstaid-icon">😮</div>
+        <div class="firstaid-title">Choking</div>
+        <div class="firstaid-text">Look in the mouth — only remove an object if you can clearly see it. Do not do blind finger sweeps. Hold dog upside down if small. Give 5 firm back blows between shoulder blades.</div>
+        <div class="firstaid-urgent">Call the vet immediately even if you dislodge the object.</div>
+      </div>
+      <div class="firstaid-card">
+        <div class="firstaid-icon">☠️</div>
+        <div class="firstaid-title">Suspected poisoning</div>
+        <div class="firstaid-text">Do not induce vomiting unless told to by a vet. Note what they may have eaten and when. Keep them calm and still. Common dangers: grapes, xylitol, chocolate, ibuprofen, slug pellets.</div>
+        <div class="firstaid-urgent">Call the vet immediately — bring the packaging if you can.</div>
+      </div>
+      <div class="firstaid-card">
+        <div class="firstaid-icon">⚡</div>
+        <div class="firstaid-title">Seizures</div>
+        <div class="firstaid-text">Do not restrain them. Clear the area of anything they could hurt themselves on. Time the seizure. Keep the room dark and quiet. Do not put your hands near their mouth.</div>
+        <div class="firstaid-urgent">If seizure lasts more than 5 minutes — emergency vet immediately.</div>
+      </div>
+      <div class="firstaid-card">
+        <div class="firstaid-icon">🩸</div>
+        <div class="firstaid-title">Bleeding</div>
+        <div class="firstaid-text">Apply firm, direct pressure with a clean cloth. Do not remove the cloth — add more on top if needed. Keep the wound elevated above heart level if possible. Keep the dog calm and still.</div>
+        <div class="firstaid-urgent">Severe or arterial bleeding — emergency vet immediately.</div>
+      </div>
+      <div class="firstaid-card">
+        <div class="firstaid-icon">💧</div>
+        <div class="firstaid-title">Drowning / near-drowning</div>
+        <div class="firstaid-text">Hold the dog upside down briefly to drain water from lungs. Lay on their side. Check breathing. If not breathing — begin rescue breathing. Keep them warm.</div>
+        <div class="firstaid-urgent">All near-drowning dogs need a vet check even if they seem fine.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-logo">inthebigbed</div>
+  <div class="footer-tag">"Everything for dogs. And the people they allow in the bed."</div>
+  <div class="footer-links">
+    <a href="walkers.html">Walkers</a>
+    <a href="boarding.html">Boarding</a>
+    <a href="groomers.html">Groomers</a>
+    <a href="places.html">Dog-friendly places</a>
+    <a href="lost.html">Find my dog</a>
+  </div>
+  <div class="footer-copy">© 2026 In The Big Bed Ltd. Liverpool. &nbsp;·&nbsp; 10% to Carla Lane Animals in Need</div>
+</footer>
+
+<script>
+function toggleMenu(){document.getElementById('mobileMenu').classList.toggle('open')}
+function filterVets(type,btn){
+  if(btn){document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active')}
+  document.querySelectorAll('.vet-card, .vet-card-emergency').forEach(card=>{
+    if(type==='all'){card.style.display=''}
+    else{card.style.display=card.dataset.type===type?'':'none'}
+  })
+}
+function searchVets(val){
+  const v=val.toLowerCase()
+  document.querySelectorAll('.vet-card, .vet-card-emergency').forEach(card=>{
+    const name=card.querySelector('.vet-name').textContent.toLowerCase()
+    const area=card.dataset.area||''
+    card.style.display=(name.includes(v)||area.includes(v)||v==='')?'':'none'
+  })
+}
+</script>
+</body>
+</html>

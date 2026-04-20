@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My profile — inthebigbed</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:#F2EDE6;color:#1C1C1A;min-height:100vh}
+nav{position:sticky;top:0;z-index:100;background:#F2EDE6;border-bottom:1px solid #1C1C1A;padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:56px}
+.nav-logo{font-weight:900;font-size:20px;letter-spacing:-0.5px;text-decoration:none;color:#1C1C1A}
+.nav-links{display:flex;align-items:center;gap:20px}
+.nav-links a{font-size:13px;font-weight:500;color:#1C1C1A;text-decoration:none}
+.btn-emergency{background:#C84B31;color:#fff;padding:6px 14px;border-radius:4px;font-size:13px;font-weight:700;text-decoration:none}
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:4px}
+.hamburger span{display:block;width:22px;height:2px;background:#1C1C1A}
+.mobile-menu{display:none;position:fixed;top:56px;left:0;right:0;background:#F2EDE6;border-bottom:1px solid #1C1C1A;padding:16px 24px;z-index:99;flex-direction:column;gap:14px}
+.mobile-menu.open{display:flex}
+.mobile-menu a{font-size:15px;font-weight:500;color:#1C1C1A;text-decoration:none}
+.loading{display:flex;align-items:center;justify-content:center;min-height:calc(100vh - 56px);font-size:16px;color:#888}
+.page{max-width:900px;margin:0 auto;padding:40px 24px}
+.welcome{margin-bottom:32px}
+.welcome h1{font-size:28px;font-weight:900;color:#1C1C1A;margin-bottom:4px}
+.welcome p{font-size:14px;color:#666}
+.role-badge{display:inline-block;font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;background:#1C1C1A;color:#F2EDE6;margin-top:8px;text-transform:capitalize}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.card{background:#fff;border:1px solid #1C1C1A;border-radius:4px;padding:24px}
+.card-title{font-size:16px;font-weight:900;color:#1C1C1A;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid #eee}
+.form-group{margin-bottom:14px}
+.form-group label{display:block;font-size:12px;font-weight:700;color:#1C1C1A;margin-bottom:5px}
+.form-group input,.form-group select,.form-group textarea{width:100%;border:1px solid #ccc;background:#F2EDE6;padding:10px 12px;font-size:14px;border-radius:4px;font-family:'DM Sans',sans-serif;outline:none;transition:border-color 0.15s}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:#D4845A;background:#fff}
+.form-group textarea{resize:vertical;min-height:80px}
+.btn-save{background:#1C1C1A;color:#F2EDE6;border:none;padding:11px 20px;font-size:14px;font-weight:700;border-radius:4px;cursor:pointer;font-family:'DM Sans',sans-serif;transition:opacity 0.15s}
+.btn-save:hover{opacity:0.85}
+.btn-save:disabled{opacity:0.5;cursor:not-allowed}
+.btn-logout{background:transparent;border:1px solid #ccc;color:#888;padding:11px 20px;font-size:14px;font-weight:500;border-radius:4px;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.15s}
+.btn-logout:hover{border-color:#1C1C1A;color:#1C1C1A}
+.account-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid #eee}
+.account-row:last-child{border-bottom:none}
+.account-label{font-size:12px;color:#888;font-weight:500}
+.account-value{font-size:14px;color:#1C1C1A;font-weight:500}
+.dogs-list{margin-top:16px}
+.dog-card{background:#F2EDE6;border-radius:4px;padding:14px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:flex-start}
+.dog-name{font-size:14px;font-weight:700;color:#1C1C1A;margin-bottom:2px}
+.dog-details{font-size:12px;color:#666}
+.btn-remove{background:transparent;border:none;color:#ccc;font-size:18px;cursor:pointer;padding:0 4px;line-height:1}
+.btn-remove:hover{color:#C84B31}
+.empty-dogs{text-align:center;padding:24px;color:#888;font-size:13px}
+.success-msg{background:#F0F7F4;border:1px solid #9FE1CB;border-radius:4px;padding:8px 12px;font-size:12px;color:#085041;margin-top:10px;display:none}
+footer{background:#1C1C1A;padding:24px;text-align:center;margin-top:40px}
+.footer-logo{font-size:18px;font-weight:900;color:#F2EDE6;margin-bottom:4px}
+.footer-copy{font-size:12px;color:#555}
+@media(max-width:768px){
+.nav-links{display:none}.hamburger{display:flex}
+.grid{grid-template-columns:1fr}
+.page{padding:24px 16px}
+}
+</style>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="nav-logo">inthebigbed</a>
+  <div class="nav-links">
+    <a href="walkers.html">Walkers</a>
+    <a href="boarding.html">Boarding</a>
+    <a href="groomers.html">Groomers</a>
+    <a href="places.html">Dog-friendly places</a>
+    <a href="lost.html" class="btn-emergency">Find my dog</a>
+    <a href="#" id="navLogout">Log out</a>
+  </div>
+  <div class="hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></div>
+</nav>
+<div class="mobile-menu" id="mobileMenu">
+  <a href="walkers.html">Walkers</a>
+  <a href="boarding.html">Boarding</a>
+  <a href="groomers.html">Groomers</a>
+  <a href="places.html">Dog-friendly places</a>
+  <a href="lost.html" style="color:#C84B31;font-weight:700;">Find my dog</a>
+  <a href="#" onclick="logout()">Log out</a>
+</div>
+
+<div class="loading" id="loading">Loading your profile...</div>
+
+<div class="page" id="profilePage" style="display:none">
+  <div class="welcome">
+    <h1 id="welcomeMsg">Welcome back!</h1>
+    <p>Your In The Big Bed profile</p>
+    <span class="role-badge" id="roleBadge">Owner</span>
+  </div>
+
+  <div class="grid">
+
+    <!-- ACCOUNT DETAILS -->
+    <div class="card">
+      <div class="card-title">Account details</div>
+      <div class="account-row">
+        <span class="account-label">Name</span>
+        <span class="account-value" id="accountName">—</span>
+      </div>
+      <div class="account-row">
+        <span class="account-label">Email</span>
+        <span class="account-value" id="accountEmail">—</span>
+      </div>
+      <div class="account-row">
+        <span class="account-label">Account type</span>
+        <span class="account-value" id="accountRole">—</span>
+      </div>
+      <div style="margin-top:20px">
+        <button class="btn-logout" onclick="logout()">Log out</button>
+      </div>
+    </div>
+
+    <!-- MY DOGS (owners only) -->
+    <div class="card" id="dogsCard">
+      <div class="card-title">My dogs 🐾</div>
+      <form id="addDogForm">
+        <div class="form-group">
+          <label>Dog's name</label>
+          <input type="text" id="dogName" placeholder="e.g. Biscuit" required>
+        </div>
+        <div class="form-group">
+          <label>Breed</label>
+          <input type="text" id="dogBreed" placeholder="e.g. Labrador">
+        </div>
+        <div class="form-group">
+          <label>Age</label>
+          <input type="text" id="dogAge" placeholder="e.g. 3 years">
+        </div>
+        <div class="form-group">
+          <label>Size</label>
+          <select id="dogSize">
+            <option value="">Select size</option>
+            <option value="Small (under 10kg)">Small (under 10kg)</option>
+            <option value="Medium (10-25kg)">Medium (10-25kg)</option>
+            <option value="Large (25-40kg)">Large (25-40kg)</option>
+            <option value="Giant (over 40kg)">Giant (over 40kg)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Medical notes or special requirements</label>
+          <textarea id="dogNotes" placeholder="e.g. Allergic to chicken, nervous around other dogs, takes daily medication..."></textarea>
+        </div>
+        <button type="submit" class="btn-save" id="saveDogBtn">Add dog</button>
+        <div class="success-msg" id="dogSuccess">Dog added successfully! 🐾</div>
+      </form>
+
+      <div class="dogs-list" id="dogsList"></div>
+    </div>
+
+  </div>
+</div>
+
+<footer>
+  <div class="footer-logo">inthebigbed</div>
+  <div class="footer-copy">© 2026 In The Big Bed Ltd. Liverpool. · 10% to Carla Lane Animals in Need</div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const { createClient } = supabase;
+const sb = createClient(
+  'https://cvhutjpxflynrfcvszdy.supabase.co',
+  'sb_publishable_wTpL7pv8qYUnaWGEKbgiug_HknftCj4'
+);
+
+function toggleMenu(){document.getElementById('mobileMenu').classList.toggle('open')}
+
+async function logout(){
+  await sb.auth.signOut();
+  window.location.href='login.html';
+}
+document.getElementById('navLogout').addEventListener('click',function(e){e.preventDefault();logout();});
+
+let currentUser=null;
+let dogs=JSON.parse(localStorage.getItem('itbb_dogs')||'[]');
+
+function renderDogs(){
+  const list=document.getElementById('dogsList');
+  if(dogs.length===0){
+    list.innerHTML='<div class="empty-dogs">No dogs added yet. Add your first dog above.</div>';
+    return;
+  }
+  list.innerHTML=dogs.map((d,i)=>`
+    <div class="dog-card">
+      <div>
+        <div class="dog-name">${d.name}</div>
+        <div class="dog-details">${[d.breed,d.age,d.size].filter(Boolean).join(' · ')}</div>
+        ${d.notes?`<div class="dog-details" style="margin-top:4px;font-style:italic">${d.notes}</div>`:''}
+      </div>
+      <button class="btn-remove" onclick="removeDog(${i})">×</button>
+    </div>
+  `).join('');
+}
+
+function removeDog(i){
+  dogs.splice(i,1);
+  localStorage.setItem('itbb_dogs',JSON.stringify(dogs));
+  renderDogs();
+}
+
+document.getElementById('addDogForm').addEventListener('submit',function(e){
+  e.preventDefault();
+  const dog={
+    name:document.getElementById('dogName').value.trim(),
+    breed:document.getElementById('dogBreed').value.trim(),
+    age:document.getElementById('dogAge').value.trim(),
+    size:document.getElementById('dogSize').value,
+    notes:document.getElementById('dogNotes').value.trim()
+  };
+  if(!dog.name)return;
+  dogs.push(dog);
+  localStorage.setItem('itbb_dogs',JSON.stringify(dogs));
+  renderDogs();
+  document.getElementById('addDogForm').reset();
+  const msg=document.getElementById('dogSuccess');
+  msg.style.display='block';
+  setTimeout(()=>{msg.style.display='none';},3000);
+});
+
+async function init(){
+  const {data:{session}}=await sb.auth.getSession();
+  if(!session){window.location.href='login.html';return;}
+  currentUser=session.user;
+  const meta=currentUser.user_metadata||{};
+  const firstName=meta.first_name||'';
+  const lastName=meta.last_name||'';
+  const role=meta.role||'owner';
+
+  document.getElementById('welcomeMsg').textContent='Welcome back, '+firstName+'! 🐾';
+  document.getElementById('accountName').textContent=firstName+' '+lastName;
+  document.getElementById('accountEmail').textContent=currentUser.email;
+  document.getElementById('accountRole').textContent=role.charAt(0).toUpperCase()+role.slice(1);
+  document.getElementById('roleBadge').textContent=role.charAt(0).toUpperCase()+role.slice(1);
+
+  if(role!=='owner'){document.getElementById('dogsCard').style.display='none';}
+  else{renderDogs();}
+
+  document.getElementById('loading').style.display='none';
+  document.getElementById('profilePage').style.display='block';
+}
+
+init();
+</script>
+</body>
+</html>

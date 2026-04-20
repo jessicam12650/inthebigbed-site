@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dog Boarding Liverpool — inthebigbed</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,700;9..40,900&display=swap');
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: #F2EDE6;
+      color: #1C1C1A;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── NAV ── */
+    .nav {
+      position: sticky; top: 0; z-index: 200;
+      background: #F2EDE6; border-bottom: 1px solid #1C1C1A;
+      height: 64px; padding: 0 48px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .nav-logo {
+      font-weight: 900; font-size: 22px; letter-spacing: -1px;
+      color: #1C1C1A; text-decoration: none;
+    }
+    .nav-links { display: flex; align-items: center; gap: 28px; }
+    .nav-link {
+      font-weight: 700; font-size: 14px; color: #1C1C1A;
+      text-decoration: none; transition: opacity 0.15s;
+    }
+    .nav-link:hover { opacity: 0.55; }
+    .nav-cta {
+      font-family: 'DM Sans', sans-serif; font-weight: 700; font-size: 14px;
+      background: #D4845A; color: #fff; padding: 9px 18px; border-radius: 4px;
+      text-decoration: none; display: inline-block; transition: opacity 0.15s;
+    }
+    .nav-cta:hover { opacity: 0.88; }
+    .nav-emergency {
+      font-family: 'DM Sans', sans-serif; font-weight: 700; font-size: 14px;
+      background: #C84B31; color: #fff; padding: 9px 18px; border-radius: 4px;
+      text-decoration: none; display: inline-block; transition: opacity 0.15s;
+    }
+    .nav-emergency:hover { opacity: 0.88; }
+    .nav-hamburger {
+      display: none; background: none; border: none;
+      cursor: pointer; padding: 4px; flex-direction: column; gap: 5px;
+    }
+    .nav-hamburger span {
+      display: block; width: 22px; height: 2px;
+      background: #1C1C1A; border-radius: 1px;
+      transition: transform 0.2s, opacity 0.2s;
+    }
+    .nav.open .nav-hamburger span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .nav.open .nav-hamburger span:nth-child(2) { opacity: 0; }
+    .nav.open .nav-hamburger span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+    /* ── HERO ── */
+    .hero {
+      background: #1C1C1A;
+      padding: 96px 48px 88px;
+    }
+    .hero-inner { max-width: 900px; margin: 0 auto; }
+    .hero-heading {
+      font-weight: 900;
+      font-size: clamp(48px, 8vw, 88px);
+      line-height: 1.0;
+      color: #F2EDE6;
+      margin-bottom: 24px;
+    }
+    .hero-heading span { color: #D4845A; display: block; }
+    .hero-sub {
+      font-size: clamp(16px, 2vw, 20px);
+      color: rgba(242,237,230,0.72);
+      max-width: 560px;
+      line-height: 1.6;
+      margin-bottom: 40px;
+    }
+    .hero-btns { display: flex; gap: 14px; flex-wrap: wrap; }
+    .btn-primary {
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 700; font-size: 15px;
+      background: #D4845A; color: #fff;
+      padding: 14px 28px; border-radius: 4px;
+      text-decoration: none; border: none; cursor: pointer;
+      transition: opacity 0.15s;
+      display: inline-block;
+    }
+    .btn-primary:hover { opacity: 0.88; }
+    .btn-outline {
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 700; font-size: 15px;
+      background: transparent; color: #F2EDE6;
+      padding: 14px 28px; border-radius: 4px;
+      text-decoration: none; border: 1.5px solid rgba(242,237,230,0.4);
+      cursor: pointer; transition: border-color 0.15s, color 0.15s;
+      display: inline-block;
+    }
+    .btn-outline:hover { border-color: #F2EDE6; color: #F2EDE6; }
+
+    /* ── TRUST STRIP ── */
+    .trust-strip {
+      background: #D4845A;
+      padding: 16px 48px;
+      display: flex; align-items: center; justify-content: center;
+      gap: 0;
+    }
+    .trust-strip-text {
+      font-weight: 700; font-size: 14px;
+      color: #fff;
+      text-align: center;
+      letter-spacing: 0.02em;
+    }
+    .trust-strip-text span {
+      opacity: 0.65;
+      margin: 0 18px;
+    }
+
+    /* ── SECTION WRAPPER ── */
+    .section { max-width: 1100px; margin: 0 auto; padding: 72px 48px; }
+    .section-heading {
+      font-weight: 900; font-size: clamp(24px, 3vw, 34px);
+      margin-bottom: 40px; line-height: 1.2;
+    }
+
+    /* ── TIER CARDS ── */
+    .tiers-intro {
+      max-width: 1100px; margin: 0 auto;
+      padding: 72px 48px 0;
+    }
+    .tiers-intro .section-heading { margin-bottom: 8px; }
+    .tiers-intro .section-sub {
+      font-size: 17px; color: #555; margin-bottom: 40px; line-height: 1.5;
+    }
+    .tier-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+    .tier-card {
+      border-radius: 4px;
+      padding: 28px 24px;
+      background: #fff;
+      border: 1.5px solid #1C1C1A;
+      display: flex; flex-direction: column; gap: 10px;
+    }
+    .tier-card.gold {
+      border-color: #D4845A;
+      background: #FDF7F2;
+    }
+    .tier-badge {
+      display: inline-flex; align-items: center;
+      font-size: 11px; font-weight: 700; letter-spacing: 0.07em;
+      text-transform: uppercase;
+      padding: 4px 10px; border-radius: 2px;
+      width: fit-content;
+    }
+    .tier-badge.silver { background: #e8e4df; color: #555; }
+    .tier-badge.gold   { background: #D4845A; color: #fff; }
+    .tier-badge.pro    { background: #1C1C1A; color: #F2EDE6; }
+    .tier-title {
+      font-weight: 900; font-size: 22px; color: #1C1C1A;
+    }
+    .tier-desc {
+      font-size: 15px; color: #555; line-height: 1.6;
+    }
+    .tier-features {
+      list-style: none; display: flex; flex-direction: column; gap: 7px;
+      margin-top: 4px;
+    }
+    .tier-features li {
+      font-size: 14px; color: #333;
+      display: flex; align-items: flex-start; gap: 8px;
+    }
+    .tier-features li::before {
+      content: '✓';
+      color: #6B9E7A; font-weight: 700; flex-shrink: 0; margin-top: 1px;
+    }
+
+    /* ── TRUST BOX ── */
+    .trust-box-wrap {
+      background: #1C1C1A;
+      padding: 56px 48px;
+    }
+    .trust-box-inner {
+      max-width: 800px; margin: 0 auto;
+      display: flex; gap: 24px; align-items: flex-start;
+    }
+    .trust-box-icon {
+      font-size: 32px; flex-shrink: 0; margin-top: 2px;
+    }
+    .trust-box-body {}
+    .trust-box-heading {
+      font-weight: 900; font-size: 18px; color: #F2EDE6;
+      margin-bottom: 12px;
+    }
+    .trust-box-text {
+      font-size: 15px; color: rgba(242,237,230,0.72); line-height: 1.7;
+    }
+    .trust-box-text strong { color: #F2EDE6; font-weight: 700; }
+
+    /* ── SEARCH / FILTER ── */
+    .search-wrap {
+      max-width: 1100px; margin: 0 auto;
+      padding: 56px 48px 0;
+    }
+    .search-wrap .section-heading { margin-bottom: 20px; }
+    .search-controls {
+      display: flex; gap: 12px; flex-wrap: wrap;
+      align-items: center; margin-bottom: 32px;
+    }
+    .filter-btn {
+      font-family: 'DM Sans', sans-serif; font-weight: 700; font-size: 14px;
+      padding: 9px 18px; border-radius: 4px; border: 1.5px solid #1C1C1A;
+      background: transparent; color: #1C1C1A; cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+    }
+    .filter-btn:hover { background: rgba(28,28,26,0.08); }
+    .filter-btn.active { background: #1C1C1A; color: #F2EDE6; }
+    .search-input {
+      font-family: 'DM Sans', sans-serif; font-size: 14px;
+      padding: 9px 16px; border-radius: 4px;
+      border: 1.5px solid #1C1C1A;
+      background: #fff; color: #1C1C1A;
+      min-width: 260px; outline: none;
+      transition: border-color 0.15s;
+    }
+    .search-input:focus { border-color: #D4845A; }
+    .search-input::placeholder { color: #aaa; }
+
+    /* ── BOARDER CARDS ── */
+    .boarders-wrap {
+      max-width: 1100px; margin: 0 auto;
+      padding: 32px 48px 96px;
+    }
+    .boarder-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 24px;
+    }
+    .boarder-card {
+      background: #fff;
+      border: 1px solid #1C1C1A;
+      border-radius: 4px;
+      padding: 24px;
+      display: flex; flex-direction: column; gap: 12px;
+    }
+
+    .boarder-header {
+      display: flex; justify-content: space-between; align-items: flex-start;
+    }
+    .boarder-name {
+      font-weight: 900; font-size: 20px; color: #1C1C1A; line-height: 1.2;
+    }
+    .boarder-area {
+      font-size: 13px; color: #777; margin-top: 3px;
+    }
+
+    .boarder-badge {
+      font-size: 11px; font-weight: 700; letter-spacing: 0.06em;
+      text-transform: uppercase; padding: 4px 10px; border-radius: 2px;
+      flex-shrink: 0;
+    }
+    .boarder-badge.silver { background: #e8e4df; color: #555; }
+    .boarder-badge.gold   { background: #D4845A; color: #fff; }
+    .boarder-badge.pro    { background: #1C1C1A; color: #F2EDE6; }
+
+    .boarder-rating {
+      font-size: 13px; color: #555; display: flex; align-items: center; gap: 6px;
+    }
+    .stars { color: #E8C84A; letter-spacing: 1px; }
+
+    .boarder-licence {
+      font-size: 12px; color: #aaa; font-family: monospace;
+      letter-spacing: 0.04em;
+    }
+
+    .boarder-details {
+      display: flex; flex-wrap: wrap; gap: 8px;
+    }
+    .detail-pill {
+      font-size: 12px; color: #555;
+      background: #F2EDE6; padding: 4px 10px;
+      border-radius: 2px;
+    }
+
+    .boarder-price {
+      font-weight: 900; font-size: 22px; color: #1C1C1A;
+    }
+    .boarder-price span { font-size: 14px; font-weight: 400; color: #777; }
+
+    .boarder-avail {
+      font-size: 13px; font-weight: 700;
+    }
+    .avail-yes { color: #6B9E7A; }
+    .avail-no  { color: #aaa; }
+
+    .capacity-alert {
+      font-size: 12px; font-weight: 700; color: #D4845A;
+    }
+
+    .boarder-tags {
+      display: flex; flex-wrap: wrap; gap: 6px;
+    }
+    .tag {
+      font-size: 12px; color: #1C1C1A;
+      border: 1px solid #d0cbc4;
+      padding: 3px 9px; border-radius: 20px;
+    }
+
+    .btn-book {
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 700; font-size: 14px;
+      background: #1C1C1A; color: #F2EDE6;
+      padding: 12px 20px; border-radius: 4px;
+      border: none; cursor: pointer; text-align: center;
+      text-decoration: none; display: block; width: 100%;
+      transition: opacity 0.15s; margin-top: 4px;
+    }
+    .btn-book:hover { opacity: 0.82; }
+
+    .divider { border: none; border-top: 1px solid #eee; margin: 0; }
+
+    /* ── FOOTER ── */
+    .footer {
+      background: #1C1C1A;
+      padding: 56px 48px;
+    }
+    .footer-inner {
+      max-width: 1100px; margin: 0 auto;
+      display: flex; flex-direction: column; gap: 16px;
+    }
+    .footer-logo {
+      font-weight: 900; font-size: 22px; letter-spacing: -1px;
+      color: #F2EDE6;
+    }
+    .footer-tagline {
+      font-size: 15px; color: rgba(242,237,230,0.55);
+      max-width: 440px; line-height: 1.6;
+    }
+    .footer-bottom {
+      display: flex; gap: 24px; flex-wrap: wrap;
+      align-items: center; margin-top: 8px;
+    }
+    .footer-copy {
+      font-size: 13px; color: rgba(242,237,230,0.38);
+    }
+    .footer-charity {
+      font-size: 13px; color: #6B9E7A; font-weight: 700;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      .tier-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 768px) {
+      .nav { padding: 0 20px; height: 56px; flex-wrap: wrap; align-content: flex-start; }
+      .nav.open { height: auto; }
+      .nav-logo { font-size: 18px; }
+      .nav-links {
+        display: none; width: 100%; flex-direction: column;
+        align-items: flex-start; gap: 16px;
+        padding: 12px 0 16px; border-top: 1px solid rgba(28,28,26,0.1);
+      }
+      .nav.open .nav-links { display: flex; }
+      .nav-hamburger { display: flex; }
+      .hero { padding: 64px 20px 56px; }
+      .trust-strip { padding: 14px 20px; flex-direction: column; gap: 6px; }
+      .trust-strip-text span { display: block; margin: 2px 0; opacity: 0; height: 0; overflow: hidden; }
+      .tiers-intro { padding: 48px 20px 0; }
+      .section { padding: 48px 20px; }
+      .search-wrap { padding: 40px 20px 0; }
+      .boarders-wrap { padding: 24px 20px 64px; }
+      .boarder-grid { grid-template-columns: 1fr; }
+      .trust-box-wrap { padding: 40px 20px; }
+      .trust-box-inner { flex-direction: column; gap: 12px; }
+      .footer { padding: 40px 20px; }
+      .search-controls { flex-direction: column; align-items: flex-start; }
+      .search-input { min-width: 100%; width: 100%; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── NAV ── -->
+  <nav class="nav" id="nav">
+    <a class="nav-logo" href="index.html">inthebigbed</a>
+    <div class="nav-links" id="nav-links">
+      <a class="nav-link" href="walkers.html">Walkers</a>
+      <a class="nav-link" href="boarding.html">Boarding</a>
+      <a class="nav-link" href="groomers.html">Groomers</a>
+      <a class="nav-link" href="places.html">Dog-friendly places</a>
+      <a class="nav-emergency" href="lost.html">Find my dog</a>
+      <a class="nav-cta" href="index.html#waitlist">Join the waitlist</a>
+    </div>
+    <button class="nav-hamburger" id="nav-hamburger" aria-label="Open menu">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <!-- ── HERO ── -->
+  <section class="hero">
+    <div class="hero-inner">
+      <h1 class="hero-heading">
+        Dog boarding
+        <span>Liverpool.</span>
+      </h1>
+      <p class="hero-sub">Every boarder on In The Big Bed holds a current council licence. Rover doesn't check this. We do.</p>
+      <div class="hero-btns">
+        <a href="#boarders" class="btn-primary">Find a boarder</a>
+        <a href="#licensing" class="btn-outline">How licensing works</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── TRUST STRIP ── -->
+  <div class="trust-strip">
+    <p class="trust-strip-text">
+      Every boarder council licensed
+      <span>·</span>
+      No surge pricing ever
+      <span>·</span>
+      Dog care passport shared at booking
+    </p>
+  </div>
+
+  <!-- ── VERIFICATION TIERS ── -->
+  <div class="tiers-intro">
+    <h2 class="section-heading">Every boarder verified before they can list.</h2>
+    <p class="section-sub">We run three levels of verification. All boarders hold at least a Silver badge — no exceptions.</p>
+    <div class="tier-grid">
+
+      <div class="tier-card">
+        <span class="tier-badge silver">Silver</span>
+        <div class="tier-title">Foundation verified</div>
+        <div class="tier-desc">The minimum standard required to list on In The Big Bed.</div>
+        <ul class="tier-features">
+          <li>Identity verified</li>
+          <li>Council boarding licence checked and confirmed</li>
+          <li>Address verified</li>
+        </ul>
+      </div>
+
+      <div class="tier-card gold">
+        <span class="tier-badge gold">Gold</span>
+        <div class="tier-title">Enhanced verified</div>
+        <div class="tier-desc">Our most popular tier. Chosen by boarders who take dog care seriously.</div>
+        <ul class="tier-features">
+          <li>Everything in Silver</li>
+          <li>Enhanced DBS check</li>
+          <li>Pet first aid certified</li>
+          <li>Council licence verified directly with local authority</li>
+        </ul>
+      </div>
+
+      <div class="tier-card">
+        <span class="tier-badge pro">Pro</span>
+        <div class="tier-title">Professional verified</div>
+        <div class="tier-desc">The highest standard. For full-time boarders with a professional setup.</div>
+        <ul class="tier-features">
+          <li>Everything in Gold</li>
+          <li>Full public liability insurance verified</li>
+          <li>Three references checked</li>
+          <li>Annual re-verification</li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── TRUST BOX ── -->
+  <div id="licensing" style="padding-top: 72px;">
+    <div class="trust-box-wrap">
+      <div class="trust-box-inner">
+        <div class="trust-box-icon">🪪</div>
+        <div class="trust-box-body">
+          <div class="trust-box-heading">What is a council boarding licence?</div>
+          <p class="trust-box-text">
+            In England, anyone boarding <strong>more than one dog for payment</strong> requires a licence from their local council under the Animal Welfare (Licensing of Activities Involving Animals) Regulations 2018. The licence sets minimum welfare standards — space, exercise, bedding, food, vet access — and must be renewed annually after inspection.
+            <br><br>
+            <strong>We verify every licence number directly with the issuing council before a boarder can list.</strong> Rover does not do this. Neither do most other platforms. On In The Big Bed, a licence badge means it has actually been checked.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SEARCH + FILTER ── -->
+  <div id="boarders" class="search-wrap">
+    <h2 class="section-heading">Available boarders in Liverpool</h2>
+    <div class="search-controls">
+      <button class="filter-btn active">All</button>
+      <button class="filter-btn">Gold and Pro only</button>
+      <button class="filter-btn">Available this week</button>
+      <input class="search-input" type="text" placeholder="Search by area e.g. Allerton, Mossley Hill" />
+    </div>
+  </div>
+
+  <!-- ── BOARDER CARDS ── -->
+  <div class="boarders-wrap">
+    <div class="boarder-grid">
+
+      <!-- Card 1: Sarah M. — Gold, Allerton, Available -->
+      <div class="boarder-card">
+        <div class="boarder-header">
+          <div>
+            <div class="boarder-name">Sarah M.</div>
+            <div class="boarder-area">Allerton · 0.8 miles away</div>
+          </div>
+          <span class="boarder-badge gold">Gold</span>
+        </div>
+        <div class="boarder-rating">
+          <span class="stars">★★★★★</span>
+          4.9 · 47 reviews
+        </div>
+        <div class="boarder-licence">Licence #LCC-2847</div>
+        <hr class="divider" />
+        <div class="boarder-details">
+          <span class="detail-pill">Max 3 dogs</span>
+          <span class="detail-pill">In the home</span>
+          <span class="detail-pill">Enclosed garden</span>
+        </div>
+        <div class="boarder-price">£35<span>/night</span></div>
+        <div class="boarder-avail avail-yes">● Available this week</div>
+        <div class="boarder-tags">
+          <span class="tag">All sizes welcome</span>
+          <span class="tag">Daily photo updates</span>
+          <span class="tag">Daily walks included</span>
+          <span class="tag">No kennels</span>
+        </div>
+        <a href="#" class="btn-book">Request booking</a>
+      </div>
+
+      <!-- Card 2: James R. — Pro, Mossley Hill, Available -->
+      <div class="boarder-card">
+        <div class="boarder-header">
+          <div>
+            <div class="boarder-name">James R.</div>
+            <div class="boarder-area">Mossley Hill · 1.2 miles away</div>
+          </div>
+          <span class="boarder-badge pro">Pro</span>
+        </div>
+        <div class="boarder-rating">
+          <span class="stars">★★★★★</span>
+          5.0 · 31 reviews
+        </div>
+        <div class="boarder-licence">Licence #LCC-1193</div>
+        <hr class="divider" />
+        <div class="boarder-details">
+          <span class="detail-pill">Max 2 dogs</span>
+          <span class="detail-pill">In the home</span>
+          <span class="detail-pill">Enclosed garden</span>
+        </div>
+        <div class="boarder-price">£42<span>/night</span></div>
+        <div class="boarder-avail avail-yes">● Available this week</div>
+        <div class="capacity-alert">2 spaces left this Christmas</div>
+        <div class="boarder-tags">
+          <span class="tag">Webcam access</span>
+          <span class="tag">Daily photo updates</span>
+          <span class="tag">All sizes welcome</span>
+          <span class="tag">Fully insured</span>
+        </div>
+        <a href="#" class="btn-book">Request booking</a>
+      </div>
+
+      <!-- Card 3: Emma K. — Silver, Wavertree, Fully booked -->
+      <div class="boarder-card">
+        <div class="boarder-header">
+          <div>
+            <div class="boarder-name">Emma K.</div>
+            <div class="boarder-area">Wavertree · 1.6 miles away</div>
+          </div>
+          <span class="boarder-badge silver">Silver</span>
+        </div>
+        <div class="boarder-rating">
+          <span class="stars">★★★★★</span>
+          4.7 · 19 reviews
+        </div>
+        <div class="boarder-licence">Licence #LCC-3561</div>
+        <hr class="divider" />
+        <div class="boarder-details">
+          <span class="detail-pill">Max 2 dogs</span>
+          <span class="detail-pill">In the home</span>
+          <span class="detail-pill">No garden</span>
+        </div>
+        <div class="boarder-price">£28<span>/night</span></div>
+        <div class="boarder-avail avail-no">● Fully booked this week</div>
+        <div class="boarder-tags">
+          <span class="tag">Small breeds only</span>
+          <span class="tag">Daily walks included</span>
+          <span class="tag">No kennels</span>
+        </div>
+        <a href="#" class="btn-book">Request booking</a>
+      </div>
+
+      <!-- Card 4: Tom B. — Gold, Aigburth, Available, capacity alert -->
+      <div class="boarder-card">
+        <div class="boarder-header">
+          <div>
+            <div class="boarder-name">Tom B.</div>
+            <div class="boarder-area">Aigburth · 2.1 miles away</div>
+          </div>
+          <span class="boarder-badge gold">Gold</span>
+        </div>
+        <div class="boarder-rating">
+          <span class="stars">★★★★★</span>
+          4.8 · 62 reviews
+        </div>
+        <div class="boarder-licence">Licence #LCC-0974</div>
+        <hr class="divider" />
+        <div class="boarder-details">
+          <span class="detail-pill">Max 4 dogs</span>
+          <span class="detail-pill">In the home</span>
+          <span class="detail-pill">Enclosed garden</span>
+        </div>
+        <div class="boarder-price">£38<span>/night</span></div>
+        <div class="boarder-avail avail-yes">● Available this week</div>
+        <div class="capacity-alert">1 space left this Christmas</div>
+        <div class="boarder-tags">
+          <span class="tag">All sizes welcome</span>
+          <span class="tag">Daily photo updates</span>
+          <span class="tag">Webcam access</span>
+          <span class="tag">Daily walks included</span>
+        </div>
+        <a href="#" class="btn-book">Request booking</a>
+      </div>
+
+      <!-- Card 5: Lisa W. — Silver, Childwall, Available -->
+      <div class="boarder-card">
+        <div class="boarder-header">
+          <div>
+            <div class="boarder-name">Lisa W.</div>
+            <div class="boarder-area">Childwall · 2.8 miles away</div>
+          </div>
+          <span class="boarder-badge silver">Silver</span>
+        </div>
+        <div class="boarder-rating">
+          <span class="stars">★★★★☆</span>
+          4.6 · 14 reviews
+        </div>
+        <div class="boarder-licence">Licence #LCC-4402</div>
+        <hr class="divider" />
+        <div class="boarder-details">
+          <span class="detail-pill">Max 2 dogs</span>
+          <span class="detail-pill">In the home</span>
+          <span class="detail-pill">Enclosed garden</span>
+        </div>
+        <div class="boarder-price">£25<span>/night</span></div>
+        <div class="boarder-avail avail-yes">● Available this week</div>
+        <div class="boarder-tags">
+          <span class="tag">Small breeds only</span>
+          <span class="tag">Daily photo updates</span>
+          <span class="tag">No kennels</span>
+        </div>
+        <a href="#" class="btn-book">Request booking</a>
+      </div>
+
+      <!-- Card 6: Dan H. — Pro, West Derby, Available -->
+      <div class="boarder-card">
+        <div class="boarder-header">
+          <div>
+            <div class="boarder-name">Dan H.</div>
+            <div class="boarder-area">West Derby · 3.4 miles away</div>
+          </div>
+          <span class="boarder-badge pro">Pro</span>
+        </div>
+        <div class="boarder-rating">
+          <span class="stars">★★★★★</span>
+          4.9 · 88 reviews
+        </div>
+        <div class="boarder-licence">Licence #LCC-0338</div>
+        <hr class="divider" />
+        <div class="boarder-details">
+          <span class="detail-pill">Max 5 dogs</span>
+          <span class="detail-pill">In the home</span>
+          <span class="detail-pill">Enclosed garden</span>
+        </div>
+        <div class="boarder-price">£45<span>/night</span></div>
+        <div class="boarder-avail avail-yes">● Available this week</div>
+        <div class="boarder-tags">
+          <span class="tag">All sizes welcome</span>
+          <span class="tag">Webcam access</span>
+          <span class="tag">Daily walks included</span>
+          <span class="tag">Fully insured</span>
+          <span class="tag">Daily photo updates</span>
+        </div>
+        <a href="#" class="btn-book">Request booking</a>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── FOOTER ── -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-logo">inthebigbed</div>
+      <div class="footer-tagline">Everything for dogs. And the people they allow in the bed.</div>
+      <div class="footer-bottom">
+        <span class="footer-copy">© 2026 In The Big Bed Ltd. Liverpool.</span>
+        <span class="footer-charity">10% to Carla Lane Animals in Need</span>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    /* ── FILTER BUTTONS ── */
+    document.querySelectorAll('.filter-btn').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        document.querySelectorAll('.filter-btn').forEach(function(b) { b.classList.remove('active'); });
+        btn.classList.add('active');
+      });
+    });
+    document.getElementById('nav-hamburger').addEventListener('click', function() {
+      document.getElementById('nav').classList.toggle('open');
+    });
+  </script>
+
+</body>
+</html>

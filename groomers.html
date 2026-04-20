@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dog Groomers Liverpool — inthebigbed</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:#F2EDE6;color:#1C1C1A}
+nav{position:sticky;top:0;z-index:100;background:#F2EDE6;border-bottom:1px solid #1C1C1A;padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:56px}
+.nav-logo{font-weight:900;font-size:20px;letter-spacing:-0.5px;text-decoration:none;color:#1C1C1A}
+.nav-links{display:flex;align-items:center;gap:20px}
+.nav-links a{font-size:13px;font-weight:500;color:#1C1C1A;text-decoration:none}
+.nav-links a:hover{opacity:0.7}
+.btn-emergency{background:#C84B31;color:#fff;padding:6px 14px;border-radius:4px;font-size:13px;font-weight:700;text-decoration:none}
+.btn-waitlist{background:#D4845A;color:#1C1C1A;padding:6px 14px;border-radius:4px;font-size:13px;font-weight:700;text-decoration:none}
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:4px}
+.hamburger span{display:block;width:22px;height:2px;background:#1C1C1A}
+.mobile-menu{display:none;position:fixed;top:56px;left:0;right:0;background:#F2EDE6;border-bottom:1px solid #1C1C1A;padding:16px 24px;z-index:99;flex-direction:column;gap:14px}
+.mobile-menu.open{display:flex}
+.mobile-menu a{font-size:15px;font-weight:500;color:#1C1C1A;text-decoration:none}
+.hero{background:#1C1C1A;padding:64px 24px}
+.hero-inner{max-width:700px}
+.hero h1{font-size:clamp(36px,6vw,64px);font-weight:900;color:#F2EDE6;line-height:1.05;margin-bottom:16px}
+.hero h1 span{color:#D4845A}
+.hero p{font-size:18px;color:#999;margin-bottom:28px;max-width:520px;line-height:1.5}
+.hero-btns{display:flex;gap:12px;flex-wrap:wrap}
+.btn-primary{background:#D4845A;color:#1C1C1A;padding:14px 28px;border-radius:4px;font-size:16px;font-weight:700;text-decoration:none;display:inline-block}
+.btn-outline{border:1px solid #555;color:#999;padding:14px 28px;border-radius:4px;font-size:16px;font-weight:700;text-decoration:none;display:inline-block}
+.trust-strip{background:#D4845A;padding:12px 24px;text-align:center;font-size:13px;font-weight:500;color:#1C1C1A}
+.section{padding:48px 24px;max-width:1100px;margin:0 auto}
+.section-title{font-size:28px;font-weight:900;color:#1C1C1A;margin-bottom:8px}
+.section-sub{font-size:15px;color:#666;margin-bottom:28px}
+.types-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-bottom:40px}
+.type-card{background:#fff;border:1px solid #1C1C1A;border-radius:4px;padding:28px;text-align:center}
+.type-icon{font-size:36px;margin-bottom:12px}
+.type-card h3{font-size:18px;font-weight:700;margin-bottom:8px}
+.type-card p{font-size:13px;color:#666;line-height:1.5;margin-bottom:16px}
+.type-btn{display:inline-block;border:1px solid #1C1C1A;color:#1C1C1A;padding:8px 18px;border-radius:4px;font-size:13px;font-weight:700;text-decoration:none;cursor:pointer}
+.filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:28px}
+.filter-btn{border:1px solid #1C1C1A;background:transparent;color:#1C1C1A;padding:8px 18px;border-radius:4px;font-size:13px;font-weight:500;cursor:pointer;transition:all 0.15s}
+.filter-btn.active,.filter-btn:hover{background:#1C1C1A;color:#F2EDE6}
+.search-input{width:100%;max-width:400px;border:1px solid #1C1C1A;background:#fff;padding:12px 16px;font-size:14px;border-radius:4px;font-family:'DM Sans',sans-serif;margin-bottom:28px;display:block}
+.cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px}
+.groomer-card{background:#fff;border:1px solid #1C1C1A;border-radius:4px;padding:20px}
+.card-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px}
+.card-name{font-size:15px;font-weight:700;color:#1C1C1A;margin-bottom:2px}
+.card-area{font-size:12px;color:#888}
+.type-badge{font-size:10px;font-weight:700;padding:3px 8px;border-radius:20px;flex-shrink:0}
+.badge-salon{background:#E6F1FB;color:#0C447C}
+.badge-mobile{background:#EEEDFE;color:#3C3489}
+.stars{font-size:12px;color:#D4845A;margin-bottom:10px}
+.qual-badges{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.qual-badge{font-size:10px;font-weight:500;padding:2px 8px;border-radius:20px;background:#F0F7F4;color:#085041}
+.card-desc{font-size:12px;color:#555;line-height:1.45;margin-bottom:10px}
+.services{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px}
+.service-tag{font-size:10px;padding:2px 8px;border-radius:20px;border:1px solid #ddd;color:#555}
+.specialism-tags{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:14px}
+.specialism-tag{font-size:10px;padding:2px 8px;border-radius:20px;background:#FFF8F2;border:1px solid #D4845A;color:#B8712A}
+.card-footer{display:flex;align-items:center;justify-content:space-between;padding-top:12px;border-top:1px solid #eee}
+.price{font-size:15px;font-weight:700;color:#1C1C1A}
+.availability{font-size:11px;font-weight:500;margin-bottom:2px}
+.avail-yes{color:#085041}
+.avail-no{color:#888}
+.card-btns{display:flex;gap:8px}
+.btn-view{border:1px solid #1C1C1A;background:transparent;color:#1C1C1A;padding:7px 12px;border-radius:4px;font-size:12px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif}
+.btn-book{background:#1C1C1A;color:#F2EDE6;padding:7px 12px;border-radius:4px;font-size:12px;font-weight:500;cursor:pointer;border:none;font-family:'DM Sans',sans-serif}
+.cta-section{background:#1C1C1A;padding:48px 24px}
+.cta-inner{max-width:900px;margin:0 auto}
+.cta-section h2{font-size:28px;font-weight:900;color:#F2EDE6;margin-bottom:28px}
+.cta-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:32px}
+.cta-box{border:1px solid #333;border-radius:4px;padding:20px}
+.cta-box h4{font-size:15px;font-weight:700;color:#F2EDE6;margin-bottom:8px}
+.cta-box p{font-size:13px;color:#888;line-height:1.5}
+.btn-cta{display:inline-block;background:#D4845A;color:#1C1C1A;padding:14px 28px;border-radius:4px;font-size:16px;font-weight:700;text-decoration:none}
+footer{background:#1C1C1A;padding:32px 24px;text-align:center}
+.footer-logo{font-size:20px;font-weight:900;color:#F2EDE6;margin-bottom:8px}
+.footer-tag{font-size:13px;color:#666;margin-bottom:8px;font-style:italic}
+.footer-copy{font-size:12px;color:#555}
+@media(max-width:768px){
+.nav-links{display:none}
+.hamburger{display:flex}
+.hero{padding:40px 20px}
+.types-grid{grid-template-columns:1fr}
+.cards-grid{grid-template-columns:1fr}
+.cta-grid{grid-template-columns:1fr}
+.section{padding:32px 20px}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">inthebigbed</a>
+  <div class="nav-links">
+    <a href="walkers.html">Walkers</a>
+    <a href="boarding.html">Boarding</a>
+    <a href="places.html">Dog-friendly places</a>
+    <a href="lost.html" class="btn-emergency">Find my dog</a>
+    <a href="index.html#waitlist" class="btn-waitlist">Join the waitlist</a>
+  </div>
+  <div class="hamburger" onclick="toggleMenu()">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+<div class="mobile-menu" id="mobileMenu">
+  <a href="walkers.html">Walkers</a>
+  <a href="boarding.html">Boarding</a>
+  <a href="places.html">Dog-friendly places</a>
+  <a href="lost.html" style="color:#C84B31;font-weight:700;">Find my dog</a>
+  <a href="index.html#waitlist">Join the waitlist</a>
+</div>
+
+<section class="hero">
+  <div class="hero-inner">
+    <h1>Dog groomers<br><span>Liverpool.</span></h1>
+    <p>Salons and mobile groomers across Liverpool. Qualified, reviewed and ready to book.</p>
+    <div class="hero-btns">
+      <a href="#groomers" class="btn-primary">Find a groomer</a>
+      <a href="#list" class="btn-outline">List your business</a>
+    </div>
+  </div>
+</section>
+
+<div class="trust-strip">Qualified groomers only &nbsp;·&nbsp; City &amp; Guilds certified &nbsp;·&nbsp; Nervous dog specialists &nbsp;·&nbsp; Mobile groomers available</div>
+
+<div class="section">
+  <div class="section-title">Two ways to get groomed</div>
+  <div class="section-sub">Choose what works for you and your dog.</div>
+  <div class="types-grid">
+    <div class="type-card">
+      <div class="type-icon">✂️</div>
+      <h3>Salon grooming</h3>
+      <p>Visit a professional grooming salon near you. Full groom, bath, nail trim and more in a dedicated space.</p>
+      <span class="type-btn" onclick="filterGroomers('salon')">View salons</span>
+    </div>
+    <div class="type-card">
+      <div class="type-icon">🚐</div>
+      <h3>Mobile grooming</h3>
+      <p>A qualified groomer comes to your door. Perfect for nervous dogs or busy owners who can't travel.</p>
+      <span class="type-btn" onclick="filterGroomers('mobile')">View mobile groomers</span>
+    </div>
+  </div>
+
+  <input class="search-input" type="text" placeholder="Search by area e.g. Allerton, Lark Lane" oninput="searchGroomers(this.value)">
+
+  <div class="filters" id="filterBtns">
+    <button class="filter-btn active" onclick="filterGroomers('all',this)">All</button>
+    <button class="filter-btn" onclick="filterGroomers('salon',this)">Salons</button>
+    <button class="filter-btn" onclick="filterGroomers('mobile',this)">Mobile groomers</button>
+    <button class="filter-btn" onclick="filterGroomers('nervous',this)">Nervous dog specialists</button>
+  </div>
+
+  <div class="cards-grid" id="groomers">
+
+    <div class="groomer-card" data-type="salon" data-area="allerton">
+      <div class="card-top">
+        <div><div class="card-name">Mucky Mutz</div><div class="card-area">Allerton · 0.8 miles away</div></div>
+        <span class="type-badge badge-salon">Salon</span>
+      </div>
+      <div class="stars">★★★★★ 4.9 · 87 reviews</div>
+      <div class="qual-badges"><span class="qual-badge">City &amp; Guilds</span></div>
+      <div class="card-desc">Liverpool's most loved grooming salon. Specialists in all breeds with over 10 years experience.</div>
+      <div class="services"><span class="service-tag">Full groom</span><span class="service-tag">Bath &amp; dry</span><span class="service-tag">Nail trim</span><span class="service-tag">Puppy groom</span></div>
+      <div class="specialism-tags"><span class="specialism-tag">Nervous dogs</span><span class="specialism-tag">Large breeds</span></div>
+      <div class="card-footer">
+        <div><div class="availability avail-yes">Available this week</div><div class="price">From £40</div></div>
+        <div class="card-btns"><button class="btn-view">View profile</button><button class="btn-book">Book</button></div>
+      </div>
+    </div>
+
+    <div class="groomer-card" data-type="salon" data-area="lark lane">
+      <div class="card-top">
+        <div><div class="card-name">Sweeps Dog Grooming</div><div class="card-area">Lark Lane · 1.2 miles away</div></div>
+        <span class="type-badge badge-salon">Salon</span>
+      </div>
+      <div class="stars">★★★★★ 4.8 · 62 reviews</div>
+      <div class="qual-badges"><span class="qual-badge">iPET Network</span></div>
+      <div class="card-desc">Boutique grooming salon on Lark Lane. Hand stripping specialists and doodle experts.</div>
+      <div class="services"><span class="service-tag">Full groom</span><span class="service-tag">Hand stripping</span><span class="service-tag">De-shed</span></div>
+      <div class="specialism-tags"><span class="specialism-tag">Doodles specialist</span><span class="specialism-tag">Hand stripping</span></div>
+      <div class="card-footer">
+        <div><div class="availability avail-yes">Available this week</div><div class="price">From £45</div></div>
+        <div class="card-btns"><button class="btn-view">View profile</button><button class="btn-book">Book</button></div>
+      </div>
+    </div>
+
+    <div class="groomer-card" data-type="mobile" data-area="woolton">
+      <div class="card-top">
+        <div><div class="card-name">Woofcuts</div><div class="card-area">Woolton · Mobile · South Liverpool</div></div>
+        <span class="type-badge badge-mobile">Mobile</span>
+      </div>
+      <div class="stars">★★★★★ 4.9 · 44 reviews</div>
+      <div class="qual-badges"><span class="qual-badge">City &amp; Guilds</span></div>
+      <div class="card-desc">Mobile grooming service covering south Liverpool. Fully equipped van comes to your door.</div>
+      <div class="services"><span class="service-tag">Full groom</span><span class="service-tag">Bath &amp; dry</span><span class="service-tag">Nail trim</span></div>
+      <div class="specialism-tags"><span class="specialism-tag">Nervous dogs</span><span class="specialism-tag">Senior dogs</span></div>
+      <div class="card-footer">
+        <div><div class="availability avail-yes">Available this week</div><div class="price">From £50</div></div>
+        <div class="card-btns"><button class="btn-view">View profile</button><button class="btn-book">Book</button></div>
+      </div>
+    </div>
+
+    <div class="groomer-card" data-type="salon" data-area="wavertree">
+      <div class="card-top">
+        <div><div class="card-name">Mannequin Mutts</div><div class="card-area">Wavertree · 1.5 miles away</div></div>
+        <span class="type-badge badge-salon">Salon</span>
+      </div>
+      <div class="stars">★★★★☆ 4.7 · 38 reviews</div>
+      <div class="qual-badges"><span class="qual-badge">iPET Network</span></div>
+      <div class="card-desc">Creative grooming and breed-standard cuts. Specialists in Asian fusion styling.</div>
+      <div class="services"><span class="service-tag">Full groom</span><span class="service-tag">Asian fusion</span><span class="service-tag">Puppy groom</span></div>
+      <div class="specialism-tags"><span class="specialism-tag">Asian fusion styling</span><span class="specialism-tag">Creative cuts</span></div>
+      <div class="card-footer">
+        <div><div class="availability avail-no">Fully booked this week</div><div class="price">From £45</div></div>
+        <div class="card-btns"><button class="btn-view">View profile</button><button class="btn-book">Book</button></div>
+      </div>
+    </div>
+
+    <div class="groomer-card" data-type="salon" data-area="mossley hill">
+      <div class="card-top">
+        <div><div class="card-name">Four Paws</div><div class="card-area">Mossley Hill · 0.9 miles away</div></div>
+        <span class="type-badge badge-salon">Salon</span>
+      </div>
+      <div class="stars">★★★★★ 4.8 · 51 reviews</div>
+      <div class="qual-badges"><span class="qual-badge">City &amp; Guilds</span></div>
+      <div class="card-desc">Family-run salon with a calm and caring approach. Especially popular with anxious dogs.</div>
+      <div class="services"><span class="service-tag">Full groom</span><span class="service-tag">Bath &amp; dry</span><span class="service-tag">De-shed</span><span class="service-tag">Nail trim</span></div>
+      <div class="specialism-tags"><span class="specialism-tag">Nervous dogs</span><span class="specialism-tag">Small breeds</span></div>
+      <div class="card-footer">
+        <div><div class="availability avail-yes">Available this week</div><div class="price">From £35</div></div>
+        <div class="card-btns"><button class="btn-view">View profile</button><button class="btn-book">Book</button></div>
+      </div>
+    </div>
+
+    <div class="groomer-card" data-type="mobile" data-area="crosby">
+      <div class="card-top">
+        <div><div class="card-name">The Pampered Pooch</div><div class="card-area">Crosby · Mobile · North Liverpool</div></div>
+        <span class="type-badge badge-mobile">Mobile</span>
+      </div>
+      <div class="stars">★★★★★ 4.9 · 29 reviews</div>
+      <div class="qual-badges"><span class="qual-badge">iPET Network</span></div>
+      <div class="card-desc">Mobile groomer covering north Liverpool and Crosby. One dog at a time for a stress-free experience.</div>
+      <div class="services"><span class="service-tag">Full groom</span><span class="service-tag">Bath &amp; dry</span><span class="service-tag">Puppy intro groom</span></div>
+      <div class="specialism-tags"><span class="specialism-tag">Nervous dogs</span><span class="specialism-tag">Puppies</span></div>
+      <div class="card-footer">
+        <div><div class="availability avail-yes">Available this week</div><div class="price">From £55</div></div>
+        <div class="card-btns"><button class="btn-view">View profile</button><button class="btn-book">Book</button></div>
+      </div>
+    </div>
+
+    <div class="groomer-card" data-type="salon" data-area="childwall">
+      <div class="card-top">
+        <div><div class="card-name">Snip and Wag</div><div class="card-area">Childwall · 1.1 miles away</div></div>
+        <span class="type-badge badge-salon">Salon</span>
+      </div>
+      <div class="stars">★★★★☆ 4.6 · 33 reviews</div>
+      <div class="qual-badges"><span class="qual-badge">City &amp; Guilds</span></div>
+      <div class="card-desc">Friendly neighbourhood salon with quick turnaround times and competitive prices.</div>
+      <div class="services"><span class="service-tag">Full groom</span><span class="service-tag">Bath &amp; dry</span><span class="service-tag">Nail trim</span></div>
+      <div class="specialism-tags"><span class="specialism-tag">Large breeds</span><span class="specialism-tag">Working dogs</span></div>
+      <div class="card-footer">
+        <div><div class="availability avail-yes">Available this week</div><div class="price">From £32</div></div>
+        <div class="card-btns"><button class="btn-view">View profile</button><button class="btn-book">Book</button></div>
+      </div>
+    </div>
+
+    <div class="groomer-card" data-type="mobile" data-area="aigburth">
+      <div class="card-top">
+        <div><div class="card-name">Tails and Trims Mobile</div><div class="card-area">Aigburth · Mobile · South Liverpool</div></div>
+        <span class="type-badge badge-mobile">Mobile</span>
+      </div>
+      <div class="stars">★★★★★ 4.8 · 41 reviews</div>
+      <div class="qual-badges"><span class="qual-badge">iPET Network</span></div>
+      <div class="card-desc">Fully equipped mobile van. Specialists in reactive and nervous dogs who struggle in salons.</div>
+      <div class="services"><span class="service-tag">Full groom</span><span class="service-tag">Bath &amp; dry</span><span class="service-tag">De-shed</span></div>
+      <div class="specialism-tags"><span class="specialism-tag">Nervous dogs</span><span class="specialism-tag">Reactive dogs</span></div>
+      <div class="card-footer">
+        <div><div class="availability avail-yes">Available this week</div><div class="price">From £52</div></div>
+        <div class="card-btns"><button class="btn-view">View profile</button><button class="btn-book">Book</button></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="cta-section" id="list">
+  <div class="cta-inner">
+    <h2>Are you a Liverpool groomer?</h2>
+    <div class="cta-grid">
+      <div class="cta-box">
+        <h4>Free to list</h4>
+        <p>Create your profile for free. We only take a small commission when you get a booking through us.</p>
+      </div>
+      <div class="cta-box">
+        <h4>Reach more owners</h4>
+        <p>Every dog owner in Liverpool looking for a groomer will find you here. No advertising needed.</p>
+      </div>
+      <div class="cta-box">
+        <h4>Verified badge</h4>
+        <p>Get a verified groomer badge on your profile showing your qualifications. Builds trust instantly.</p>
+      </div>
+    </div>
+    <a href="index.html#waitlist" class="btn-cta">List your grooming business</a>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-logo">inthebigbed</div>
+  <div class="footer-tag">"Everything for dogs. And the people they allow in the bed."</div>
+  <div class="footer-copy">© 2026 In The Big Bed Ltd. Liverpool. &nbsp;·&nbsp; 10% to Carla Lane Animals in Need</div>
+</footer>
+
+<script>
+function toggleMenu(){document.getElementById('mobileMenu').classList.toggle('open')}
+function filterGroomers(type,btn){
+  if(btn){document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active')}
+  document.querySelectorAll('.groomer-card').forEach(card=>{
+    if(type==='all'){card.style.display=''}
+    else if(type==='nervous'){card.style.display=card.querySelector('.specialism-tags').textContent.toLowerCase().includes('nervous')?'':'none'}
+    else{card.style.display=card.dataset.type===type?'':'none'}
+  })
+}
+function searchGroomers(val){
+  const v=val.toLowerCase();
+  document.querySelectorAll('.groomer-card').forEach(card=>{
+    card.style.display=card.dataset.area.includes(v)||card.querySelector('.card-name').textContent.toLowerCase().includes(v)||v===''?'':'none'
+  })
+}
+</script>
+</body>
+</html>

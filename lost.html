@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Find My Dog — Lost Dog Alert — inthebigbed</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,700;9..40,900&display=swap');
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: #F2EDE6;
+      color: #1C1C1A;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── NAV ── */
+    .nav {
+      position: sticky; top: 0; z-index: 200;
+      background: #F2EDE6; border-bottom: 1px solid #1C1C1A;
+      height: 64px; padding: 0 48px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .nav-logo { font-weight: 900; font-size: 22px; letter-spacing: -1px; color: #1C1C1A; text-decoration: none; }
+    .nav-links { display: flex; align-items: center; gap: 28px; }
+    .nav-link {
+      font-weight: 700; font-size: 14px; color: #1C1C1A;
+      text-decoration: none; transition: opacity 0.15s;
+    }
+    .nav-link:hover { opacity: 0.55; }
+    .nav-cta {
+      font-family: 'DM Sans', sans-serif; font-weight: 700; font-size: 14px;
+      background: #D4845A; color: #fff; padding: 9px 18px; border-radius: 4px;
+      text-decoration: none; display: inline-block; transition: opacity 0.15s;
+    }
+    .nav-cta:hover { opacity: 0.88; }
+    .nav-emergency {
+      font-family: 'DM Sans', sans-serif; font-weight: 700; font-size: 14px;
+      background: #C84B31; color: #fff; padding: 9px 18px; border-radius: 4px;
+      text-decoration: none; display: inline-block; transition: opacity 0.15s;
+    }
+    .nav-emergency:hover { opacity: 0.88; }
+    .nav-hamburger {
+      display: none; background: none; border: none;
+      cursor: pointer; padding: 4px; flex-direction: column; gap: 5px;
+    }
+    .nav-hamburger span {
+      display: block; width: 22px; height: 2px;
+      background: #1C1C1A; border-radius: 1px;
+      transition: transform 0.2s, opacity 0.2s;
+    }
+    .nav.open .nav-hamburger span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .nav.open .nav-hamburger span:nth-child(2) { opacity: 0; }
+    .nav.open .nav-hamburger span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+    /* ── HERO ── */
+    .hero {
+      background: #C84B31;
+      padding: 80px 48px 72px;
+      text-align: center;
+    }
+    .hero-inner { max-width: 680px; margin: 0 auto; }
+    .hero-heading {
+      font-weight: 900; font-size: clamp(52px, 10vw, 96px);
+      line-height: 1.0; color: #fff; margin-bottom: 20px;
+      letter-spacing: -2px;
+    }
+    .hero-sub {
+      font-size: clamp(16px, 2.5vw, 20px);
+      color: rgba(255,255,255,0.85);
+      line-height: 1.6; max-width: 520px;
+      margin: 0 auto 40px;
+    }
+    .btn-alert {
+      display: inline-block;
+      background: #fff; color: #C84B31;
+      font-family: 'DM Sans', sans-serif; font-weight: 900;
+      font-size: clamp(18px, 3vw, 24px);
+      padding: 20px 48px; border-radius: 4px;
+      text-decoration: none; border: none; cursor: pointer;
+      letter-spacing: -0.5px;
+      transition: transform 0.1s, box-shadow 0.15s;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.18);
+    }
+    .btn-alert:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(0,0,0,0.22); }
+    .btn-alert:active { transform: translateY(0); }
+    .hero-small {
+      display: block; margin-top: 18px;
+      font-size: 13px; color: rgba(255,255,255,0.6);
+    }
+
+    /* ── HOW IT WORKS ── */
+    .how { background: #F2EDE6; padding: 72px 48px; }
+    .how-inner { max-width: 1100px; margin: 0 auto; }
+    .section-heading { font-weight: 900; font-size: clamp(22px, 3vw, 32px); line-height: 1.2; margin-bottom: 40px; }
+    .steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; }
+    .step { display: flex; flex-direction: column; gap: 10px; }
+    .step-num { font-weight: 900; font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: #C84B31; }
+    .step-title { font-weight: 700; font-size: 17px; color: #1C1C1A; line-height: 1.3; }
+    .step-desc  { font-size: 14px; color: #555; line-height: 1.65; }
+
+    /* ── FORM SECTION ── */
+    .form-section { background: #fff; padding: 72px 48px; border-top: 1px solid #e8e2da; border-bottom: 1px solid #e8e2da; }
+    .form-inner { max-width: 620px; margin: 0 auto; }
+    .form-heading { font-weight: 900; font-size: clamp(22px, 3vw, 30px); margin-bottom: 8px; }
+    .form-sub { font-size: 16px; color: #555; line-height: 1.6; margin-bottom: 36px; }
+
+    .alert-form { display: flex; flex-direction: column; gap: 20px; }
+    .field { display: flex; flex-direction: column; gap: 7px; }
+    .field label {
+      font-weight: 700; font-size: 14px; color: #1C1C1A;
+    }
+    .field input,
+    .field textarea,
+    .field input[type="file"] {
+      font-family: 'DM Sans', sans-serif; font-size: 18px;
+      padding: 16px 18px; border-radius: 4px;
+      border: 1.5px solid #ccc; background: #F2EDE6;
+      color: #1C1C1A; outline: none;
+      transition: border-color 0.15s, background 0.15s;
+      width: 100%; min-height: 56px;
+      -webkit-appearance: none;
+    }
+    .field input:focus,
+    .field textarea:focus { border-color: #C84B31; background: #fff; }
+    .field textarea { resize: vertical; min-height: 110px; }
+    .field input[type="file"] {
+      padding: 14px 18px; cursor: pointer; line-height: 1.5;
+    }
+    .field-note { font-size: 13px; color: #888; margin-top: 2px; }
+
+    .btn-submit {
+      font-family: 'DM Sans', sans-serif; font-weight: 700; font-size: 17px;
+      background: #C84B31; color: #fff;
+      padding: 18px 24px; border-radius: 4px;
+      border: none; cursor: pointer; width: 100%;
+      transition: opacity 0.15s;
+      margin-top: 4px;
+      letter-spacing: -0.2px;
+    }
+    .btn-submit:hover { opacity: 0.88; }
+    .btn-submit:active { opacity: 0.78; }
+
+    .form-success {
+      display: none;
+      background: #edf6f1; border: 1.5px solid #6B9E7A;
+      border-radius: 4px; padding: 24px 20px;
+      font-weight: 700; font-size: 18px; color: #2d6b45;
+      text-align: center; line-height: 1.5;
+    }
+    .form-privacy {
+      font-size: 12px; color: #999; line-height: 1.6; margin-top: 4px;
+    }
+
+    /* ── RECENT ALERTS ── */
+    .alerts-section { background: #F2EDE6; padding: 72px 48px; }
+    .alerts-inner  { max-width: 1100px; margin: 0 auto; }
+    .alerts-grid   { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+
+    .alert-card {
+      background: #fff; border: 1px solid #1C1C1A;
+      border-radius: 4px; padding: 22px;
+      display: flex; flex-direction: column; gap: 10px;
+    }
+    .alert-card-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+    .alert-dog-name { font-weight: 900; font-size: 19px; color: #1C1C1A; line-height: 1.2; }
+    .alert-breed    { font-size: 13px; color: #777; margin-top: 2px; }
+    .status-badge {
+      font-size: 11px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
+      padding: 4px 10px; border-radius: 2px; flex-shrink: 0; white-space: nowrap;
+    }
+    .status-missing { background: #fbeae7; color: #C84B31; }
+    .status-found   { background: #edf6f1; color: #3a7a52; }
+
+    .alert-location { font-size: 13px; color: #555; line-height: 1.5; }
+    .alert-location strong { color: #1C1C1A; font-weight: 700; }
+
+    .alert-sightings { font-size: 13px; color: #888; }
+    .alert-sightings span { font-weight: 700; color: #1C1C1A; }
+
+    .btn-seen {
+      font-family: 'DM Sans', sans-serif; font-weight: 700; font-size: 14px;
+      background: #D4845A; color: #fff;
+      padding: 11px 16px; border-radius: 4px;
+      border: none; cursor: pointer; text-align: center;
+      transition: opacity 0.15s; margin-top: 4px;
+      display: block; width: 100%; text-decoration: none;
+    }
+    .btn-seen:hover { opacity: 0.88; }
+    .btn-seen:disabled,
+    .btn-seen.found { background: #c8c2bb; cursor: default; opacity: 1; }
+
+    /* ── STORY SECTION ── */
+    .story { background: #1C1C1A; padding: 72px 48px; }
+    .story-inner { max-width: 680px; margin: 0 auto; }
+    .story-heading {
+      font-weight: 900; font-size: clamp(22px, 3vw, 32px);
+      color: #F2EDE6; margin-bottom: 20px; line-height: 1.2;
+    }
+    .story-body {
+      font-size: 17px; color: #888; line-height: 1.8;
+      margin-bottom: 20px;
+    }
+    .story-small { font-size: 13px; color: #555; line-height: 1.6; }
+
+    /* ── FOOTER ── */
+    .footer { background: #1C1C1A; border-top: 1px solid rgba(242,237,230,0.08); padding: 56px 48px; }
+    .footer-inner { max-width: 1100px; margin: 0 auto; display: flex; flex-direction: column; gap: 14px; }
+    .footer-logo    { font-weight: 900; font-size: 22px; letter-spacing: -1px; color: #F2EDE6; }
+    .footer-tagline { font-size: 15px; color: rgba(242,237,230,0.5); max-width: 440px; line-height: 1.6; }
+    .footer-bottom  { display: flex; gap: 24px; flex-wrap: wrap; align-items: center; margin-top: 6px; }
+    .footer-copy    { font-size: 13px; color: rgba(242,237,230,0.32); }
+    .footer-charity { font-size: 13px; color: #6B9E7A; font-weight: 700; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      .steps { grid-template-columns: repeat(2, 1fr); }
+      .alerts-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 768px) {
+      .nav { padding: 0 20px; height: 56px; flex-wrap: wrap; align-content: flex-start; }
+      .nav.open { height: auto; }
+      .nav-logo { font-size: 18px; }
+      .nav-links {
+        display: none; width: 100%; flex-direction: column;
+        align-items: flex-start; gap: 16px;
+        padding: 12px 0 16px; border-top: 1px solid rgba(28,28,26,0.1);
+      }
+      .nav.open .nav-links { display: flex; }
+      .nav-hamburger { display: flex; }
+      .hero { padding: 56px 20px 52px; }
+      .btn-alert { padding: 18px 32px; width: 100%; display: block; text-align: center; }
+      .how { padding: 48px 20px; }
+      .steps { grid-template-columns: 1fr; gap: 28px; }
+      .form-section { padding: 48px 20px; }
+      .alerts-section { padding: 48px 20px; }
+      .alerts-grid { grid-template-columns: 1fr; }
+      .story { padding: 48px 20px; }
+      .footer { padding: 40px 20px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── NAV ── -->
+  <nav class="nav" id="nav">
+    <a class="nav-logo" href="index.html">inthebigbed</a>
+    <div class="nav-links" id="nav-links">
+      <a class="nav-link" href="walkers.html">Walkers</a>
+      <a class="nav-link" href="boarding.html">Boarding</a>
+      <a class="nav-link" href="groomers.html">Groomers</a>
+      <a class="nav-link" href="places.html">Dog-friendly places</a>
+      <a class="nav-emergency" href="lost.html">Find my dog</a>
+      <a class="nav-cta" href="index.html#waitlist">Join the waitlist</a>
+    </div>
+    <button class="nav-hamburger" id="nav-hamburger" aria-label="Open menu">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <!-- ── HERO ── -->
+  <section class="hero">
+    <div class="hero-inner">
+      <h1 class="hero-heading">Find my dog.</h1>
+      <p class="hero-sub">One tap alerts every In The Big Bed user within 2 miles. The whole community helps.</p>
+      <a href="#report" class="btn-alert">Send alert now</a>
+      <span class="hero-small">Only use this if your dog is genuinely lost or missing.</span>
+    </div>
+  </section>
+
+  <!-- ── HOW IT WORKS ── -->
+  <section class="how">
+    <div class="how-inner">
+      <h2 class="section-heading">How Find my dog works</h2>
+      <div class="steps">
+
+        <div class="step">
+          <div class="step-num">Step 01</div>
+          <div class="step-title">Tap the alert button</div>
+          <div class="step-desc">One tap. No long forms. Just your dog's name and last known location.</div>
+        </div>
+
+        <div class="step">
+          <div class="step-num">Step 02</div>
+          <div class="step-title">Your community is notified</div>
+          <div class="step-desc">Every In The Big Bed user within 2 miles gets an instant push notification with your dog's photo and description.</div>
+        </div>
+
+        <div class="step">
+          <div class="step-num">Step 03</div>
+          <div class="step-title">Sightings come in</div>
+          <div class="step-desc">Users who spot your dog tap "I've seen them" and their location is pinged straight to you.</div>
+        </div>
+
+        <div class="step">
+          <div class="step-num">Step 04</div>
+          <div class="step-title">You find them</div>
+          <div class="step-desc">Follow the sightings in real time on a live map until you're reunited.</div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ── FORM ── -->
+  <section class="form-section" id="report">
+    <div class="form-inner">
+      <h2 class="form-heading">Report a missing dog</h2>
+      <p class="form-sub" style="font-weight:700; color:#C84B31;">Takes 20 seconds. Your dog's alert goes to everyone nearby instantly.</p>
+
+      <form class="alert-form" id="alert-form" novalidate>
+
+        <div class="field">
+          <label for="dog-name">Dog's name <span style="color:#C84B31;">*</span></label>
+          <input type="text" id="dog-name" name="dog-name" placeholder="e.g. Biscuit" required autocomplete="off" />
+        </div>
+
+        <div class="field">
+          <label for="last-location">Last seen location <span style="color:#C84B31;">*</span></label>
+          <input type="text" id="last-location" name="last-location" placeholder="e.g. Sefton Park main entrance, Allerton Road" required autocomplete="off" />
+        </div>
+
+        <div class="field">
+          <label for="phone">Your phone number <span style="color:#C84B31;">*</span></label>
+          <input type="tel" id="phone" name="phone" placeholder="e.g. 07700 900000" required autocomplete="tel" />
+        </div>
+
+        <div class="field">
+          <label for="photo">Photo of your dog</label>
+          <input type="file" id="photo" name="photo" accept="image/*" capture="environment" />
+          <span class="field-note">Don't have a photo to hand? Submit without one — you can add it later.</span>
+        </div>
+
+        <button type="submit" class="btn-submit">SEND ALERT NOW</button>
+
+        <div class="form-success" id="form-success">
+          Alert sent. 🐾 Your community has been notified. Stay near your phone.
+        </div>
+
+        <p class="form-privacy">
+          In The Big Bed will never share your personal details publicly. Your phone number is only shared with verified users who report a sighting.
+        </p>
+
+      </form>
+    </div>
+  </section>
+
+  <!-- ── RECENT ALERTS ── -->
+  <section class="alerts-section">
+    <div class="alerts-inner">
+      <h2 class="section-heading">Recent alerts in Liverpool</h2>
+      <div class="alerts-grid">
+
+        <!-- Still missing -->
+        <div class="alert-card">
+          <div class="alert-card-top">
+            <div>
+              <div class="alert-dog-name">Milo</div>
+              <div class="alert-breed">Border Collie · Black and white</div>
+            </div>
+            <span class="status-badge status-missing">Still missing</span>
+          </div>
+          <div class="alert-location">
+            <strong>Last seen:</strong> Newsham Park, near the boating lake<br>
+            Today at 2:40 pm
+          </div>
+          <div class="alert-sightings"><span>3 sightings</span> reported</div>
+          <button class="btn-seen">I've seen this dog</button>
+        </div>
+
+        <!-- Found safe -->
+        <div class="alert-card">
+          <div class="alert-card-top">
+            <div>
+              <div class="alert-dog-name">Poppy</div>
+              <div class="alert-breed">Cocker Spaniel · Golden</div>
+            </div>
+            <span class="status-badge status-found">Found safe 🐾</span>
+          </div>
+          <div class="alert-location">
+            <strong>Last seen:</strong> Sefton Park, near the Palm House<br>
+            Yesterday at 4:15 pm
+          </div>
+          <div class="alert-sightings"><span>7 sightings</span> reported</div>
+          <button class="btn-seen found" disabled>Reunited with owner</button>
+        </div>
+
+        <!-- Still missing -->
+        <div class="alert-card">
+          <div class="alert-card-top">
+            <div>
+              <div class="alert-dog-name">Rex</div>
+              <div class="alert-breed">German Shepherd · Tan and black</div>
+            </div>
+            <span class="status-badge status-missing">Still missing</span>
+          </div>
+          <div class="alert-location">
+            <strong>Last seen:</strong> Wavertree Playground, near the café<br>
+            Today at 9:20 am
+          </div>
+          <div class="alert-sightings"><span>1 sighting</span> reported</div>
+          <button class="btn-seen">I've seen this dog</button>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ── STORY ── -->
+  <section class="story">
+    <div class="story-inner">
+      <h2 class="story-heading">Built by someone who knows.</h2>
+      <p class="story-body">
+        The founder of In The Big Bed lost their dog a few years ago. They know the terror of that moment — the frantic searching, the helplessness, the desperate hope that someone somewhere has seen them. Find my dog exists because no owner should go through that alone. The whole Liverpool dog community is your search party.
+      </p>
+      <p class="story-small">Every alert is anonymous to the public. Your details are only shared with verified users who report a sighting.</p>
+    </div>
+  </section>
+
+  <!-- ── FOOTER ── -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-logo">inthebigbed</div>
+      <div class="footer-tagline">Everything for dogs. And the people they allow in the bed.</div>
+      <div class="footer-bottom">
+        <span class="footer-copy">© 2026 In The Big Bed Ltd. Liverpool.</span>
+        <span class="footer-charity">10% to Carla Lane Animals in Need</span>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    document.getElementById('alert-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const name = document.getElementById('dog-name').value.trim();
+      const location = document.getElementById('last-location').value.trim();
+      const phone = document.getElementById('phone').value.trim();
+      if (!name || !location || !phone) {
+        const first = !name
+          ? document.getElementById('dog-name')
+          : !location
+            ? document.getElementById('last-location')
+            : document.getElementById('phone');
+        first.focus();
+        first.style.borderColor = '#C84B31';
+        return;
+      }
+      this.querySelectorAll('input, textarea, button[type="submit"]').forEach(function(el) {
+        el.disabled = true;
+      });
+      const success = document.getElementById('form-success');
+      success.style.display = 'block';
+      success.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    });
+
+    /* Clear red border on input */
+    document.querySelectorAll('.alert-form input, .alert-form textarea').forEach(function(el) {
+      el.addEventListener('input', function() { this.style.borderColor = ''; });
+    });
+
+    document.getElementById('nav-hamburger').addEventListener('click', function() {
+      document.getElementById('nav').classList.toggle('open');
+    });
+  </script>
+
+</body>
+</html>
