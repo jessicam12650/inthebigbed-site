@@ -6,6 +6,7 @@ export async function middleware(req: NextRequest) {
 
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  // If Supabase isn't configured, just pass through — don't 404 every page.
   if (!url || !anonKey) return res;
 
   const supabase = createServerClient(url, anonKey, {
@@ -26,9 +27,16 @@ export async function middleware(req: NextRequest) {
     },
   });
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  // Wrap the auth call so a Supabase outage / bad env var / network blip
+  // never takes down public pages. If we can't read the user, treat the
+  // visitor as signed-out (protected routes redirect, public routes render).
+  let user: Awaited<ReturnType<typeof supabase.auth.getUser>>["data"]["user"] = null;
+  try {
+    const result = await supabase.auth.getUser();
+    user = result.data.user;
+  } catch (err) {
+    console.error("middleware auth.getUser failed", err);
+  }
 
   const { pathname } = req.nextUrl;
   const isProtected = pathname.startsWith("/profile");
