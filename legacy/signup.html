@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Log in — inthebigbed</title>
+<title>Create account — inthebigbed</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
@@ -13,24 +13,30 @@ nav{position:sticky;top:0;z-index:100;background:#F2EDE6;border-bottom:1px solid
 .nav-links{display:flex;align-items:center;gap:20px}
 .nav-links a{font-size:13px;font-weight:500;color:#1C1C1A;text-decoration:none}
 .btn-emergency{background:#C84B31;color:#fff;padding:6px 14px;border-radius:4px;font-size:13px;font-weight:700;text-decoration:none}
+.btn-waitlist{background:#D4845A;color:#1C1C1A;padding:6px 14px;border-radius:4px;font-size:13px;font-weight:700;text-decoration:none}
 .hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:4px}
 .hamburger span{display:block;width:22px;height:2px;background:#1C1C1A}
 .mobile-menu{display:none;position:fixed;top:56px;left:0;right:0;background:#F2EDE6;border-bottom:1px solid #1C1C1A;padding:16px 24px;z-index:99;flex-direction:column;gap:14px}
 .mobile-menu.open{display:flex}
 .mobile-menu a{font-size:15px;font-weight:500;color:#1C1C1A;text-decoration:none}
 .page{display:flex;align-items:flex-start;justify-content:center;padding:48px 24px;min-height:calc(100vh - 56px)}
-.card{background:#fff;border:1px solid #1C1C1A;border-radius:4px;padding:36px;width:100%;max-width:440px}
+.card{background:#fff;border:1px solid #1C1C1A;border-radius:4px;padding:36px;width:100%;max-width:480px}
 .card-title{font-size:26px;font-weight:900;color:#1C1C1A;margin-bottom:6px}
 .card-sub{font-size:14px;color:#666;margin-bottom:28px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .form-group{margin-bottom:18px}
 .form-group label{display:block;font-size:13px;font-weight:700;color:#1C1C1A;margin-bottom:6px}
 .form-group input{width:100%;border:1px solid #1C1C1A;background:#F2EDE6;padding:12px 14px;font-size:15px;border-radius:4px;font-family:'DM Sans',sans-serif;outline:none;transition:border-color 0.15s}
 .form-group input:focus{border-color:#D4845A;background:#fff}
-.forgot{display:block;text-align:right;font-size:12px;color:#888;text-decoration:none;margin-top:-12px;margin-bottom:18px}
-.forgot:hover{color:#1C1C1A}
-.btn-submit{width:100%;background:#1C1C1A;color:#F2EDE6;border:none;padding:14px;font-size:16px;font-weight:700;border-radius:4px;cursor:pointer;font-family:'DM Sans',sans-serif;transition:opacity 0.15s}
+.role-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.role-option{position:relative}
+.role-option input[type=radio]{position:absolute;opacity:0;width:0;height:0}
+.role-label{display:block;border:1px solid #ccc;border-radius:4px;padding:12px 14px;font-size:14px;font-weight:500;color:#555;cursor:pointer;transition:all 0.15s;text-align:center}
+.role-option input[type=radio]:checked + .role-label{border-color:#1C1C1A;background:#1C1C1A;color:#F2EDE6;font-weight:700}
+.btn-submit{width:100%;background:#1C1C1A;color:#F2EDE6;border:none;padding:14px;font-size:16px;font-weight:700;border-radius:4px;cursor:pointer;font-family:'DM Sans',sans-serif;margin-top:8px;transition:opacity 0.15s}
 .btn-submit:hover{opacity:0.85}
 .btn-submit:disabled{opacity:0.5;cursor:not-allowed}
+.divider{text-align:center;font-size:13px;color:#888;margin:20px 0}
 .link-row{text-align:center;font-size:14px;color:#666;margin-top:16px}
 .link-row a{color:#1C1C1A;font-weight:700;text-decoration:none}
 .error-msg{background:#FCEBEB;border:1px solid #F09595;border-radius:4px;padding:10px 14px;font-size:13px;color:#791F1F;margin-bottom:16px;display:none}
@@ -40,6 +46,7 @@ footer{background:#1C1C1A;padding:24px;text-align:center}
 .footer-copy{font-size:12px;color:#555}
 @media(max-width:768px){
 .nav-links{display:none}.hamburger{display:flex}
+.form-row{grid-template-columns:1fr}
 .page{padding:24px 16px}
 .card{padding:24px}
 }
@@ -53,8 +60,10 @@ footer{background:#1C1C1A;padding:24px;text-align:center}
     <a href="boarding.html">Boarding</a>
     <a href="groomers.html">Groomers</a>
     <a href="places.html">Dog-friendly places</a>
+    <a href="login.html" style="font-size:14px;font-weight:500;color:#1C1C1A;text-decoration:none;">Log in</a>
+    <a href="signup.html" style="font-size:14px;font-weight:700;color:#F2EDE6;background:#1C1C1A;padding:9px 18px;border-radius:4px;text-decoration:none;">Sign up</a>
     <a href="lost.html" class="btn-emergency">Find my dog</a>
-    <a href="signup.html">Sign up</a>
+    <a href="login.html">Log in</a>
   </div>
   <div class="hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></div>
 </nav>
@@ -63,32 +72,68 @@ footer{background:#1C1C1A;padding:24px;text-align:center}
   <a href="boarding.html">Boarding</a>
   <a href="groomers.html">Groomers</a>
   <a href="places.html">Dog-friendly places</a>
+  <a href="login.html" style="font-size:14px;font-weight:500;color:#1C1C1A;text-decoration:none;">Log in</a>
+  <a href="signup.html" style="font-size:14px;font-weight:700;color:#F2EDE6;background:#1C1C1A;padding:9px 18px;border-radius:4px;text-decoration:none;">Sign up</a>
   <a href="lost.html" style="color:#C84B31;font-weight:700;">Find my dog</a>
-  <a href="signup.html">Sign up</a>
+  <a href="login.html">Log in</a>
 </div>
 
 <div class="page">
   <div class="card">
-    <div class="card-title">Welcome back 🐾</div>
-    <div class="card-sub">Log in to your In The Big Bed account.</div>
+    <div class="card-title">Create your account</div>
+    <div class="card-sub">Join Liverpool's dog community. Free to sign up.</div>
 
     <div class="error-msg" id="errorMsg"></div>
     <div class="success-msg" id="successMsg"></div>
 
-    <form id="loginForm">
+    <form id="signupForm">
+      <div class="form-row">
+        <div class="form-group">
+          <label>First name</label>
+          <input type="text" id="firstName" placeholder="Jessica" required>
+        </div>
+        <div class="form-group">
+          <label>Last name</label>
+          <input type="text" id="lastName" placeholder="Smith" required>
+        </div>
+      </div>
       <div class="form-group">
         <label>Email address</label>
         <input type="email" id="email" placeholder="jessica@example.com" required>
       </div>
       <div class="form-group">
         <label>Password</label>
-        <input type="password" id="password" placeholder="Your password" required>
+        <input type="password" id="password" placeholder="At least 8 characters" required minlength="8">
       </div>
-      <a href="#" class="forgot" onclick="handleForgotPassword(event)">Forgot your password?</a>
-      <button type="submit" class="btn-submit" id="submitBtn">Log in</button>
+      <div class="form-group">
+        <label>Confirm password</label>
+        <input type="password" id="confirmPassword" placeholder="Repeat your password" required>
+      </div>
+      <div class="form-group">
+        <label>I am joining as</label>
+        <div class="role-grid">
+          <div class="role-option">
+            <input type="radio" name="role" id="roleOwner" value="owner" checked>
+            <label class="role-label" for="roleOwner">🐾 Dog owner</label>
+          </div>
+          <div class="role-option">
+            <input type="radio" name="role" id="roleWalker" value="walker">
+            <label class="role-label" for="roleWalker">🦮 Walker</label>
+          </div>
+          <div class="role-option">
+            <input type="radio" name="role" id="roleBoarder" value="boarder">
+            <label class="role-label" for="roleBoarder">🏠 Boarder</label>
+          </div>
+          <div class="role-option">
+            <input type="radio" name="role" id="roleGroomer" value="groomer">
+            <label class="role-label" for="roleGroomer">✂️ Groomer</label>
+          </div>
+        </div>
+      </div>
+      <button type="submit" class="btn-submit" id="submitBtn">Create my account</button>
     </form>
 
-    <div class="link-row">Don't have an account? <a href="signup.html">Sign up free</a></div>
+    <div class="link-row">Already have an account? <a href="login.html">Log in</a></div>
   </div>
 </div>
 
@@ -118,31 +163,33 @@ function showSuccess(msg){
   document.getElementById('errorMsg').style.display='none';
 }
 
-async function handleForgotPassword(e){
+document.getElementById('signupForm').addEventListener('submit', async function(e){
   e.preventDefault();
-  const email=document.getElementById('email').value.trim();
-  if(!email){showError('Enter your email address first.');return;}
-  const {error}=await sb.auth.resetPasswordForEmail(email,{redirectTo:window.location.origin+'/profile.html'});
-  if(error){showError(error.message);}
-  else{showSuccess('Password reset email sent — check your inbox.');}
-}
-
-document.getElementById('loginForm').addEventListener('submit', async function(e){
-  e.preventDefault();
+  const firstName=document.getElementById('firstName').value.trim();
+  const lastName=document.getElementById('lastName').value.trim();
   const email=document.getElementById('email').value.trim();
   const password=document.getElementById('password').value;
+  const confirmPassword=document.getElementById('confirmPassword').value;
+  const role=document.querySelector('input[name=role]:checked').value;
   const btn=document.getElementById('submitBtn');
 
-  btn.disabled=true;btn.textContent='Logging in...';
+  if(password!==confirmPassword){showError('Passwords do not match.');return;}
+  if(password.length<8){showError('Password must be at least 8 characters.');return;}
 
-  const {data,error}=await sb.auth.signInWithPassword({email,password});
+  btn.disabled=true;btn.textContent='Creating account...';
+
+  const {data,error}=await sb.auth.signUp({
+    email,password,
+    options:{data:{first_name:firstName,last_name:lastName,role:role}}
+  });
 
   if(error){
-    showError(error.message==='Invalid login credentials'?'Incorrect email or password. Try again.':error.message);
-    btn.disabled=false;btn.textContent='Log in';
+    showError(error.message);
+    btn.disabled=false;btn.textContent='Create my account';
   } else {
-    showSuccess('Logged in! Taking you to your profile...');
-    setTimeout(()=>{window.location.href='profile.html';},1000);
+    showSuccess('Account created! Check your email to confirm, then log in.');
+    btn.textContent='Account created!';
+    setTimeout(()=>{window.location.href='login.html';},2500);
   }
 });
 </script>

@@ -1,0 +1,142 @@
+export type Groomer = {
+  id: string;
+  name: string;
+  area: string;
+  distance: string;
+  region?: string;
+  type: "salon" | "mobile";
+  rating: number;
+  reviews: number;
+  qualification: string;
+  bio: string;
+  services: string[];
+  specialism: string[];
+  priceFrom: number;
+  available: boolean;
+};
+
+export const GROOMERS: Groomer[] = [
+  {
+    id: "mucky-mutz",
+    name: "Mucky Mutz",
+    area: "Allerton",
+    distance: "0.8 miles",
+    type: "salon",
+    rating: 4.9,
+    reviews: 87,
+    qualification: "City & Guilds",
+    bio: "Liverpool's most loved grooming salon. Specialists in all breeds with over 10 years experience.",
+    services: ["Full groom", "Bath & dry", "Nail trim", "Puppy groom"],
+    specialism: ["Nervous dogs", "Large breeds"],
+    priceFrom: 40,
+    available: true,
+  },
+  {
+    id: "sweeps-dog-grooming",
+    name: "Sweeps Dog Grooming",
+    area: "Lark Lane",
+    distance: "1.2 miles",
+    type: "salon",
+    rating: 4.8,
+    reviews: 62,
+    qualification: "iPET Network",
+    bio: "Boutique grooming salon on Lark Lane. Hand stripping specialists and doodle experts.",
+    services: ["Full groom", "Hand stripping", "De-shed"],
+    specialism: ["Doodles specialist", "Hand stripping"],
+    priceFrom: 45,
+    available: true,
+  },
+  {
+    id: "woofcuts",
+    name: "Woofcuts",
+    area: "Woolton",
+    distance: "Mobile",
+    region: "South Liverpool",
+    type: "mobile",
+    rating: 4.9,
+    reviews: 44,
+    qualification: "City & Guilds",
+    bio: "Mobile grooming service covering south Liverpool. Fully equipped van comes to your door.",
+    services: ["Full groom", "Bath & dry", "Nail trim"],
+    specialism: ["Nervous dogs", "Senior dogs"],
+    priceFrom: 50,
+    available: true,
+  },
+  {
+    id: "mannequin-mutts",
+    name: "Mannequin Mutts",
+    area: "Wavertree",
+    distance: "1.5 miles",
+    type: "salon",
+    rating: 4.7,
+    reviews: 38,
+    qualification: "iPET Network",
+    bio: "Creative grooming and breed-standard cuts. Specialists in Asian fusion styling.",
+    services: ["Full groom", "Asian fusion", "Puppy groom"],
+    specialism: ["Asian fusion styling", "Creative cuts"],
+    priceFrom: 45,
+    available: false,
+  },
+  {
+    id: "four-paws",
+    name: "Four Paws",
+    area: "Mossley Hill",
+    distance: "0.9 miles",
+    type: "salon",
+    rating: 4.8,
+    reviews: 51,
+    qualification: "City & Guilds",
+    bio: "Family-run salon with a calm and caring approach. Especially popular with anxious dogs.",
+    services: ["Full groom", "Bath & dry", "De-shed", "Nail trim"],
+    specialism: ["Nervous dogs", "Small breeds"],
+    priceFrom: 35,
+    available: true,
+  },
+  {
+    id: "the-pampered-pooch",
+    name: "The Pampered Pooch",
+    area: "Crosby",
+    distance: "Mobile",
+    region: "North Liverpool",
+    type: "mobile",
+    rating: 4.9,
+    reviews: 29,
+    qualification: "iPET Network",
+    bio: "Mobile groomer covering north Liverpool and Crosby. One dog at a time for a stress-free experience.",
+    services: ["Full groom", "Bath & dry", "Puppy intro groom"],
+    specialism: ["Nervous dogs", "Puppies"],
+    priceFrom: 55,
+    available: true,
+  },
+  {
+    id: "snip-and-wag",
+    name: "Snip and Wag",
+    area: "Childwall",
+    distance: "1.1 miles",
+    type: "salon",
+    rating: 4.6,
+    reviews: 33,
+    qualification: "City & Guilds",
+    bio: "Friendly neighbourhood salon with quick turnaround times and competitive prices.",
+    services: ["Full groom", "Bath & dry", "Nail trim"],
+    specialism: ["Large breeds", "Working dogs"],
+    priceFrom: 32,
+    available: true,
+  },
+  {
+    id: "tails-and-trims-mobile",
+    name: "Tails and Trims Mobile",
+    area: "Aigburth",
+    distance: "Mobile",
+    region: "South Liverpool",
+    type: "mobile",
+    rating: 4.8,
+    reviews: 41,
+    qualification: "iPET Network",
+    bio: "Fully equipped mobile van. Specialists in reactive and nervous dogs who struggle in salons.",
+    services: ["Full groom", "Bath & dry", "De-shed"],
+    specialism: ["Nervous dogs", "Reactive dogs"],
+    priceFrom: 52,
+    available: true,
+  },
+];

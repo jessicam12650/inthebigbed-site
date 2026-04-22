@@ -1,0 +1,33 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "X-Frame-Options", "value": "SAMEORIGIN" },
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
+        {
+          "key": "Permissions-Policy",
+          "value": "camera=(), microphone=(), geolocation=(self), interest-cohort=()"
+        },
+        {
+          "key": "Strict-Transport-Security",
+          "value": "max-age=63072000; includeSubDomains; preload"
+        }
+      ]
+    }
+  ],
+  "redirects": [
+    { "source": "/walkers.html", "destination": "/walkers", "permanent": true },
+    { "source": "/boarding.html", "destination": "/boarding", "permanent": true },
+    { "source": "/groomers.html", "destination": "/groomers", "permanent": true },
+    { "source": "/vets.html", "destination": "/vets", "permanent": true },
+    { "source": "/places.html", "destination": "/places", "permanent": true },
+    { "source": "/lost.html", "destination": "/lost", "permanent": true },
+    { "source": "/login.html", "destination": "/login", "permanent": true },
+    { "source": "/signup.html", "destination": "/signup", "permanent": true },
+    { "source": "/profile.html", "destination": "/profile", "permanent": true },
+    { "source": "/index.html", "destination": "/", "permanent": true }
+  ]
+}
