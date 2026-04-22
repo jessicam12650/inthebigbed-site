@@ -148,16 +148,11 @@ export default function PlacesPage() {
   }
 
   function scrollCardIntoCardsPane(card: HTMLElement) {
-    const pane = cardsScrollRef.current;
-    if (!pane) return;
-    // Compute the card's top offset relative to the scroll pane and scroll
-    // ONLY the pane (not the window). Leaves a small gap below the sticky
-    // filter bar that sits at the top of the pane.
-    const paneRect = pane.getBoundingClientRect();
-    const cardRect = card.getBoundingClientRect();
-    const stickyFilterHeight = 64; // matches the sticky filter row + padding
-    const target = pane.scrollTop + (cardRect.top - paneRect.top) - stickyFilterHeight - 8;
-    pane.scrollTo({ top: Math.max(0, target), behavior: "smooth" });
+    // Cards pane (`overflow-y-auto`) is the nearest scrollable ancestor, so
+    // scrollIntoView scrolls the PANE, never the window. scroll-margin-top
+    // on `.venue-card` leaves room for the sticky filter bar — tall enough
+    // on mobile to cover the 2-row wrap, auto-trimmed on desktop via Tailwind.
+    card.scrollIntoView({ block: "start", behavior: "smooth", inline: "nearest" });
   }
 
   function handlePinClick(id: string) {
@@ -302,7 +297,10 @@ function VenueCard({
     <article
       ref={setRef}
       onClick={onClick}
-      className={`venue-card group flex cursor-pointer flex-col gap-2 rounded-sm border bg-white p-5 transition-all hover:-translate-y-0.5 hover:shadow-pop ${
+      // scroll-mt-* leaves room for the sticky filter bar when scrollIntoView
+      // lands the card at the top of the pane: ~144px on mobile (2-row wrap),
+      // 88px from md where the filter sits on a single row.
+      className={`venue-card group flex scroll-mt-36 cursor-pointer flex-col gap-2 rounded-sm border bg-white p-5 transition-all hover:-translate-y-0.5 hover:shadow-pop md:scroll-mt-20 ${
         isActive ? "border-rust shadow-pop" : "border-ink/10 hover:border-ink/25"
       }`}
     >
