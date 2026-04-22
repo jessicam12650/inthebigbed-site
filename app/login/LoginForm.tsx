@@ -2,17 +2,27 @@
 
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { getSupabaseBrowserClient } from "@/lib/supabase";
+import { useUser } from "@/lib/useUser";
 
 export default function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const next = searchParams.get("next") || "/profile";
+  const { user, loading: authLoading } = useUser();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // If the visitor is already signed in, bounce them to their destination.
+  // Replaces the middleware redirect we used to do before.
+  useEffect(() => {
+    if (!authLoading && user) {
+      router.replace(next);
+    }
+  }, [authLoading, user, next, router]);
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();

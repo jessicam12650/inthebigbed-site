@@ -1,9 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
-import { useMemo, useState, type FormEvent } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useMemo, useState, type FormEvent } from "react";
 import { getSupabaseBrowserClient } from "@/lib/supabase";
+import { useUser } from "@/lib/useUser";
 import { WALKERS } from "@/data/walkers";
 import { BOARDERS } from "@/data/boarders";
 import { GROOMERS } from "@/data/groomers";
@@ -43,10 +44,20 @@ function findIntent(searchParams: URLSearchParams) {
 }
 
 export default function SignupForm() {
+  const router = useRouter();
   const searchParams = useSearchParams();
+  const { user, loading: authLoading } = useUser();
 
   const intent = useMemo(() => findIntent(searchParams), [searchParams]);
   const initialRole: Role = isRole(searchParams.get("role")) ? (searchParams.get("role") as Role) : "owner";
+
+  // Bounce already-signed-in visitors to the intent target or /profile.
+  // Replaces the Edge-runtime middleware redirect we just removed.
+  useEffect(() => {
+    if (!authLoading && user) {
+      router.replace(intent?.returnTo ?? "/profile");
+    }
+  }, [authLoading, user, intent, router]);
 
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");

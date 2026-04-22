@@ -60,12 +60,20 @@ provisioned yet, so dev still works before schema apply.
 
 ### Auth
 
-Session refresh lives in `middleware.ts` using `@supabase/ssr`. The
-middleware:
+Auth is enforced entirely client-side via `lib/useUser` (subscribes to
+`supabase.auth.onAuthStateChange`):
 
-- Redirects unauthenticated visits to `/profile` → `/login?next=/profile`.
-- Redirects already-signed-in users away from `/login` and `/signup`.
-- Refreshes cookies on every non-asset request.
+- `/profile` redirects to `/login?next=/profile` if no user.
+- `/login` and `/signup` redirect already-signed-in visitors to their
+  intent target (or `/profile`).
+- Session cookies are refreshed by the Supabase client itself on
+  expiry.
+
+There is **no middleware**. Middleware on Edge Runtime was pulling
+`@supabase/ssr` into a bundle that emitted `__dirname` references
+which broke on Vercel production (`ReferenceError: __dirname is not
+defined` — 500 on every route). Moving auth fully client-side is the
+safe fix.
 
 Email confirmation / OAuth callback: `app/auth/callback/route.ts`. Password
 reset lives at `/forgot-password` (sends reset link) and `/reset-password`
@@ -110,7 +118,7 @@ lib/supabase.ts      — Browser Supabase client (singleton)
 lib/supabase-server.ts — Server Supabase client (cookie-aware)
 lib/useUser.ts       — Hook subscribed to onAuthStateChange
 lib/database.types.ts — Reference row types for public.dogs + lost_dog_alerts
-middleware.ts        — Session refresh + /profile gate
+(no middleware — auth is enforced client-side; see below)
 supabase/schema.sql  — Dogs, lost alerts, booking requests, buckets, RLS
 legacy/              — Original static HTML (for reference only)
 .github/workflows/   — CI: lint + typecheck + build on push/PR
