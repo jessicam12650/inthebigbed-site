@@ -50,6 +50,9 @@ export default function PlacesPage() {
   const markersRef = useRef<Record<string, google.maps.Marker>>({});
   const cardRefs = useRef<Record<string, HTMLElement | null>>({});
   const highlightTimeoutRef = useRef<number | null>(null);
+  // Ref-to-latest so marker click listeners always call the current
+  // handlePinClick without forcing the rebuild effect to re-run every render.
+  const handlePinClickRef = useRef<(id: string) => void>(() => {});
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -117,7 +120,7 @@ export default function PlacesPage() {
           strokeWeight: 2,
         },
       });
-      marker.addListener("click", () => handlePinClick(v.id));
+      marker.addListener("click", () => handlePinClickRef.current(v.id));
       markersRef.current[v.id] = marker;
       bounds.extend(v.latLng);
     });
@@ -196,6 +199,10 @@ export default function PlacesPage() {
       applyHighlight(card);
     }
   }
+
+  // Keep the ref pointing at the current render's handler so the marker
+  // click listeners always invoke the latest closure.
+  handlePinClickRef.current = handlePinClick;
 
   function handleCardClick(v: Venue) {
     setActiveId(v.id);
