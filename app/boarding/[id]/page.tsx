@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { BOARDERS } from "@/data/boarders";
 import TierBadge from "@/components/TierBadge";
 import Rating from "@/components/Rating";
+import BookingCTA from "@/components/BookingCTA";
 
 type Params = { id: string };
 
@@ -107,12 +108,12 @@ export default function BoarderDetailPage({ params }: { params: Params }) {
               Send {boarder.name.split(" ")[0]} the dates and we'll confirm availability.
             </p>
           </div>
-          <Link
-            href={`/signup?role=owner&boarder=${boarder.id}`}
-            className="btn-primary px-6 py-3 text-base"
-          >
-            {boarder.available ? "Request to book" : "Join the waitlist"}
-          </Link>
+          <BookingCTA
+            kind="boarder"
+            id={boarder.id}
+            available={boarder.available}
+            label="Request to book"
+          />
         </div>
       </section>
     </article>

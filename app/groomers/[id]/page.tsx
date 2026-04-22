@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { GROOMERS } from "@/data/groomers";
 import Rating from "@/components/Rating";
+import BookingCTA from "@/components/BookingCTA";
 
 type Params = { id: string };
 
@@ -100,12 +101,12 @@ export default function GroomerDetailPage({ params }: { params: Params }) {
               Final price depends on your dog's coat, size and the service you choose.
             </p>
           </div>
-          <Link
-            href={`/signup?role=owner&groomer=${groomer.id}`}
-            className="btn-primary px-6 py-3 text-base"
-          >
-            {groomer.available ? "Book a groom" : "Join the waitlist"}
-          </Link>
+          <BookingCTA
+            kind="groomer"
+            id={groomer.id}
+            available={groomer.available}
+            label="Book a groom"
+          />
         </div>
       </section>
     </article>

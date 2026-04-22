@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { WALKERS } from "@/data/walkers";
 import TierBadge from "@/components/TierBadge";
 import Rating from "@/components/Rating";
+import BookingCTA from "@/components/BookingCTA";
 
 type Params = { id: string };
 
@@ -99,12 +100,12 @@ export default function WalkerDetailPage({ params }: { params: Params }) {
               Send {walker.name.split(" ")[0]} a request — they'll confirm within a few hours.
             </p>
           </div>
-          <Link
-            href={`/signup?role=owner&walker=${walker.id}`}
-            className="btn-primary px-6 py-3 text-base"
-          >
-            {walker.available ? "Request a walk" : "Join the waitlist"}
-          </Link>
+          <BookingCTA
+            kind="walker"
+            id={walker.id}
+            available={walker.available}
+            label="Request a walk"
+          />
         </div>
       </section>
     </article>

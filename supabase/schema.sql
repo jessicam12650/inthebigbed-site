@@ -127,3 +127,38 @@ drop policy if exists "lost-photos insert any" on storage.objects;
 create policy "lost-photos insert any"
   on storage.objects for insert
   with check (bucket_id = 'lost-dog-photos');
+
+-- ─── booking_requests ──────────────────────────────────────────────────────
+-- A lightweight record of an owner's intent to book a provider. The provider
+-- catalogue lives in the app's data files, not in Postgres, so provider_id
+-- is an opaque string keyed against walkers.ts / boarders.ts / groomers.ts.
+create table if not exists public.booking_requests (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null references auth.users (id) on delete cascade,
+  provider_kind text not null check (provider_kind in ('walker', 'boarder', 'groomer')),
+  provider_id text not null,
+  message text default '',
+  status text not null default 'pending',
+  created_at timestamptz not null default now()
+);
+
+create index if not exists booking_requests_user_idx
+  on public.booking_requests (user_id, created_at desc);
+
+alter table public.booking_requests enable row level security;
+
+drop policy if exists "booking_requests_select_own" on public.booking_requests;
+create policy "booking_requests_select_own"
+  on public.booking_requests for select
+  using (auth.uid() = user_id);
+
+drop policy if exists "booking_requests_insert_own" on public.booking_requests;
+create policy "booking_requests_insert_own"
+  on public.booking_requests for insert
+  with check (auth.uid() = user_id);
+
+drop policy if exists "booking_requests_update_own" on public.booking_requests;
+create policy "booking_requests_update_own"
+  on public.booking_requests for update
+  using (auth.uid() = user_id)
+  with check (auth.uid() = user_id);
