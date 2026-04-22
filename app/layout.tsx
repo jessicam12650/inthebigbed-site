@@ -43,8 +43,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={dmSans.variable}>
       <body className="font-sans antialiased">
+        <a href="#main" className="skip-link">
+          Skip to content
+        </a>
         <Navigation />
-        <main>{children}</main>
+        <main id="main">{children}</main>
         <Footer />
       </body>
     </html>

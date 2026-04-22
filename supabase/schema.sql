@@ -75,3 +75,55 @@ create policy "dog-photos delete own"
     bucket_id = 'dog-photos'
     and auth.uid()::text = (storage.foldername(name))[1]
   );
+
+-- ─── lost_dog_alerts ────────────────────────────────────────────────────────
+-- Anyone can submit an alert (including signed-out users in a panic). Only
+-- authenticated users can browse alerts. The reporter's phone number is
+-- stored server-side and never exposed via a public view; surface a redacted
+-- view in the app layer instead.
+create table if not exists public.lost_dog_alerts (
+  id uuid primary key default gen_random_uuid(),
+  reporter_id uuid references auth.users (id) on delete set null,
+  dog_name text not null,
+  last_location text not null,
+  phone text not null,
+  photo_url text,
+  status text not null default 'active',
+  created_at timestamptz not null default now()
+);
+
+create index if not exists lost_dog_alerts_created_idx
+  on public.lost_dog_alerts (created_at desc);
+
+alter table public.lost_dog_alerts enable row level security;
+
+drop policy if exists "lost_alerts_insert_any" on public.lost_dog_alerts;
+create policy "lost_alerts_insert_any"
+  on public.lost_dog_alerts for insert
+  with check (true);
+
+drop policy if exists "lost_alerts_select_auth" on public.lost_dog_alerts;
+create policy "lost_alerts_select_auth"
+  on public.lost_dog_alerts for select
+  using (auth.role() = 'authenticated');
+
+drop policy if exists "lost_alerts_update_reporter" on public.lost_dog_alerts;
+create policy "lost_alerts_update_reporter"
+  on public.lost_dog_alerts for update
+  using (reporter_id is not null and auth.uid() = reporter_id)
+  with check (reporter_id is not null and auth.uid() = reporter_id);
+
+-- ─── storage: lost dog photos ──────────────────────────────────────────────
+insert into storage.buckets (id, name, public)
+values ('lost-dog-photos', 'lost-dog-photos', true)
+on conflict (id) do nothing;
+
+drop policy if exists "lost-photos read" on storage.objects;
+create policy "lost-photos read"
+  on storage.objects for select
+  using (bucket_id = 'lost-dog-photos');
+
+drop policy if exists "lost-photos insert any" on storage.objects;
+create policy "lost-photos insert any"
+  on storage.objects for insert
+  with check (bucket_id = 'lost-dog-photos');

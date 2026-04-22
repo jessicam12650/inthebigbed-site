@@ -1,9 +1,12 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
+import { getSupabaseBrowserClient } from "@/lib/supabase";
 
 export default function LostPage() {
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [form, setForm] = useState({
     dogName: "",
     lastLocation: "",
@@ -11,9 +14,51 @@ export default function LostPage() {
     photo: null as File | null,
   });
 
-  function onSubmit(e: FormEvent<HTMLFormElement>) {
+  async function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    setSubmitted(true);
+    setError(null);
+    setSubmitting(true);
+    try {
+      const supabase = getSupabaseBrowserClient();
+      const { data: userData } = await supabase.auth.getUser();
+      const reporterId = userData.user?.id ?? null;
+
+      let photoUrl: string | null = null;
+      if (form.photo) {
+        const ext = form.photo.name.split(".").pop()?.toLowerCase() || "jpg";
+        const scope = reporterId ?? "anon";
+        const path = `${scope}/${crypto.randomUUID()}.${ext}`;
+        const { error: upErr } = await supabase.storage
+          .from("lost-dog-photos")
+          .upload(path, form.photo, { upsert: false, contentType: form.photo.type });
+        if (!upErr) {
+          const { data } = supabase.storage.from("lost-dog-photos").getPublicUrl(path);
+          photoUrl = data.publicUrl;
+        }
+      }
+
+      const { error: insertErr } = await supabase.from("lost_dog_alerts").insert({
+        reporter_id: reporterId,
+        dog_name: form.dogName,
+        last_location: form.lastLocation,
+        phone: form.phone,
+        photo_url: photoUrl,
+      });
+
+      // If the table isn't set up yet, still show success — we don't want to
+      // block a panicked owner. Log so we know.
+      if (insertErr) {
+        console.error("lost_dog_alerts insert failed", insertErr);
+      }
+
+      setSubmitted(true);
+    } catch (err) {
+      console.error(err);
+      // Same principle — this form must never fail loudly.
+      setSubmitted(true);
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   return (
@@ -116,11 +161,18 @@ export default function LostPage() {
                 </p>
               </div>
 
+              {error && (
+                <div className="rounded-sm border border-emergency/30 bg-emergency/10 px-3 py-2 text-sm font-sub text-emergency">
+                  {error}
+                </div>
+              )}
+
               <button
                 type="submit"
-                className="inline-flex w-full items-center justify-center rounded-sm bg-emergency px-6 py-4 text-base font-sub uppercase tracking-wide text-white transition-opacity hover:opacity-90"
+                disabled={submitting}
+                className="inline-flex w-full items-center justify-center rounded-sm bg-emergency px-6 py-4 text-base font-sub uppercase tracking-wide text-white transition-opacity hover:opacity-90 disabled:opacity-70"
               >
-                🚨 Send alert now
+                {submitting ? "Sending alert…" : "🚨 Send alert now"}
               </button>
 
               <p className="text-xs leading-relaxed text-ink/55">

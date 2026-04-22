@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 
 const navLinks = [
@@ -17,6 +17,22 @@ export default function Navigation() {
   const pathname = usePathname();
 
   const close = () => setOpen(false);
+
+  // Close the drawer on route change so navigating from the mobile menu
+  // doesn't leave the overlay stuck open.
+  useEffect(() => {
+    setOpen(false);
+  }, [pathname]);
+
+  // Escape closes the drawer.
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpen(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [open]);
 
   return (
     <nav className="sticky top-0 z-50 border-b border-ink/10 bg-cream/95 backdrop-blur">
