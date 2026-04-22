@@ -5,6 +5,7 @@ import { useEffect, useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { getSupabaseBrowserClient } from "@/lib/supabase";
 import type { User } from "@supabase/supabase-js";
+import BookingRequests from "@/components/BookingRequests";
 
 type DogRow = {
   id: string;
@@ -424,6 +425,9 @@ export default function ProfilePage() {
             )}
           </div>
         )}
+
+        {/* BOOKING REQUESTS */}
+        {role === "owner" && user && <BookingRequests userId={user.id} />}
 
         {/* QUICK LINKS */}
         <div className="rounded-sm border border-ink/10 bg-white p-6 md:p-8">
