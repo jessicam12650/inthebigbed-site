@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState, type FormEvent } from "react";
-import { getSupabaseBrowserClient } from "@/lib/supabase";
+import { useState, type FormEvent } from "react";
+import { useUser } from "@/lib/useUser";
 
 type ProviderKind = "walker" | "boarder" | "groomer";
 
@@ -25,21 +25,13 @@ export default function BookingCTA({
   label: string;
   unavailableLabel?: string;
 }) {
-  const [checked, setChecked] = useState(false);
-  const [signedIn, setSignedIn] = useState(false);
+  const { user, loading } = useUser();
+  const signedIn = !!user;
   const [open, setOpen] = useState(false);
   const [message, setMessage] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [sent, setSent] = useState(false);
-
-  useEffect(() => {
-    const supabase = getSupabaseBrowserClient();
-    supabase.auth.getUser().then(({ data }) => {
-      setSignedIn(!!data.user);
-      setChecked(true);
-    });
-  }, []);
 
   async function submit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -65,7 +57,7 @@ export default function BookingCTA({
   }
 
   // Don't flash the wrong CTA before we know auth state.
-  if (!checked) {
+  if (loading) {
     return <span className="btn-primary cursor-wait px-6 py-3 text-base opacity-50">{label}</span>;
   }
 
