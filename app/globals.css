@@ -1,0 +1,71 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    background-color: #F2EDE6;
+    color: #1C1C1A;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply inline-flex items-center justify-center rounded-sm bg-rust px-5 py-2.5 text-sm font-sub text-cream transition-opacity hover:opacity-90;
+  }
+  .btn-dark {
+    @apply inline-flex items-center justify-center rounded-sm bg-ink px-5 py-2.5 text-sm font-sub text-cream transition-opacity hover:opacity-90;
+  }
+  .btn-emergency {
+    @apply inline-flex items-center justify-center rounded-sm bg-emergency px-5 py-2.5 text-sm font-sub text-white transition-opacity hover:opacity-90;
+  }
+  .btn-outline {
+    @apply inline-flex items-center justify-center rounded-sm border-2 border-ink bg-transparent px-5 py-2.5 text-sm font-sub text-ink transition-colors hover:bg-ink hover:text-cream;
+  }
+  .card {
+    @apply rounded-sm border border-ink/10 bg-white p-6 shadow-card transition-all;
+  }
+  .card-hover {
+    @apply hover:-translate-y-0.5 hover:shadow-pop hover:border-ink/20;
+  }
+  .field {
+    @apply w-full rounded-sm border-2 border-ink bg-white px-4 py-3 text-base font-body text-ink outline-none transition-colors placeholder:text-ink/40 focus:border-rust;
+  }
+  .section {
+    @apply px-5 py-16 md:px-12 md:py-24;
+  }
+  .container-narrow {
+    @apply mx-auto max-w-5xl;
+  }
+  .tier-badge {
+    @apply inline-flex items-center rounded-sm border px-2 py-0.5 text-[11px] font-sub uppercase tracking-wide;
+  }
+  .chip {
+    @apply inline-flex items-center rounded-full border border-ink/15 bg-cream px-2.5 py-1 text-xs font-sub text-ink/80;
+  }
+}
+
+/* Map info window override */
+.gm-style .gm-style-iw-c {
+  padding: 0 !important;
+  border-radius: 4px !important;
+}
+.gm-style .gm-style-iw-d {
+  overflow: hidden !important;
+}
+
+/* Card highlight animation (places page) */
+@keyframes cardPulse {
+  0% { box-shadow: 0 0 0 0 rgba(212, 132, 90, 0.45); }
+  70% { box-shadow: 0 0 0 10px rgba(212, 132, 90, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(212, 132, 90, 0); }
+}
+.card-highlight {
+  animation: cardPulse 1.2s ease-out 1;
+  border-color: #D4845A !important;
+}
