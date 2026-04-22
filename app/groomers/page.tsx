@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import Link from "next/link";
 import { GROOMERS } from "@/data/groomers";
 import Rating from "@/components/Rating";
 import PageHeader from "@/components/PageHeader";
@@ -73,8 +74,9 @@ export default function GroomersPage() {
           ) : (
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               {filtered.map((g) => (
-                <article
+                <Link
                   key={g.id}
+                  href={`/groomers/${g.id}`}
                   className="group flex flex-col gap-4 rounded-sm border border-ink/10 bg-white p-6 transition-all hover:-translate-y-0.5 hover:border-ink/25 hover:shadow-pop"
                 >
                   <header className="flex items-start justify-between gap-3">
@@ -127,14 +129,15 @@ export default function GroomersPage() {
                       <div className="text-xs text-ink/55">From</div>
                       <div className="font-head text-2xl text-ink">£{g.priceFrom}</div>
                     </div>
-                    <button
-                      disabled={!g.available}
-                      className={`btn-primary ${!g.available ? "cursor-not-allowed opacity-40" : ""}`}
+                    <span
+                      className={`text-sm font-sub ${
+                        g.available ? "text-rust group-hover:underline" : "text-ink/40"
+                      }`}
                     >
-                      {g.available ? "Book" : "Fully booked"}
-                    </button>
+                      {g.available ? "View profile →" : "Fully booked"}
+                    </span>
                   </div>
-                </article>
+                </Link>
               ))}
             </div>
           )}

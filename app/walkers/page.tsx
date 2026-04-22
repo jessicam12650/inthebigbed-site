@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import Link from "next/link";
 import { WALKERS, type Tier } from "@/data/walkers";
 import TierBadge from "@/components/TierBadge";
 import Rating from "@/components/Rating";
@@ -77,8 +78,9 @@ export default function WalkersPage() {
           ) : (
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               {filtered.map((w) => (
-                <article
+                <Link
                   key={w.id}
+                  href={`/walkers/${w.id}`}
                   className="group flex flex-col gap-4 rounded-sm border border-ink/10 bg-white p-6 transition-all hover:-translate-y-0.5 hover:border-ink/25 hover:shadow-pop"
                 >
                   <header className="flex items-start justify-between gap-3">
@@ -110,14 +112,15 @@ export default function WalkersPage() {
                         per walk · {w.durationOptions.join(" / ")} · up to {w.maxDogs} dogs
                       </div>
                     </div>
-                    <button
-                      disabled={!w.available}
-                      className={`btn-primary ${!w.available ? "cursor-not-allowed opacity-40" : ""}`}
+                    <span
+                      className={`text-sm font-sub ${
+                        w.available ? "text-rust group-hover:underline" : "text-ink/40"
+                      }`}
                     >
-                      {w.available ? "Book" : "Full"}
-                    </button>
+                      {w.available ? "View profile →" : "Currently full"}
+                    </span>
                   </div>
-                </article>
+                </Link>
               ))}
             </div>
           )}

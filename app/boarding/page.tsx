@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import Link from "next/link";
 import { BOARDERS } from "@/data/boarders";
 import type { Tier } from "@/data/walkers";
 import TierBadge from "@/components/TierBadge";
@@ -81,8 +82,9 @@ export default function BoardingPage() {
           ) : (
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               {filtered.map((b) => (
-                <article
+                <Link
                   key={b.id}
+                  href={`/boarding/${b.id}`}
                   className="group flex flex-col gap-4 rounded-sm border border-ink/10 bg-white p-6 transition-all hover:-translate-y-0.5 hover:border-ink/25 hover:shadow-pop"
                 >
                   <header className="flex items-start justify-between gap-3">
@@ -136,14 +138,15 @@ export default function BoardingPage() {
                   </ul>
 
                   <div className="mt-auto flex items-center justify-end pt-2">
-                    <button
-                      disabled={!b.available}
-                      className={`btn-primary ${!b.available ? "cursor-not-allowed opacity-40" : ""}`}
+                    <span
+                      className={`text-sm font-sub ${
+                        b.available ? "text-rust group-hover:underline" : "text-ink/40"
+                      }`}
                     >
-                      {b.available ? "Request to book" : "Unavailable"}
-                    </button>
+                      {b.available ? "View profile →" : "Currently unavailable"}
+                    </span>
                   </div>
-                </article>
+                </Link>
               ))}
             </div>
           )}
