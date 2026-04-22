@@ -6,6 +6,17 @@ import { useRouter } from "next/navigation";
 import { getSupabaseBrowserClient } from "@/lib/supabase";
 import type { User } from "@supabase/supabase-js";
 
+type DogRow = {
+  id: string;
+  user_id: string;
+  name: string;
+  breed: string | null;
+  age: string | null;
+  size: string | null;
+  notes: string | null;
+  photo_url: string | null;
+};
+
 type Dog = {
   id: string;
   name: string;
@@ -16,17 +27,6 @@ type Dog = {
   photo_url?: string | null;
   photoPreview?: string | null;
   photoFile?: File | null;
-};
-
-type DogRow = {
-  id: string;
-  user_id: string;
-  name: string;
-  breed: string | null;
-  age: string | null;
-  size: string | null;
-  notes: string | null;
-  photo_url: string | null;
 };
 
 const SIZE_OPTIONS = [
