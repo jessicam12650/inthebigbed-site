@@ -61,7 +61,9 @@ export default function PlacesPage() {
   const featured = filtered.filter((v) => v.featured);
   const standard = filtered.filter((v) => !v.featured);
 
-  /* Load map once */
+  /* Load map once. The effect re-runs after window resize crosses the md
+   * breakpoint because the map container changes size and Google Maps
+   * needs to be resized to match. */
   useEffect(() => {
     let cancelled = false;
     loadGoogleMaps()
@@ -73,6 +75,7 @@ export default function PlacesPage() {
           disableDefaultUI: false,
           streetViewControl: false,
           mapTypeControl: false,
+          fullscreenControl: false,
           styles: [
             { featureType: "poi.business", stylers: [{ visibility: "off" }] },
             { featureType: "transit", stylers: [{ visibility: "off" }] },
@@ -86,6 +89,23 @@ export default function PlacesPage() {
       cancelled = true;
     };
   }, []);
+
+  /* Keep the map sized correctly when the viewport crosses the md breakpoint
+   * (the map pane switches between 100% width and 40% width). */
+  useEffect(() => {
+    if (!mapReady) return;
+    const div = mapDivRef.current;
+    if (!div) return;
+    const observer = new ResizeObserver(() => {
+      const map = mapRef.current;
+      if (!map) return;
+      const center = map.getCenter();
+      google.maps.event.trigger(map, "resize");
+      if (center) map.setCenter(center);
+    });
+    observer.observe(div);
+    return () => observer.disconnect();
+  }, [mapReady]);
 
   /* Rebuild markers when filters change */
   useEffect(() => {
@@ -148,10 +168,11 @@ export default function PlacesPage() {
   }
 
   function scrollCardIntoCardsPane(card: HTMLElement) {
-    // Cards pane (`overflow-y-auto`) is the nearest scrollable ancestor, so
-    // scrollIntoView scrolls the PANE, never the window. scroll-margin-top
-    // on `.venue-card` leaves room for the sticky filter bar — tall enough
-    // on mobile to cover the 2-row wrap, auto-trimmed on desktop via Tailwind.
+    // The cards pane is `overflow-y-auto`, so it's the nearest scrollable
+    // ancestor — scrollIntoView scrolls the PANE, never the window. The map
+    // pane is a sibling in the flex row (desktop) / column (mobile) above,
+    // so it never moves. `scroll-margin-top` on the card leaves room for
+    // the sticky filter at the top of the pane.
     card.scrollIntoView({ block: "start", behavior: "smooth", inline: "nearest" });
   }
 
@@ -183,97 +204,104 @@ export default function PlacesPage() {
   }
 
   return (
-    // Bounded to viewport-minus-nav so the map NEVER scrolls off screen.
-    // Only the inner `cardsScrollRef` pane scrolls.
+    // Full viewport-minus-nav box. The outer section never scrolls — only the
+    // right-hand cards pane does. On desktop the body is a flex row (map left,
+    // cards right); on mobile it's a column (map top, cards below).
     <section className="flex h-[calc(100dvh-4rem)] flex-col overflow-hidden bg-cream">
-      {/* Fixed map pane — stays at top of viewport forever */}
-      <div className="shrink-0 border-b border-ink/10">
-        <div className="mx-auto max-w-5xl px-5 pb-3 pt-3 md:px-12 md:pb-4 md:pt-5">
-          <div className="mb-3 flex items-baseline justify-between gap-3">
-            <h1 className="font-head text-xl tracking-tight text-ink md:text-2xl">
-              Dog-friendly places in Liverpool
-            </h1>
-            <span className="hidden text-xs text-ink/50 sm:inline">
-              Rust pins are handpicked favourites
-            </span>
-          </div>
-          <div className="overflow-hidden rounded-sm border border-ink/15 shadow-card">
-            <div
-              ref={mapDivRef}
-              className="h-[240px] w-full bg-ink/5 md:h-[360px]"
-              aria-label="Map of dog-friendly venues"
-              role="application"
-            />
-          </div>
+      {/* Compact page header */}
+      <header className="shrink-0 border-b border-ink/10 px-5 py-2.5 md:px-8">
+        <div className="mx-auto flex max-w-7xl items-baseline justify-between gap-3">
+          <h1 className="font-head text-lg tracking-tight text-ink md:text-xl">
+            Dog-friendly places in Liverpool
+          </h1>
+          <span className="hidden text-xs text-ink/50 sm:inline">
+            Rust pins are handpicked favourites
+          </span>
         </div>
-      </div>
+      </header>
 
-      {/* Scrollable venue pane — this is what scrolls, not the window */}
-      <div ref={cardsScrollRef} className="flex-1 overflow-y-auto">
-        {/* Sticky filter row pinned to the top of this pane */}
-        <div className="sticky top-0 z-10 border-b border-ink/10 bg-cream/95 backdrop-blur">
-          <div className="mx-auto flex max-w-5xl flex-col gap-3 px-5 py-3 md:flex-row md:items-center md:px-12">
-            <input
-              type="search"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search venues…"
-              className="field flex-1"
-              aria-label="Search venues"
-            />
-            <div className="flex flex-wrap items-center gap-2">
-              {CAT_FILTERS.map((c) => (
-                <FilterChip key={c.value} active={cat === c.value} onClick={() => setCat(c.value)}>
-                  {c.label}
-                </FilterChip>
-              ))}
-            </div>
-          </div>
+      {/* Split body */}
+      <div className="flex min-h-0 flex-1 flex-col md:flex-row">
+        {/* MAP PANE — 300px top on mobile, left 40% fill-height on desktop */}
+        <div className="h-[300px] shrink-0 border-b border-ink/10 md:h-full md:w-2/5 md:border-b-0 md:border-r">
+          <div
+            ref={mapDivRef}
+            className="h-full w-full bg-ink/5"
+            aria-label="Map of dog-friendly venues"
+            role="application"
+          />
         </div>
 
-        <div className="mx-auto max-w-5xl px-5 py-8 md:px-12 md:py-10">
-          {featured.length > 0 && (
-            <div className="mb-10">
-              <div className="mb-4 flex items-baseline gap-3">
-                <h2 className="font-head text-xl text-ink md:text-2xl">Handpicked 🐾</h2>
-                <span className="text-sm text-ink/55">{featured.length} staff favourites</span>
-              </div>
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                {featured.map((v) => (
-                  <VenueCard
-                    key={v.id}
-                    venue={v}
-                    isActive={activeId === v.id}
-                    onClick={() => handleCardClick(v)}
-                    setRef={(el) => (cardRefs.current[v.id] = el)}
-                  />
+        {/* CARDS PANE — scrolls independently */}
+        <div
+          ref={cardsScrollRef}
+          className="flex min-h-0 flex-1 flex-col overflow-y-auto md:w-3/5"
+        >
+          {/* Sticky filter bar at top of the cards pane */}
+          <div className="sticky top-0 z-10 shrink-0 border-b border-ink/10 bg-cream/95 backdrop-blur">
+            <div className="mx-auto flex max-w-5xl flex-col gap-3 px-5 py-3 md:flex-row md:items-center md:px-8">
+              <input
+                type="search"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="Search venues…"
+                className="field flex-1"
+                aria-label="Search venues"
+              />
+              <div className="flex flex-wrap items-center gap-2">
+                {CAT_FILTERS.map((c) => (
+                  <FilterChip key={c.value} active={cat === c.value} onClick={() => setCat(c.value)}>
+                    {c.label}
+                  </FilterChip>
                 ))}
               </div>
             </div>
-          )}
+          </div>
 
-          <div>
-            <div className="mb-4 flex items-baseline gap-3">
-              <h2 className="font-head text-xl text-ink md:text-2xl">All venues</h2>
-              <span className="text-sm text-ink/55">
-                {standard.length} {standard.length === 1 ? "place" : "places"}
-              </span>
-            </div>
-            {standard.length === 0 ? (
-              <EmptyState>No venues match your filters.</EmptyState>
-            ) : (
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                {standard.map((v) => (
-                  <VenueCard
-                    key={v.id}
-                    venue={v}
-                    isActive={activeId === v.id}
-                    onClick={() => handleCardClick(v)}
-                    setRef={(el) => (cardRefs.current[v.id] = el)}
-                  />
-                ))}
+          <div className="mx-auto w-full max-w-5xl px-5 py-6 md:px-8 md:py-8">
+            {featured.length > 0 && (
+              <div className="mb-10">
+                <div className="mb-4 flex items-baseline gap-3">
+                  <h2 className="font-head text-xl text-ink md:text-2xl">Handpicked 🐾</h2>
+                  <span className="text-sm text-ink/55">{featured.length} staff favourites</span>
+                </div>
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
+                  {featured.map((v) => (
+                    <VenueCard
+                      key={v.id}
+                      venue={v}
+                      isActive={activeId === v.id}
+                      onClick={() => handleCardClick(v)}
+                      setRef={(el) => (cardRefs.current[v.id] = el)}
+                    />
+                  ))}
+                </div>
               </div>
             )}
+
+            <div>
+              <div className="mb-4 flex items-baseline gap-3">
+                <h2 className="font-head text-xl text-ink md:text-2xl">All venues</h2>
+                <span className="text-sm text-ink/55">
+                  {standard.length} {standard.length === 1 ? "place" : "places"}
+                </span>
+              </div>
+              {standard.length === 0 ? (
+                <EmptyState>No venues match your filters.</EmptyState>
+              ) : (
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
+                  {standard.map((v) => (
+                    <VenueCard
+                      key={v.id}
+                      venue={v}
+                      isActive={activeId === v.id}
+                      onClick={() => handleCardClick(v)}
+                      setRef={(el) => (cardRefs.current[v.id] = el)}
+                    />
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>
@@ -297,9 +325,10 @@ function VenueCard({
     <article
       ref={setRef}
       onClick={onClick}
-      // scroll-mt-* leaves room for the sticky filter bar when scrollIntoView
-      // lands the card at the top of the pane: ~144px on mobile (2-row wrap),
-      // 88px from md where the filter sits on a single row.
+      // scroll-mt-* leaves room for the sticky filter bar at the top of the
+      // cards pane when scrollIntoView lands the card flush with the pane's
+      // top: ~144px on mobile where the filter wraps to two rows, ~80px on
+      // desktop where it's a single row.
       className={`venue-card group flex scroll-mt-36 cursor-pointer flex-col gap-2 rounded-sm border bg-white p-5 transition-all hover:-translate-y-0.5 hover:shadow-pop md:scroll-mt-20 ${
         isActive ? "border-rust shadow-pop" : "border-ink/10 hover:border-ink/25"
       }`}
