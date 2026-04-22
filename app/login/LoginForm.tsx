@@ -56,7 +56,7 @@ export default function LoginForm() {
           <label htmlFor="password" className="block text-sm font-sub text-ink">
             Password
           </label>
-          <Link href="#" className="text-xs font-sub text-rust hover:opacity-80">
+          <Link href="/forgot-password" className="text-xs font-sub text-rust hover:opacity-80">
             Forgot your password?
           </Link>
         </div>
