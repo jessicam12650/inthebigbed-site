@@ -93,3 +93,22 @@ npm run build  # production build
 npm run start  # serve the built app
 npm run lint   # next lint
 ```
+
+## Deploy
+
+Designed for Vercel but works on any Next.js host.
+
+1. Push the branch and import the repo into Vercel.
+2. Set the environment variables from `.env.local.example` in the project
+   settings — including `NEXT_PUBLIC_SITE_URL` (e.g. `https://inthebigbed.com`)
+   so sitemap, robots and OG metadata point at the right origin.
+3. Apply `supabase/schema.sql` in the Supabase SQL editor.
+4. In Supabase **Auth → URL Configuration**, set:
+   - **Site URL** → your deployment origin
+   - **Redirect URLs** → add `<origin>/auth/callback` and
+     `<origin>/reset-password`
+5. `vercel.json` already configures security headers (HSTS, frame-ancestors,
+   referrer policy, permissions policy) and 301-redirects every legacy
+   `*.html` URL to its Next.js equivalent.
+
+The OG image is generated at the edge from `app/opengraph-image.tsx`.
