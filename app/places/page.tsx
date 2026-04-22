@@ -2,7 +2,6 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { ALL_VENUES, LIVERPOOL_CENTER, type Venue, type VenueCategory } from "@/data/venues";
-import PageHeader from "@/components/PageHeader";
 import FilterChip from "@/components/FilterChip";
 import EmptyState from "@/components/EmptyState";
 
@@ -13,13 +12,6 @@ const CAT_FILTERS: Array<{ value: "all" | VenueCategory; label: string }> = [
 ];
 
 const GMAPS_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
-
-// Matches the <nav> height (h-16 = 64px) so the sticky map pins directly
-// beneath the site navigation.
-const NAV_HEIGHT = 64;
-const SCROLL_GAP = 16;
-// Safe default until the sticky element mounts and we measure it.
-const DEFAULT_MAP_OFFSET = 520;
 
 let scriptPromise: Promise<void> | null = null;
 function loadGoogleMaps(): Promise<void> {
@@ -45,13 +37,13 @@ export default function PlacesPage() {
   const [mapReady, setMapReady] = useState(false);
 
   const mapDivRef = useRef<HTMLDivElement>(null);
-  const stickyRef = useRef<HTMLDivElement>(null);
+  const cardsScrollRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<google.maps.Map | null>(null);
   const markersRef = useRef<Record<string, google.maps.Marker>>({});
   const cardRefs = useRef<Record<string, HTMLElement | null>>({});
   const highlightTimeoutRef = useRef<number | null>(null);
-  // Ref-to-latest so marker click listeners always call the current
-  // handlePinClick without forcing the rebuild effect to re-run every render.
+  // Ref-to-latest so marker click listeners always call the current handler
+  // without forcing the rebuild effect to re-run every render.
   const handlePinClickRef = useRef<(id: string) => void>(() => {});
 
   const filtered = useMemo(() => {
@@ -100,7 +92,6 @@ export default function PlacesPage() {
     if (!mapReady || !mapRef.current) return;
     const map = mapRef.current;
 
-    // Clear existing markers
     Object.values(markersRef.current).forEach((m) => m.setMap(null));
     markersRef.current = {};
 
@@ -142,36 +133,6 @@ export default function PlacesPage() {
     };
   }, []);
 
-  /* Publish the sticky-map height as a CSS var (--map-offset) so the venue
-   * cards can use it in scroll-margin-top. Re-measure on resize because the
-   * map height changes between the mobile and desktop breakpoints. */
-  useEffect(() => {
-    function publish() {
-      const h = stickyRef.current?.getBoundingClientRect().height;
-      const offset = h && h > 0 ? h + NAV_HEIGHT : DEFAULT_MAP_OFFSET + NAV_HEIGHT;
-      document.documentElement.style.setProperty("--map-offset", `${offset}px`);
-    }
-    publish();
-    window.addEventListener("resize", publish);
-    const ro = new ResizeObserver(publish);
-    if (stickyRef.current) ro.observe(stickyRef.current);
-    return () => {
-      window.removeEventListener("resize", publish);
-      ro.disconnect();
-    };
-  }, [mapReady]);
-
-  function scrollCardBelowStickyMap(card: HTMLElement) {
-    // The card has `scroll-margin-top` set to (nav + sticky map height + gap)
-    // via the --map-offset CSS variable, so the browser leaves room for the
-    // sticky map above. We also clamp via a manual scrollTo as a belt-and-
-    // braces for any user-agent quirks.
-    const stickyHeight = stickyRef.current?.getBoundingClientRect().height ?? DEFAULT_MAP_OFFSET;
-    const cardAbsTop = card.getBoundingClientRect().top + window.scrollY;
-    const targetY = cardAbsTop - NAV_HEIGHT - stickyHeight - SCROLL_GAP;
-    window.scrollTo({ top: Math.max(0, targetY), behavior: "smooth" });
-  }
-
   function applyHighlight(card: HTMLElement) {
     card.classList.remove("card-highlight");
     // Force reflow so the class re-applies even on repeat clicks.
@@ -186,6 +147,19 @@ export default function PlacesPage() {
     }, 2000);
   }
 
+  function scrollCardIntoCardsPane(card: HTMLElement) {
+    const pane = cardsScrollRef.current;
+    if (!pane) return;
+    // Compute the card's top offset relative to the scroll pane and scroll
+    // ONLY the pane (not the window). Leaves a small gap below the sticky
+    // filter bar that sits at the top of the pane.
+    const paneRect = pane.getBoundingClientRect();
+    const cardRect = card.getBoundingClientRect();
+    const stickyFilterHeight = 64; // matches the sticky filter row + padding
+    const target = pane.scrollTop + (cardRect.top - paneRect.top) - stickyFilterHeight - 8;
+    pane.scrollTo({ top: Math.max(0, target), behavior: "smooth" });
+  }
+
   function handlePinClick(id: string) {
     setActiveId(id);
     const card = cardRefs.current[id];
@@ -195,13 +169,11 @@ export default function PlacesPage() {
       map.panTo(marker.getPosition()!);
     }
     if (card) {
-      scrollCardBelowStickyMap(card);
+      scrollCardIntoCardsPane(card);
       applyHighlight(card);
     }
   }
 
-  // Keep the ref pointing at the current render's handler so the marker
-  // click listeners always invoke the latest closure.
   handlePinClickRef.current = handlePinClick;
 
   function handleCardClick(v: Venue) {
@@ -216,39 +188,36 @@ export default function PlacesPage() {
   }
 
   return (
-    <>
-      <PageHeader
-        eyebrow="Dog-friendly places"
-        title="Pubs, cafes & restaurants that love dogs."
-        subtitle="A handpicked guide to the dog-friendliest spots across Liverpool and beyond. Confirmed by real dog owners."
-      />
-
-      {/* One wrapper so the sticky map can stay pinned across every
-          section below it (filters, handpicked, all venues). */}
-      <div className="bg-cream">
-        {/* STICKY MAP — pinned directly beneath the nav */}
-        <div
-          ref={stickyRef}
-          className="sticky top-16 z-20 border-b border-ink/10 bg-cream/95 px-5 pb-3 pt-4 backdrop-blur md:px-12 md:pb-4 md:pt-6"
-        >
-          <div className="mx-auto max-w-5xl">
-            <div className="overflow-hidden rounded-sm border border-ink/15 shadow-card">
-              <div
-                ref={mapDivRef}
-                className="h-[300px] w-full bg-ink/5 md:h-[440px]"
-                aria-label="Map of dog-friendly venues"
-                role="application"
-              />
-            </div>
-            <p className="mt-2 text-xs text-ink/50">
-              Click a pin to scroll to the venue below — the map stays visible. Rust pins are our handpicked favourites.
-            </p>
+    // Bounded to viewport-minus-nav so the map NEVER scrolls off screen.
+    // Only the inner `cardsScrollRef` pane scrolls.
+    <section className="flex h-[calc(100dvh-4rem)] flex-col overflow-hidden bg-cream">
+      {/* Fixed map pane — stays at top of viewport forever */}
+      <div className="shrink-0 border-b border-ink/10">
+        <div className="mx-auto max-w-5xl px-5 pb-3 pt-3 md:px-12 md:pb-4 md:pt-5">
+          <div className="mb-3 flex items-baseline justify-between gap-3">
+            <h1 className="font-head text-xl tracking-tight text-ink md:text-2xl">
+              Dog-friendly places in Liverpool
+            </h1>
+            <span className="hidden text-xs text-ink/50 sm:inline">
+              Rust pins are handpicked favourites
+            </span>
+          </div>
+          <div className="overflow-hidden rounded-sm border border-ink/15 shadow-card">
+            <div
+              ref={mapDivRef}
+              className="h-[240px] w-full bg-ink/5 md:h-[360px]"
+              aria-label="Map of dog-friendly venues"
+              role="application"
+            />
           </div>
         </div>
+      </div>
 
-        {/* FILTERS */}
-        <section className="border-b border-ink/10 bg-cream px-5 py-6 md:px-12">
-          <div className="mx-auto flex max-w-5xl flex-col gap-3 md:flex-row md:items-center">
+      {/* Scrollable venue pane — this is what scrolls, not the window */}
+      <div ref={cardsScrollRef} className="flex-1 overflow-y-auto">
+        {/* Sticky filter row pinned to the top of this pane */}
+        <div className="sticky top-0 z-10 border-b border-ink/10 bg-cream/95 backdrop-blur">
+          <div className="mx-auto flex max-w-5xl flex-col gap-3 px-5 py-3 md:flex-row md:items-center md:px-12">
             <input
               type="search"
               value={query}
@@ -265,14 +234,13 @@ export default function PlacesPage() {
               ))}
             </div>
           </div>
-        </section>
+        </div>
 
-        {/* FEATURED / HANDPICKED */}
-        {featured.length > 0 && (
-          <section className="section bg-cream pb-0">
-            <div className="mx-auto max-w-5xl">
-              <div className="mb-6 flex items-baseline gap-3">
-                <h2 className="font-head text-2xl text-ink md:text-3xl">Handpicked 🐾</h2>
+        <div className="mx-auto max-w-5xl px-5 py-8 md:px-12 md:py-10">
+          {featured.length > 0 && (
+            <div className="mb-10">
+              <div className="mb-4 flex items-baseline gap-3">
+                <h2 className="font-head text-xl text-ink md:text-2xl">Handpicked 🐾</h2>
                 <span className="text-sm text-ink/55">{featured.length} staff favourites</span>
               </div>
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -287,14 +255,11 @@ export default function PlacesPage() {
                 ))}
               </div>
             </div>
-          </section>
-        )}
+          )}
 
-        {/* STANDARD */}
-        <section className="section bg-cream">
-          <div className="mx-auto max-w-5xl">
-            <div className="mb-6 flex items-baseline gap-3">
-              <h2 className="font-head text-2xl text-ink md:text-3xl">All venues</h2>
+          <div>
+            <div className="mb-4 flex items-baseline gap-3">
+              <h2 className="font-head text-xl text-ink md:text-2xl">All venues</h2>
               <span className="text-sm text-ink/55">
                 {standard.length} {standard.length === 1 ? "place" : "places"}
               </span>
@@ -315,9 +280,9 @@ export default function PlacesPage() {
               </div>
             )}
           </div>
-        </section>
+        </div>
       </div>
-    </>
+    </section>
   );
 }
 
