@@ -18,6 +18,8 @@ const GMAPS_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
 // beneath the site navigation.
 const NAV_HEIGHT = 64;
 const SCROLL_GAP = 16;
+// Safe default until the sticky element mounts and we measure it.
+const DEFAULT_MAP_OFFSET = 520;
 
 let scriptPromise: Promise<void> | null = null;
 function loadGoogleMaps(): Promise<void> {
@@ -137,10 +139,32 @@ export default function PlacesPage() {
     };
   }, []);
 
+  /* Publish the sticky-map height as a CSS var (--map-offset) so the venue
+   * cards can use it in scroll-margin-top. Re-measure on resize because the
+   * map height changes between the mobile and desktop breakpoints. */
+  useEffect(() => {
+    function publish() {
+      const h = stickyRef.current?.getBoundingClientRect().height;
+      const offset = h && h > 0 ? h + NAV_HEIGHT : DEFAULT_MAP_OFFSET + NAV_HEIGHT;
+      document.documentElement.style.setProperty("--map-offset", `${offset}px`);
+    }
+    publish();
+    window.addEventListener("resize", publish);
+    const ro = new ResizeObserver(publish);
+    if (stickyRef.current) ro.observe(stickyRef.current);
+    return () => {
+      window.removeEventListener("resize", publish);
+      ro.disconnect();
+    };
+  }, [mapReady]);
+
   function scrollCardBelowStickyMap(card: HTMLElement) {
-    const stickyHeight = stickyRef.current?.getBoundingClientRect().height ?? 0;
+    // The card has `scroll-margin-top` set to (nav + sticky map height + gap)
+    // via the --map-offset CSS variable, so the browser leaves room for the
+    // sticky map above. We also clamp via a manual scrollTo as a belt-and-
+    // braces for any user-agent quirks.
+    const stickyHeight = stickyRef.current?.getBoundingClientRect().height ?? DEFAULT_MAP_OFFSET;
     const cardAbsTop = card.getBoundingClientRect().top + window.scrollY;
-    // Land the card just below the stuck map so the map stays fully visible.
     const targetY = cardAbsTop - NAV_HEIGHT - stickyHeight - SCROLL_GAP;
     window.scrollTo({ top: Math.max(0, targetY), behavior: "smooth" });
   }
@@ -306,7 +330,7 @@ function VenueCard({
     <article
       ref={setRef}
       onClick={onClick}
-      className={`group flex cursor-pointer flex-col gap-2 rounded-sm border bg-white p-5 transition-all hover:-translate-y-0.5 hover:shadow-pop ${
+      className={`venue-card group flex cursor-pointer flex-col gap-2 rounded-sm border bg-white p-5 transition-all hover:-translate-y-0.5 hover:shadow-pop ${
         isActive ? "border-rust shadow-pop" : "border-ink/10 hover:border-ink/25"
       }`}
     >

@@ -83,3 +83,10 @@
   box-shadow: 0 0 0 3px rgba(212, 132, 90, 0.18);
   transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
+
+/* When we scroll a venue card into view, leave room above for the nav + sticky
+ * map. --map-offset is set in JS from the measured sticky-map height so this
+ * stays accurate when the viewport changes or filters reflow the layout. */
+.venue-card {
+  scroll-margin-top: calc(var(--map-offset, 520px) + 16px);
+}
