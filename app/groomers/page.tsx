@@ -4,6 +4,9 @@ import { useMemo, useState } from "react";
 import { GROOMERS } from "@/data/groomers";
 import Rating from "@/components/Rating";
 import PageHeader from "@/components/PageHeader";
+import FilterChip from "@/components/FilterChip";
+import FilterCheckbox from "@/components/FilterCheckbox";
+import EmptyState from "@/components/EmptyState";
 
 const TYPE_FILTERS: Array<{ value: "all" | "salon" | "mobile"; label: string }> = [
   { value: "all", label: "Salon & mobile" },
@@ -49,27 +52,13 @@ export default function GroomersPage() {
           />
           <div className="flex flex-wrap items-center gap-2">
             {TYPE_FILTERS.map((t) => (
-              <button
-                key={t.value}
-                onClick={() => setType(t.value)}
-                className={`rounded-sm border px-3 py-2 text-sm font-sub transition-colors ${
-                  type === t.value
-                    ? "border-ink bg-ink text-cream"
-                    : "border-ink/20 bg-white text-ink hover:border-ink"
-                }`}
-              >
+              <FilterChip key={t.value} active={type === t.value} onClick={() => setType(t.value)}>
                 {t.label}
-              </button>
+              </FilterChip>
             ))}
-            <label className="inline-flex cursor-pointer items-center gap-2 text-sm font-sub text-ink">
-              <input
-                type="checkbox"
-                checked={availableOnly}
-                onChange={(e) => setAvailableOnly(e.target.checked)}
-                className="h-4 w-4 rounded-sm border-ink accent-rust"
-              />
+            <FilterCheckbox checked={availableOnly} onChange={setAvailableOnly}>
               Taking bookings
-            </label>
+            </FilterCheckbox>
           </div>
         </div>
       </section>
@@ -80,9 +69,7 @@ export default function GroomersPage() {
             {filtered.length} {filtered.length === 1 ? "groomer" : "groomers"} found
           </div>
           {filtered.length === 0 ? (
-            <div className="rounded-sm border border-ink/10 bg-white p-10 text-center text-ink/60">
-              No groomers match your filters.
-            </div>
+            <EmptyState>No groomers match your filters.</EmptyState>
           ) : (
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               {filtered.map((g) => (

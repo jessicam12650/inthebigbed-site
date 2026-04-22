@@ -3,6 +3,8 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { ALL_VENUES, LIVERPOOL_CENTER, type Venue, type VenueCategory } from "@/data/venues";
 import PageHeader from "@/components/PageHeader";
+import FilterChip from "@/components/FilterChip";
+import EmptyState from "@/components/EmptyState";
 
 const CAT_FILTERS: Array<{ value: "all" | VenueCategory; label: string }> = [
   { value: "all", label: "All places" },
@@ -186,17 +188,9 @@ export default function PlacesPage() {
           />
           <div className="flex flex-wrap items-center gap-2">
             {CAT_FILTERS.map((c) => (
-              <button
-                key={c.value}
-                onClick={() => setCat(c.value)}
-                className={`rounded-sm border px-3 py-2 text-sm font-sub transition-colors ${
-                  cat === c.value
-                    ? "border-ink bg-ink text-cream"
-                    : "border-ink/20 bg-white text-ink hover:border-ink"
-                }`}
-              >
+              <FilterChip key={c.value} active={cat === c.value} onClick={() => setCat(c.value)}>
                 {c.label}
-              </button>
+              </FilterChip>
             ))}
           </div>
         </div>
@@ -235,9 +229,7 @@ export default function PlacesPage() {
             </span>
           </div>
           {standard.length === 0 ? (
-            <div className="rounded-sm border border-ink/10 bg-white p-10 text-center text-ink/60">
-              No venues match your filters.
-            </div>
+            <EmptyState>No venues match your filters.</EmptyState>
           ) : (
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {standard.map((v) => (

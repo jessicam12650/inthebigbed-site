@@ -5,6 +5,9 @@ import { WALKERS, type Tier } from "@/data/walkers";
 import TierBadge from "@/components/TierBadge";
 import Rating from "@/components/Rating";
 import PageHeader from "@/components/PageHeader";
+import FilterChip from "@/components/FilterChip";
+import FilterCheckbox from "@/components/FilterCheckbox";
+import EmptyState from "@/components/EmptyState";
 
 const TIER_FILTERS: Array<{ value: "all" | Tier; label: string }> = [
   { value: "all", label: "All tiers" },
@@ -52,27 +55,13 @@ export default function WalkersPage() {
           />
           <div className="flex flex-wrap items-center gap-2">
             {TIER_FILTERS.map((t) => (
-              <button
-                key={t.value}
-                onClick={() => setTier(t.value)}
-                className={`rounded-sm border px-3 py-2 text-sm font-sub transition-colors ${
-                  tier === t.value
-                    ? "border-ink bg-ink text-cream"
-                    : "border-ink/20 bg-white text-ink hover:border-ink"
-                }`}
-              >
+              <FilterChip key={t.value} active={tier === t.value} onClick={() => setTier(t.value)}>
                 {t.label}
-              </button>
+              </FilterChip>
             ))}
-            <label className="ml-1 inline-flex cursor-pointer items-center gap-2 text-sm font-sub text-ink">
-              <input
-                type="checkbox"
-                checked={availableOnly}
-                onChange={(e) => setAvailableOnly(e.target.checked)}
-                className="h-4 w-4 rounded-sm border-ink accent-rust"
-              />
+            <FilterCheckbox checked={availableOnly} onChange={setAvailableOnly}>
               Available now
-            </label>
+            </FilterCheckbox>
           </div>
         </div>
       </section>
@@ -84,9 +73,7 @@ export default function WalkersPage() {
             {filtered.length} {filtered.length === 1 ? "walker" : "walkers"} found
           </div>
           {filtered.length === 0 ? (
-            <div className="rounded-sm border border-ink/10 bg-white p-10 text-center text-ink/60">
-              No walkers match your filters. Try broadening your search.
-            </div>
+            <EmptyState>No walkers match your filters. Try broadening your search.</EmptyState>
           ) : (
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               {filtered.map((w) => (

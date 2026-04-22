@@ -4,6 +4,8 @@ import { useMemo, useState } from "react";
 import { VETS, type VetType, type Vet } from "@/data/vets";
 import Rating from "@/components/Rating";
 import PageHeader from "@/components/PageHeader";
+import FilterChip from "@/components/FilterChip";
+import EmptyState from "@/components/EmptyState";
 
 const TYPE_FILTERS: Array<{ value: "all" | VetType; label: string }> = [
   { value: "all", label: "All vets" },
@@ -149,17 +151,9 @@ export default function VetsPage() {
           />
           <div className="flex flex-wrap items-center gap-2">
             {TYPE_FILTERS.map((t) => (
-              <button
-                key={t.value}
-                onClick={() => setType(t.value)}
-                className={`rounded-sm border px-3 py-2 text-sm font-sub transition-colors ${
-                  type === t.value
-                    ? "border-ink bg-ink text-cream"
-                    : "border-ink/20 bg-white text-ink hover:border-ink"
-                }`}
-              >
+              <FilterChip key={t.value} active={type === t.value} onClick={() => setType(t.value)}>
                 {t.label}
-              </button>
+              </FilterChip>
             ))}
           </div>
         </div>
@@ -172,9 +166,7 @@ export default function VetsPage() {
             {filtered.length} {filtered.length === 1 ? "vet" : "vets"} found
           </div>
           {filtered.length === 0 ? (
-            <div className="rounded-sm border border-ink/10 bg-white p-10 text-center text-ink/60">
-              No vets match your filters.
-            </div>
+            <EmptyState>No vets match your filters.</EmptyState>
           ) : (
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               {filtered.map((v) => (
