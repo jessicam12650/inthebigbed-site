@@ -14,7 +14,7 @@ export default function FilterChip({
       type="button"
       onClick={onClick}
       aria-pressed={active}
-      className={`rounded-sm border px-3 py-2 text-sm font-sub transition-colors ${
+      className={`inline-flex min-h-[48px] items-center rounded-sm border px-4 text-sm font-sub transition-colors ${
         active
           ? "border-ink bg-ink text-cream"
           : "border-ink/20 bg-white text-ink hover:border-ink"

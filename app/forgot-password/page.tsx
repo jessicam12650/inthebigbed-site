@@ -41,7 +41,7 @@ export default function ForgotPasswordPage() {
               If an account exists for <strong className="text-ink">{email}</strong>, we've sent a link to reset
               your password.
             </p>
-            <Link href="/login" className="btn-outline">
+            <Link href="/login" className="btn-outline btn-block-mobile">
               Back to log in
             </Link>
           </div>

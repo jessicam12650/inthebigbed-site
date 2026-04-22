@@ -54,7 +54,7 @@ export default function WaitlistForm() {
           defaultValue=""
         />
       </div>
-      <button type="submit" name="subscribe" className="btn-dark whitespace-nowrap px-6 py-3 text-base">
+      <button type="submit" name="subscribe" className="btn-dark btn-block-mobile whitespace-nowrap px-6 py-3 text-base">
         Get early access
       </button>
     </form>

@@ -9,11 +9,11 @@ export default function NotFound() {
         <p className="mb-8 text-base leading-relaxed text-ink/60">
           That link went chasing a squirrel. Let's get you back somewhere useful.
         </p>
-        <div className="flex flex-wrap justify-center gap-3">
-          <Link href="/" className="btn-dark">
+        <div className="flex flex-col flex-wrap justify-center gap-3 sm:flex-row">
+          <Link href="/" className="btn-dark btn-block-mobile">
             Back to home
           </Link>
-          <Link href="/places" className="btn-outline">
+          <Link href="/places" className="btn-outline btn-block-mobile">
             Dog-friendly places
           </Link>
         </div>

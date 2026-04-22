@@ -119,7 +119,7 @@ export default function SignupForm() {
             "."
           )}
         </p>
-        <Link href="/login" className="btn-outline">
+        <Link href="/login" className="btn-outline btn-block-mobile">
           Back to log in
         </Link>
       </div>

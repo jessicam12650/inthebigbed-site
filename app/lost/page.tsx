@@ -160,7 +160,7 @@ export default function LostPage() {
                   setPhone("");
                   setPhoto({ kind: "none" });
                 }}
-                className="btn-outline"
+                className="btn-outline btn-block-mobile"
               >
                 Send another alert
               </button>

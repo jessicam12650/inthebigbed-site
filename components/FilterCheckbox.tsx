@@ -10,12 +10,12 @@ export default function FilterCheckbox({
   children: React.ReactNode;
 }) {
   return (
-    <label className="inline-flex cursor-pointer items-center gap-2 text-sm font-sub text-ink">
+    <label className="inline-flex min-h-[48px] cursor-pointer items-center gap-2.5 px-2 text-sm font-sub text-ink">
       <input
         type="checkbox"
         checked={checked}
         onChange={(e) => onChange(e.target.checked)}
-        className="h-4 w-4 rounded-sm border-ink accent-rust"
+        className="h-5 w-5 rounded-sm border-ink accent-rust"
       />
       {children}
     </label>

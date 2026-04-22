@@ -245,7 +245,7 @@ export default function ProfilePage() {
                 <span className="font-sub text-ink">{role.charAt(0).toUpperCase() + role.slice(1)}</span>
               </p>
             </div>
-            <button onClick={logout} className="btn-outline text-sm">
+            <button onClick={logout} className="btn-outline btn-block-mobile text-sm">
               Log out
             </button>
           </div>

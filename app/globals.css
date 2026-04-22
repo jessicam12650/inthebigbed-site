@@ -33,17 +33,23 @@
   .skip-link {
     @apply absolute left-4 top-4 z-[200] -translate-y-24 rounded-sm bg-ink px-4 py-2 text-sm font-sub text-cream transition-transform focus:translate-y-0;
   }
+  /* Buttons: 48px minimum tap height. Width stays inline-flex auto; pair with
+   * `w-full sm:w-auto` at the call site when you want a mobile block button. */
   .btn-primary {
-    @apply inline-flex items-center justify-center rounded-sm bg-rust px-5 py-2.5 text-sm font-sub text-cream transition-opacity hover:opacity-90;
+    @apply inline-flex min-h-[48px] items-center justify-center rounded-sm bg-rust px-5 py-3 text-sm font-sub text-cream transition-opacity hover:opacity-90;
   }
   .btn-dark {
-    @apply inline-flex items-center justify-center rounded-sm bg-ink px-5 py-2.5 text-sm font-sub text-cream transition-opacity hover:opacity-90;
+    @apply inline-flex min-h-[48px] items-center justify-center rounded-sm bg-ink px-5 py-3 text-sm font-sub text-cream transition-opacity hover:opacity-90;
   }
   .btn-emergency {
-    @apply inline-flex items-center justify-center rounded-sm bg-emergency px-5 py-2.5 text-sm font-sub text-white transition-opacity hover:opacity-90;
+    @apply inline-flex min-h-[48px] items-center justify-center rounded-sm bg-emergency px-5 py-3 text-sm font-sub text-white transition-opacity hover:opacity-90;
   }
   .btn-outline {
-    @apply inline-flex items-center justify-center rounded-sm border-2 border-ink bg-transparent px-5 py-2.5 text-sm font-sub text-ink transition-colors hover:bg-ink hover:text-cream;
+    @apply inline-flex min-h-[48px] items-center justify-center rounded-sm border-2 border-ink bg-transparent px-5 py-3 text-sm font-sub text-ink transition-colors hover:bg-ink hover:text-cream;
+  }
+  /* Pair with a btn-* to make it block on mobile, auto from sm upwards. */
+  .btn-block-mobile {
+    @apply w-full sm:w-auto;
   }
   .card {
     @apply rounded-sm border border-ink/10 bg-white p-6 shadow-card transition-all;
@@ -52,10 +58,11 @@
     @apply hover:-translate-y-0.5 hover:shadow-pop hover:border-ink/20;
   }
   .field {
-    @apply w-full rounded-sm border-2 border-ink bg-white px-4 py-3 text-base font-body text-ink outline-none transition-colors placeholder:text-ink/40 focus:border-rust;
+    @apply w-full min-h-[48px] rounded-sm border-2 border-ink bg-white px-4 py-3 text-base font-body text-ink outline-none transition-colors placeholder:text-ink/40 focus:border-rust;
   }
+  /* More breathing room on mobile; desktop unchanged. */
   .section {
-    @apply px-5 py-16 md:px-12 md:py-24;
+    @apply px-5 py-20 md:px-12 md:py-24;
   }
   .container-narrow {
     @apply mx-auto max-w-5xl;

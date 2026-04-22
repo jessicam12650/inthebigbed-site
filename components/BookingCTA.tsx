@@ -58,7 +58,7 @@ export default function BookingCTA({
 
   // Don't flash the wrong CTA before we know auth state.
   if (loading) {
-    return <span className="btn-primary cursor-wait px-6 py-3 text-base opacity-50">{label}</span>;
+    return <span className="btn-primary btn-block-mobile cursor-wait px-6 py-3 text-base opacity-50">{label}</span>;
   }
 
   // Logged-out flow unchanged — capture the intent on the signup page.
@@ -66,7 +66,7 @@ export default function BookingCTA({
     return (
       <Link
         href={`/signup?role=owner&${SIGNUP_PARAM[kind]}=${id}`}
-        className="btn-primary px-6 py-3 text-base"
+        className="btn-primary btn-block-mobile px-6 py-3 text-base"
       >
         {available ? label : unavailableLabel}
       </Link>
@@ -86,7 +86,7 @@ export default function BookingCTA({
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="btn-primary px-6 py-3 text-base"
+        className="btn-primary btn-block-mobile px-6 py-3 text-base"
         disabled={!available}
       >
         {available ? label : unavailableLabel}

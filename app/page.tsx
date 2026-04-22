@@ -25,9 +25,9 @@ export default function HomePage() {
   return (
     <>
       {/* HERO */}
-      <section className="bg-ink px-5 py-24 text-center md:px-12 md:py-32 md:text-left">
+      <section className="bg-ink px-6 py-24 text-center md:px-12 md:py-32 md:text-left">
         <div className="mx-auto max-w-5xl">
-          <h1 className="mb-7 font-head text-4xl leading-[1.08] tracking-tight md:text-6xl lg:text-7xl">
+          <h1 className="mb-7 font-head text-5xl font-black leading-[1.02] tracking-tight md:text-6xl lg:text-7xl">
             <span className="block text-cream">Everything for dogs.</span>
             <span className="block text-rust">And the people they allow in the bed.</span>
           </h1>
@@ -35,22 +35,22 @@ export default function HomePage() {
             Liverpool's dog platform — verified walkers, licensed daycares, groomers, vets, dog-friendly places,
             and a community of people who completely get it.
           </p>
-          <Link href="#waitlist" className="btn-primary w-full px-7 py-3.5 text-base md:w-auto">
+          <Link href="#waitlist" className="btn-primary btn-block-mobile px-7 py-4 text-base">
             Join the waitlist
           </Link>
           <p className="mt-4 text-xs text-cream/40">
             10% of every booking goes to Carla Lane Animals in Need 🐾
           </p>
 
-          <div className="mt-12 grid max-w-3xl grid-cols-2 gap-3 md:grid-cols-4">
+          <div className="mt-12 grid max-w-3xl grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-4">
             {HERO_FEATURES.map((f) => (
               <Link
                 key={f.title}
                 href={f.href}
-                className="group flex flex-col gap-2 rounded-sm border border-cream/15 bg-cream/[0.04] p-4 text-left transition-all hover:-translate-y-0.5 hover:border-cream/30 hover:bg-cream/[0.08]"
+                className="group flex min-h-[96px] flex-col gap-2 rounded-sm border border-cream/15 bg-cream/[0.04] p-5 text-left transition-all hover:-translate-y-0.5 hover:border-cream/30 hover:bg-cream/[0.08]"
               >
                 <span className="text-xl">{f.emoji}</span>
-                <span className="text-[13px] font-sub text-cream">{f.title}</span>
+                <span className="text-sm font-sub text-cream">{f.title}</span>
                 <span className="text-xs leading-snug text-cream/55">{f.desc}</span>
               </Link>
             ))}
@@ -130,7 +130,7 @@ export default function HomePage() {
             href="https://www.carlalaneanimalsinneed.co.uk"
             target="_blank"
             rel="noopener noreferrer"
-            className="mb-5 inline-flex items-center rounded-sm border-2 border-cream bg-transparent px-5 py-2.5 text-sm font-sub text-cream transition-colors hover:bg-cream hover:text-sage"
+            className="mb-5 inline-flex min-h-[48px] w-full items-center justify-center rounded-sm border-2 border-cream bg-transparent px-5 py-3 text-sm font-sub text-cream transition-colors hover:bg-cream hover:text-sage sm:w-auto"
           >
             carlalaneanimalsinneed.co.uk
           </a>

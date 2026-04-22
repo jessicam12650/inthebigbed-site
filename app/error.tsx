@@ -22,11 +22,11 @@ export default function ErrorBoundary({
         <p className="mb-8 text-base leading-relaxed text-ink/60">
           We've logged it. Try again in a moment, or head back home while we sort this out.
         </p>
-        <div className="flex flex-wrap justify-center gap-3">
-          <button onClick={reset} className="btn-primary">
+        <div className="flex flex-col flex-wrap justify-center gap-3 sm:flex-row">
+          <button onClick={reset} className="btn-primary btn-block-mobile">
             Try again
           </button>
-          <Link href="/" className="btn-outline">
+          <Link href="/" className="btn-outline btn-block-mobile">
             Back to home
           </Link>
         </div>

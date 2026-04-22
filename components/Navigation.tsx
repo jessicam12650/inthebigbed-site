@@ -75,46 +75,50 @@ export default function Navigation() {
           </Link>
         </div>
 
-        {/* Mobile toggle */}
+        {/* Mobile toggle — 48x48 tap target with 24px bars */}
         <button
           onClick={() => setOpen((v) => !v)}
           aria-label={open ? "Close menu" : "Open menu"}
           aria-expanded={open}
-          className="flex h-10 w-10 flex-col items-center justify-center gap-[5px] lg:hidden"
+          className="-mr-2 flex h-12 w-12 flex-col items-center justify-center gap-[6px] rounded-sm lg:hidden"
         >
           <span
-            className={`h-0.5 w-5 rounded-full bg-ink transition-transform ${
-              open ? "translate-y-[7px] rotate-45" : ""
+            className={`h-[3px] w-6 rounded-full bg-ink transition-transform ${
+              open ? "translate-y-[9px] rotate-45" : ""
             }`}
           />
-          <span className={`h-0.5 w-5 rounded-full bg-ink transition-opacity ${open ? "opacity-0" : ""}`} />
+          <span className={`h-[3px] w-6 rounded-full bg-ink transition-opacity ${open ? "opacity-0" : ""}`} />
           <span
-            className={`h-0.5 w-5 rounded-full bg-ink transition-transform ${
-              open ? "-translate-y-[7px] -rotate-45" : ""
+            className={`h-[3px] w-6 rounded-full bg-ink transition-transform ${
+              open ? "-translate-y-[9px] -rotate-45" : ""
             }`}
           />
         </button>
       </div>
 
-      {/* Mobile drawer */}
+      {/* Mobile drawer — 48px rows for easy tapping */}
       {open && (
-        <div className="border-t border-ink/10 bg-cream px-5 py-4 lg:hidden">
-          <div className="flex flex-col gap-4">
+        <div className="border-t border-ink/10 bg-cream px-5 py-3 lg:hidden">
+          <div className="flex flex-col">
             {navLinks.map((l) => (
               <Link
                 key={l.href}
                 href={l.href}
                 onClick={close}
-                className="text-base font-sub text-ink"
+                className="flex min-h-[48px] items-center text-base font-sub text-ink"
               >
                 {l.label}
               </Link>
             ))}
             <div className="my-2 h-px bg-ink/10" />
-            <Link href="/login" onClick={close} className="text-base font-body text-ink">
+            <Link
+              href="/login"
+              onClick={close}
+              className="flex min-h-[48px] items-center text-base font-body text-ink"
+            >
               Log in
             </Link>
-            <div className="flex flex-col gap-3 pt-1">
+            <div className="flex flex-col gap-3 pb-1 pt-3">
               <Link href="/signup" onClick={close} className="btn-dark w-full">
                 Sign up
               </Link>
