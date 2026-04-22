@@ -1,18 +1,89 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { getSupabaseBrowserClient } from "@/lib/supabase";
+
+type PhotoState =
+  // No photo yet
+  | { kind: "none" }
+  // Pre-filled from the owner's most recent dog in public.dogs
+  | { kind: "prefilled"; url: string }
+  // User picked a new file in this session
+  | { kind: "file"; file: File; preview: string };
 
 export default function LostPage() {
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [form, setForm] = useState({
-    dogName: "",
-    lastLocation: "",
-    phone: "",
-    photo: null as File | null,
-  });
+  const [dogName, setDogName] = useState("");
+  const [lastLocation, setLastLocation] = useState("");
+  const [phone, setPhone] = useState("");
+  const [photo, setPhoto] = useState<PhotoState>({ kind: "none" });
+
+  /* Pre-fill the photo from the owner's most recent dog with a photo_url.
+     Runs once on mount; the form stays fully usable for signed-out users. */
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const supabase = getSupabaseBrowserClient();
+        const { data: userData } = await supabase.auth.getUser();
+        if (cancelled || !userData.user) return;
+
+        const { data, error } = await supabase
+          .from("dogs")
+          .select("name, photo_url")
+          .eq("user_id", userData.user.id)
+          .not("photo_url", "is", null)
+          .order("updated_at", { ascending: false })
+          .limit(1)
+          .maybeSingle();
+
+        if (cancelled || error) return;
+        if (data?.photo_url) {
+          setPhoto({ kind: "prefilled", url: data.photo_url });
+          // If they haven't typed a name yet, nudge the most recent dog's name.
+          setDogName((current) => current || (data.name as string) || "");
+        }
+      } catch {
+        // Schema might not be applied yet — quietly skip.
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  function handleFileChange(file: File | null) {
+    if (!file) {
+      setPhoto({ kind: "none" });
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = () => {
+      setPhoto({ kind: "file", file, preview: reader.result as string });
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function photoPreviewUrl(): string | null {
+    if (photo.kind === "prefilled") return photo.url;
+    if (photo.kind === "file") return photo.preview;
+    return null;
+  }
+
+  async function uploadNewPhoto(file: File, reporterId: string | null): Promise<string | null> {
+    const supabase = getSupabaseBrowserClient();
+    const ext = file.name.split(".").pop()?.toLowerCase() || "jpg";
+    const scope = reporterId ?? "anon";
+    const path = `${scope}/${crypto.randomUUID()}.${ext}`;
+    const { error: upErr } = await supabase.storage
+      .from("lost-dog-photos")
+      .upload(path, file, { upsert: false, contentType: file.type });
+    if (upErr) return null;
+    const { data } = supabase.storage.from("lost-dog-photos").getPublicUrl(path);
+    return data.publicUrl;
+  }
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -24,29 +95,22 @@ export default function LostPage() {
       const reporterId = userData.user?.id ?? null;
 
       let photoUrl: string | null = null;
-      if (form.photo) {
-        const ext = form.photo.name.split(".").pop()?.toLowerCase() || "jpg";
-        const scope = reporterId ?? "anon";
-        const path = `${scope}/${crypto.randomUUID()}.${ext}`;
-        const { error: upErr } = await supabase.storage
-          .from("lost-dog-photos")
-          .upload(path, form.photo, { upsert: false, contentType: form.photo.type });
-        if (!upErr) {
-          const { data } = supabase.storage.from("lost-dog-photos").getPublicUrl(path);
-          photoUrl = data.publicUrl;
-        }
+      if (photo.kind === "file") {
+        photoUrl = await uploadNewPhoto(photo.file, reporterId);
+      } else if (photo.kind === "prefilled") {
+        // Reuse the existing dog photo URL directly — no re-upload.
+        photoUrl = photo.url;
       }
 
       const { error: insertErr } = await supabase.from("lost_dog_alerts").insert({
         reporter_id: reporterId,
-        dog_name: form.dogName,
-        last_location: form.lastLocation,
-        phone: form.phone,
+        dog_name: dogName,
+        last_location: lastLocation,
+        phone,
         photo_url: photoUrl,
       });
 
-      // If the table isn't set up yet, still show success — we don't want to
-      // block a panicked owner. Log so we know.
+      // Never fail loudly on a panicked form — log instead.
       if (insertErr) {
         console.error("lost_dog_alerts insert failed", insertErr);
       }
@@ -54,12 +118,13 @@ export default function LostPage() {
       setSubmitted(true);
     } catch (err) {
       console.error(err);
-      // Same principle — this form must never fail loudly.
       setSubmitted(true);
     } finally {
       setSubmitting(false);
     }
   }
+
+  const previewUrl = photoPreviewUrl();
 
   return (
     <>
@@ -84,13 +149,16 @@ export default function LostPage() {
               <h2 className="mb-3 font-head text-3xl text-ink">Alert sent.</h2>
               <p className="mb-6 text-base leading-relaxed text-ink/70">
                 Everyone within 2 miles of{" "}
-                <strong className="text-ink">{form.lastLocation || "your location"}</strong> has been notified.
+                <strong className="text-ink">{lastLocation || "your location"}</strong> has been notified.
                 We'll text you the moment someone reports a sighting.
               </p>
               <button
                 onClick={() => {
                   setSubmitted(false);
-                  setForm({ dogName: "", lastLocation: "", phone: "", photo: null });
+                  setDogName("");
+                  setLastLocation("");
+                  setPhone("");
+                  setPhoto({ kind: "none" });
                 }}
                 className="btn-outline"
               >
@@ -109,8 +177,8 @@ export default function LostPage() {
                 <input
                   id="dog-name"
                   required
-                  value={form.dogName}
-                  onChange={(e) => setForm((f) => ({ ...f, dogName: e.target.value }))}
+                  value={dogName}
+                  onChange={(e) => setDogName(e.target.value)}
                   placeholder="e.g. Biscuit"
                   className="field"
                 />
@@ -123,8 +191,8 @@ export default function LostPage() {
                 <input
                   id="last-location"
                   required
-                  value={form.lastLocation}
-                  onChange={(e) => setForm((f) => ({ ...f, lastLocation: e.target.value }))}
+                  value={lastLocation}
+                  onChange={(e) => setLastLocation(e.target.value)}
                   placeholder="e.g. Sefton Park main entrance, Allerton Road"
                   className="field"
                 />
@@ -138,26 +206,49 @@ export default function LostPage() {
                   id="phone"
                   type="tel"
                   required
-                  value={form.phone}
-                  onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value }))}
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
                   placeholder="e.g. 07700 900000"
                   className="field"
                 />
               </div>
 
               <div>
-                <label htmlFor="photo" className="mb-2 block text-sm font-sub text-ink">
-                  Photo of your dog
-                </label>
-                <input
-                  id="photo"
-                  type="file"
-                  accept="image/*"
-                  onChange={(e) => setForm((f) => ({ ...f, photo: e.target.files?.[0] ?? null }))}
-                  className="block w-full rounded-sm border-2 border-dashed border-ink/30 bg-cream/40 px-4 py-5 text-sm text-ink/70 file:mr-3 file:rounded-sm file:border-0 file:bg-ink file:px-3 file:py-2 file:text-xs file:font-sub file:text-cream file:transition-opacity hover:file:opacity-85"
-                />
+                <span className="mb-2 block text-sm font-sub text-ink">Photo of your dog</span>
+                <div className="flex items-center gap-4">
+                  <div className="flex h-24 w-24 shrink-0 items-center justify-center overflow-hidden rounded-full border-2 border-ink/15 bg-cream/60">
+                    {previewUrl ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img src={previewUrl} alt="Your dog" className="h-full w-full object-cover" />
+                    ) : (
+                      <span className="text-3xl text-ink/40">🐾</span>
+                    )}
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <label className="btn-outline cursor-pointer justify-center text-xs">
+                      {previewUrl ? "Change photo" : "Upload photo"}
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={(e) => handleFileChange(e.target.files?.[0] ?? null)}
+                        className="hidden"
+                      />
+                    </label>
+                    {previewUrl && (
+                      <button
+                        type="button"
+                        onClick={() => setPhoto({ kind: "none" })}
+                        className="text-xs font-sub text-ink/55 hover:text-ink"
+                      >
+                        Remove photo
+                      </button>
+                    )}
+                  </div>
+                </div>
                 <p className="mt-2 text-xs text-ink/50">
-                  Don't have a photo to hand? Submit without one — you can add it later.
+                  {photo.kind === "prefilled"
+                    ? "Using your most recent dog profile photo. Upload a different one if this isn't the right dog."
+                    : "Don't have a photo to hand? Submit without one — you can add it later."}
                 </p>
               </div>
 
