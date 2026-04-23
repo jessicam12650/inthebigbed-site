@@ -132,7 +132,28 @@
     .pc-badge[data-cat="Street Food"] { background: #FCE4B0; color: #8A6B2E; }
     .pc-badge[data-cat="Live Music"]  { background: #E4D4F2; color: #6B4A8A; }
     .pc-desc { font-size: 14px; color: #3d3d3d; line-height: 1.45; margin: 0 0 8px; }
-    .pc-addr { font-size: 12px; color: #777; line-height: 1.4; margin: 0 0 14px; }
+    .pc-addr { font-size: 12px; color: #777; line-height: 1.4; margin: 0 0 12px; }
+    .pc-rating { font-size: 13px; color: #333; margin-bottom: 6px; display: none; }
+    .pc-rating .pc-stars { color: #E8C84A; letter-spacing: 1px; margin-right: 4px; }
+    .pc-rating-count { color: #888; margin-left: 4px; }
+    .pc-hours { font-size: 13px; margin-bottom: 10px; display: none; }
+    .pc-hours.open { color: #3d7a4b; }
+    .pc-hours.closed { color: #9a3a2e; }
+    .pc-hours .pc-hours-detail { color: #555; }
+    .pc-reviews { margin-bottom: 14px; display: none; }
+    .pc-review {
+      background: #F7F2ED;
+      border-radius: 8px;
+      padding: 8px 10px;
+      font-size: 12px;
+      color: #3d3d3d;
+      line-height: 1.45;
+      margin-bottom: 6px;
+    }
+    .pc-review:last-child { margin-bottom: 0; }
+    .pc-review-author { display: block; margin-top: 4px; font-size: 11px; color: #777; }
+    .pc-review-author .pc-stars { color: #E8C84A; letter-spacing: 1px; margin-right: 4px; }
+    .place-card { max-height: calc(100vh - 96px); overflow-y: auto; }
     .pc-cta {
       display: block; text-align: center;
       background: #D4845A; color: #fff;
@@ -204,6 +225,9 @@
       <span class="pc-badge" id="pc-badge"></span>
       <p class="pc-desc" id="pc-desc"></p>
       <p class="pc-addr" id="pc-addr"></p>
+      <div class="pc-rating" id="pc-rating"></div>
+      <div class="pc-hours" id="pc-hours"></div>
+      <div class="pc-reviews" id="pc-reviews"></div>
       <a class="pc-cta" id="pc-dir" href="#" target="_blank" rel="noopener">Get directions</a>
     </aside>
   </div>
@@ -211,13 +235,13 @@
   <script>
     /* ── HANDPICKED VENUES ── */
     const HANDPICKED = [
-      { id: 'baltic-market',  name: 'Baltic Market',                 address: 'Stanhope Street, Liverpool',   cat: 'restaurant', tag: 'Handpicked 🐾', latLng: { lat: 53.3972, lng: -2.9802 }, description: "Liverpool's first street food market, craft beers, independent vendors, DJs", category: 'Street Food' },
-      { id: 'bao-and-bap',    name: 'Bao and Bap',                   address: 'Rodney Street, Liverpool',     cat: 'restaurant', tag: 'Handpicked 🐾', latLng: { lat: 53.4034, lng: -2.9682 }, description: 'Cozy Asian comfort food', category: 'Restaurants' },
-      { id: 'dereks',         name: "Derek's Coffee & Sandwiches",    address: 'Lark Lane, Liverpool',         cat: 'restaurant', tag: 'Handpicked 🐾', latLng: { lat: 53.3858, lng: -2.9596 },
+      { id: 'baltic-market',  name: 'Baltic Market',                 address: 'Cains Brewery Village, 107 Stanhope Street, Liverpool L8 5RE', cat: 'restaurant', tag: 'Handpicked 🐾', latLng: { lat: 53.3960, lng: -2.9808 }, description: "Liverpool's first street food market, craft beers, independent vendors, DJs", category: 'Street Food' },
+      { id: 'bao-and-bap',    name: 'Bao & Bap',                     address: '14 Rodney Street, Liverpool L1 2TE',                 cat: 'restaurant', tag: 'Handpicked 🐾', latLng: { lat: 53.4037, lng: -2.9722 }, description: 'Cozy Asian comfort food', category: 'Restaurants' },
+      { id: 'dereks',         name: "Derek's Coffee & Sandwiches",    address: 'Lark Lane, Liverpool L17 8UU', cat: 'restaurant', tag: 'Handpicked 🐾', latLng: { lat: 53.3822, lng: -2.9344 },
         note: 'Dog-friendly at all locations — Lark Lane · Berry Street · Allerton Road · College Road, Crosby',
         description: 'Sopranos themed sandwich shop serving New York classics', category: 'Restaurants' },
-      { id: 'halton-castle',  name: 'The Halton Castle',              address: 'Mill Lane, Liverpool',         cat: 'pub-bar',    tag: 'Handpicked 🐾', latLng: { lat: 53.4072, lng: -2.9890 }, description: 'Old school pub with beer garden and darts board', category: 'Pubs' },
-      { id: 'eden-bar',       name: 'Eden Bar',                       address: 'Eaton Road, Liverpool',        cat: 'pub-bar',    tag: 'Handpicked 🐾', latLng: { lat: 53.3840, lng: -2.9388 }, description: 'Hidden gem with craft beers and live music', category: 'Bars' },
+      { id: 'halton-castle',  name: 'The Halton Castle',             address: '86 Mill Lane, West Derby, Liverpool L12 7JD',        cat: 'pub-bar',    tag: 'Handpicked 🐾', latLng: { lat: 53.4175, lng: -2.8942 }, description: 'Old school pub with beer garden and darts board', category: 'Pubs' },
+      { id: 'eden-bar',       name: 'Eden Bar',                      address: '369 Eaton Road, West Derby, Liverpool L12 2AH',      cat: 'pub-bar',    tag: 'Handpicked 🐾', latLng: { lat: 53.4206, lng: -2.8940 }, description: 'Hidden gem with craft beers and live music', category: 'Bars' },
     ];
 
     /* ── MAIN VENUE LIST ── */
@@ -234,7 +258,7 @@
       { id: 'slug-lettuce',   name: 'Slug and Lettuce',               address: 'City Centre, Liverpool',                  cat: 'pub-bar',    tag: 'Dog-friendly 🐾', latLng: { lat: 53.4072, lng: -2.9857 } },
       { id: 'refinery',       name: 'The Refinery Liverpool',         address: 'City Centre, Liverpool',                  cat: 'restaurant', tag: 'Dog-friendly 🐾', latLng: { lat: 53.4050, lng: -2.9887 } },
       { id: 'club-house',     name: 'The Club House',                 address: 'City Centre, Liverpool',                  cat: 'pub-bar',    tag: 'Dog-friendly 🐾', latLng: { lat: 53.4055, lng: -2.9882 } },
-      { id: 'kazimier',       name: 'Kazimier Garden',                address: '32 Seel St, Liverpool',                   cat: 'pub-bar',    tag: 'Dog-friendly 🐾', latLng: { lat: 53.4003, lng: -2.9765 }, description: 'Open-air side-street venue with sheltered areas and live music', category: 'Live Music' },
+      { id: 'kazimier',       name: 'Kazimier Garden',               address: '32 Seel Street, Liverpool L1 4BE',                   cat: 'pub-bar',    tag: 'Dog-friendly 🐾', latLng: { lat: 53.4004, lng: -2.9800 }, description: 'Open-air side-street venue with sheltered areas and live music', category: 'Live Music' },
       { id: 'brewdog',        name: 'BrewDog Liverpool',              address: 'Colquitt St, Liverpool',                  cat: 'pub-bar',    tag: 'Dog-friendly 🐾', latLng: { lat: 53.4014, lng: -2.9719 } },
       { id: 'buyers-club',    name: 'Buyers Club',                    address: 'Hardman St, Liverpool',                   cat: 'pub-bar',    tag: 'Dog-friendly 🐾', latLng: { lat: 53.4010, lng: -2.9696 } },
       { id: 'baltic-fleet',   name: 'Baltic Fleet',                   address: '33A Wapping, Liverpool',                  cat: 'pub-bar',    tag: 'Dog-friendly 🐾', latLng: { lat: 53.4009, lng: -2.9942 } },
@@ -274,7 +298,7 @@
       { id: 'rhubarb',        name: 'Rhubarb',                        address: 'Lark Lane, Liverpool',                    cat: 'restaurant', tag: 'Dog-friendly 🐾', latLng: { lat: 53.3862, lng: -2.9598 } },
       { id: 'queens-arms',    name: 'Queens Arms',                    address: 'Victoria Street, Liverpool',              cat: 'pub-bar',    tag: 'Dog-friendly 🐾', latLng: { lat: 53.4062, lng: -2.9894 } },
       { id: 'permit-room',    name: 'Permit Room by Dishoom',         address: 'Liverpool City Centre',                   cat: 'restaurant', tag: 'Dog-friendly 🐾', latLng: { lat: 53.4064, lng: -2.9863 } },
-      { id: 'mowgli',         name: 'Mowgli',                         address: 'Bold Street, Liverpool',                  cat: 'restaurant', tag: 'Dog-friendly 🐾', latLng: { lat: 53.4022, lng: -2.9783 }, description: 'Indian street food', category: 'Restaurants' },
+      { id: 'mowgli',         name: 'Mowgli',                        address: '69 Bold Street, Liverpool L1 4EZ',                   cat: 'restaurant', tag: 'Dog-friendly 🐾', latLng: { lat: 53.4029, lng: -2.9774 }, description: 'Indian street food', category: 'Restaurants' },
       { id: 'mcnastys',       name: "McNasty's",                      address: 'Seel Street, Liverpool',                  cat: 'pub-bar',    tag: 'Dog-friendly 🐾', latLng: { lat: 53.4006, lng: -2.9768 } },
       { id: 'frederiks',      name: 'Frederiks',                      address: 'Hope Street, Liverpool',                  cat: 'pub-bar',    tag: 'Dog-friendly 🐾', latLng: { lat: 53.4021, lng: -2.9695 } },
       { id: 'shandon-bells',  name: 'The Shandon Bells',              address: 'Hope Street, Liverpool',                  cat: 'pub-bar',    tag: 'Dog-friendly 🐾', latLng: { lat: 53.4019, lng: -2.9692 } },
@@ -286,7 +310,9 @@
 
     /* ── STATE ── */
     let map;
+    let placesSvc;
     const markers = {};
+    const detailsCache = {};
     let activeFilter = 'all';
 
     /* ── HELPERS ── */
@@ -330,36 +356,44 @@
 
       /* Immediate pins from hardcoded coordinates */
       ALL_VENUES.forEach(function(v) {
-        if (v.latLng) addMarker(v, v.latLng, null);
+        if (v.latLng) addMarker(v, v.latLng);
       });
 
       /* Progressive enrichment via Places API */
-      const svc = new google.maps.places.PlacesService(map);
-      ALL_VENUES.forEach(function(v) { enrichVenue(v, svc); });
+      placesSvc = new google.maps.places.PlacesService(map);
+      ALL_VENUES.forEach(function(v) { enrichVenue(v); });
     }
 
-    /* ── ENRICH VENUE ── Refine pin location and pick up ratings via Places API */
-    function enrichVenue(v, svc) {
-      svc.findPlaceFromQuery(
+    /* ── ENRICH VENUE ── Resolve the place_id once so the pin lands in the
+       right spot; full details (rating, hours, reviews) are fetched lazily
+       when the user opens the card. */
+    function enrichVenue(v) {
+      placesSvc.findPlaceFromQuery(
         { query: v.name + ', ' + v.address, fields: ['place_id', 'geometry'] },
         function(res, st) {
           if (st !== google.maps.places.PlacesServiceStatus.OK || !res || !res.length) return;
-          const placeId = res[0].place_id;
-          const fbLoc   = res[0].geometry && res[0].geometry.location;
-
-          svc.getDetails(
-            { placeId: placeId, fields: ['rating', 'geometry'] },
-            function(place, ds) {
-              const ok  = ds === google.maps.places.PlacesServiceStatus.OK;
-              const loc = (ok && place && place.geometry) ? place.geometry.location : fbLoc;
-              if (loc) addMarker(v, loc, ok && place ? place.rating : null);
-            }
-          );
+          v.placeId = res[0].place_id;
+          const loc = res[0].geometry && res[0].geometry.location;
+          if (loc) addMarker(v, loc, null);
         }
       );
     }
 
-    function addMarker(v, loc, rating) {
+    /* Lazy-load rating, hours and reviews on first card open; cache per venue. */
+    function fetchDetails(v, cb) {
+      if (detailsCache[v.id]) { cb(detailsCache[v.id]); return; }
+      if (!placesSvc || !v.placeId) return;
+      placesSvc.getDetails(
+        { placeId: v.placeId, fields: ['rating', 'user_ratings_total', 'opening_hours', 'reviews'] },
+        function(place, st) {
+          if (st !== google.maps.places.PlacesServiceStatus.OK || !place) return;
+          detailsCache[v.id] = place;
+          cb(place);
+        }
+      );
+    }
+
+    function addMarker(v, loc) {
       if (markers[v.id]) markers[v.id].setMap(null);
 
       const mk = new google.maps.Marker({
@@ -404,6 +438,9 @@
     const pcBadge   = document.getElementById('pc-badge');
     const pcDesc    = document.getElementById('pc-desc');
     const pcAddr    = document.getElementById('pc-addr');
+    const pcRating  = document.getElementById('pc-rating');
+    const pcHours   = document.getElementById('pc-hours');
+    const pcReviews = document.getElementById('pc-reviews');
     const pcDir     = document.getElementById('pc-dir');
 
     /* Category used for the badge — falls back from `category` to a label
@@ -426,8 +463,82 @@
       pcAddr.textContent = v.address;
       pcDir.href = 'https://www.google.com/maps/dir/?api=1&destination=' +
         encodeURIComponent(v.name + ', ' + v.address);
+
+      /* Reset detail sections; they'll fill in when details arrive. */
+      pcRating.style.display = 'none';
+      pcHours.style.display = 'none';
+      pcReviews.style.display = 'none';
+      pcRating.innerHTML = '';
+      pcHours.innerHTML = '';
+      pcReviews.innerHTML = '';
+
+      if (detailsCache[v.id]) {
+        renderDetails(detailsCache[v.id]);
+      } else {
+        const id = v.id;
+        fetchDetails(v, function(place) {
+          /* Only render if the card is still showing this venue */
+          if (placeCard.dataset.currentId === id) renderDetails(place);
+        });
+      }
+      placeCard.dataset.currentId = v.id;
+
       placeCard.classList.add('open');
       placeCard.setAttribute('aria-hidden', 'false');
+    }
+
+    function starsMarkup(r) {
+      if (r == null) return '';
+      const full = Math.floor(r);
+      const half = r - full >= 0.5 ? 1 : 0;
+      const empty = 5 - full - half;
+      return '<span class="pc-stars">' +
+        '★'.repeat(full) + (half ? '½' : '') + '☆'.repeat(empty) +
+        '</span>';
+    }
+
+    function todayHoursText(oh) {
+      if (!oh || !oh.weekday_text || !oh.weekday_text.length) return '';
+      /* weekday_text is Monday..Sunday; JS getDay() is Sun..Sat. */
+      const idx = (new Date().getDay() + 6) % 7;
+      const entry = oh.weekday_text[idx] || '';
+      const colon = entry.indexOf(':');
+      return colon === -1 ? '' : entry.slice(colon + 2).trim();
+    }
+
+    function renderDetails(place) {
+      if (place.rating) {
+        pcRating.innerHTML = starsMarkup(place.rating) + place.rating.toFixed(1) +
+          (place.user_ratings_total
+            ? ' <span class="pc-rating-count">(' + place.user_ratings_total.toLocaleString() + ' reviews)</span>'
+            : '');
+        pcRating.style.display = 'block';
+      }
+
+      if (place.opening_hours) {
+        const isOpen = typeof place.opening_hours.isOpen === 'function'
+          ? place.opening_hours.isOpen()
+          : place.opening_hours.open_now;
+        const hours = todayHoursText(place.opening_hours);
+        pcHours.textContent = (isOpen ? 'Open now' : 'Closed now') + (hours ? ' · ' + hours : '');
+        pcHours.className = 'pc-hours ' + (isOpen ? 'open' : 'closed');
+        pcHours.style.display = 'block';
+      }
+
+      if (place.reviews && place.reviews.length) {
+        const html = place.reviews.slice(0, 2).map(function(r) {
+          const t = (r.text || '').replace(/\s+/g, ' ').trim();
+          const snippet = t.length > 140 ? t.slice(0, 140).trim() + '…' : t;
+          return '<div class="pc-review">' + esc(snippet) +
+            '<span class="pc-review-author">' + starsMarkup(r.rating || 0) +
+              esc(r.author_name || '') +
+              (r.relative_time_description ? ' · ' + esc(r.relative_time_description) : '') +
+            '</span>' +
+          '</div>';
+        }).join('');
+        pcReviews.innerHTML = html;
+        pcReviews.style.display = 'block';
+      }
     }
 
     function closeCard() {
