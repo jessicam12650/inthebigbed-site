@@ -9,11 +9,15 @@
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+    html, body { height: 100%; }
     body {
       font-family: 'DM Sans', sans-serif;
       background: #F2EDE6;
       color: #1C1C1A;
       -webkit-font-smoothing: antialiased;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
     }
 
     /* ── NAV ── */
@@ -55,65 +59,37 @@
     .nav.open .nav-hamburger span:nth-child(2) { opacity: 0; }
     .nav.open .nav-hamburger span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
 
-    /* ── PAGE HEADER ── */
-    .page-header { max-width: 1100px; margin: 0 auto; padding: 64px 48px 40px; }
-    .page-heading { font-weight: 900; font-size: clamp(32px, 5vw, 56px); line-height: 1.1; margin-bottom: 12px; }
-    .page-sub { font-size: 18px; color: #555; margin-bottom: 36px; line-height: 1.5; }
-
-    /* ── FILTERS ── */
-    .filters { display: flex; gap: 10px; flex-wrap: wrap; }
-    .filter-btn {
-      font-family: 'DM Sans', sans-serif; font-weight: 700; font-size: 14px;
-      padding: 9px 18px; border-radius: 4px; border: 1.5px solid #1C1C1A;
-      background: transparent; color: #1C1C1A; cursor: pointer;
-      transition: background 0.15s, color 0.15s;
+    /* ── MAP SHELL ── */
+    .map-shell {
+      position: relative;
+      flex: 1;
+      min-height: 0;
+      width: 100%;
     }
-    .filter-btn:hover { background: rgba(28,28,26,0.08); }
-    .filter-btn.active { background: #1C1C1A; color: #F2EDE6; }
+    #map { width: 100%; height: 100%; display: block; }
 
-    /* ── MAP ── */
-    #map { width: 100%; height: 480px; border-top: 1px solid #1C1C1A; border-bottom: 1px solid #1C1C1A; display: block; }
-
-    /* ── SECTION ── */
-    .section { max-width: 1100px; margin: 0 auto; padding: 56px 48px 64px; }
-    .section + .section { padding-top: 0; }
-    .section-heading { font-weight: 900; font-size: 26px; margin-bottom: 32px; }
-
-    /* ── GRID ── */
-    .venue-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
-
-    /* ── CARD ── */
-    .venue-card {
-      background: #fff; border: 1px solid #1C1C1A; border-radius: 4px; padding: 20px;
-      display: flex; flex-direction: column; gap: 8px;
-      cursor: pointer; transition: box-shadow 0.15s, transform 0.12s;
+    /* ── FILTER CHIPS ── */
+    .filter-bar {
+      position: absolute;
+      top: 16px; left: 16px; right: 16px;
+      z-index: 5;
+      display: flex; gap: 8px; flex-wrap: wrap;
+      pointer-events: none;
     }
-    .venue-card:hover { box-shadow: 0 6px 20px rgba(28,28,26,0.12); transform: translateY(-2px); }
-    .venue-card.highlighted { border-color: #D4845A; box-shadow: 0 0 0 2px #D4845A; }
-    .venue-card.hidden { display: none; }
-
-    /* Featured / handpicked cards */
-    .venue-card.featured {
-      background: #FDF7F2;
-      border-color: #D4845A;
-      border-width: 1.5px;
+    .filter-chip {
+      pointer-events: auto;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 700; font-size: 13px;
+      background: #fff; color: #1C1C1A;
+      padding: 8px 16px; border: none;
+      border-radius: 999px;
+      box-shadow: 0 2px 8px rgba(28,28,26,0.18);
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s, box-shadow 0.15s;
+      white-space: nowrap;
     }
-    .venue-card.featured:hover { box-shadow: 0 6px 20px rgba(212,132,90,0.2); }
-
-    .card-tag { font-size: 11px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #D4845A; }
-    .card-name { font-weight: 700; font-size: 17px; line-height: 1.3; color: #1C1C1A; }
-    .card-address { font-size: 13px; color: #555; line-height: 1.5; }
-    .card-rating { font-size: 13px; color: #777; }
-    .card-rating .stars { color: #E8C84A; }
-    .card-status { font-size: 13px; font-weight: 700; }
-    .open    { color: #6B9E7A; }
-    .closed  { color: #b94040; }
-    .unknown { color: #aaa; font-weight: 400; }
-    .card-directions {
-      font-size: 13px; font-weight: 700; color: #D4845A;
-      text-decoration: none; margin-top: 2px; display: inline-block;
-    }
-    .card-directions:hover { text-decoration: underline; }
+    .filter-chip:hover { background: #f5f0ea; box-shadow: 0 3px 10px rgba(28,28,26,0.22); }
+    .filter-chip.active { background: #1C1C1A; color: #F2EDE6; }
 
     /* ── RESPONSIVE ── */
     @media (max-width: 768px) {
@@ -127,10 +103,8 @@
       }
       .nav.open .nav-links { display: flex; }
       .nav-hamburger { display: flex; }
-      .page-header { padding: 40px 20px 28px; }
-      #map { height: 320px; }
-      .section { padding: 40px 20px 48px; }
-      .venue-grid { grid-template-columns: 1fr; }
+      .filter-bar { top: 12px; left: 12px; right: 12px; gap: 6px; }
+      .filter-chip { font-size: 12px; padding: 7px 13px; }
     }
   </style>
 </head>
@@ -153,26 +127,16 @@
     </button>
   </nav>
 
-  <div class="page-header">
-    <h1 class="page-heading">Dog-friendly Liverpool</h1>
-    <p class="page-sub">Pubs, bars, cafes and restaurants that actually welcome your dog.</p>
-    <div class="filters">
-      <button class="filter-btn active" data-filter="all">All</button>
-      <button class="filter-btn" data-filter="pub-bar">Pubs and Bars</button>
-      <button class="filter-btn" data-filter="restaurant">Restaurants</button>
+  <div class="map-shell">
+    <div class="filter-bar" id="filter-bar">
+      <button class="filter-chip active" data-filter="all">All</button>
+      <button class="filter-chip" data-filter="Pubs">Pubs</button>
+      <button class="filter-chip" data-filter="Bars">Bars</button>
+      <button class="filter-chip" data-filter="Restaurants">Restaurants</button>
+      <button class="filter-chip" data-filter="Street Food">Street Food</button>
+      <button class="filter-chip" data-filter="Live Music">Live Music</button>
     </div>
-  </div>
-
-  <div id="map"></div>
-
-  <div class="section">
-    <h2 class="section-heading">Handpicked by us 🐾</h2>
-    <div class="venue-grid" id="handpicked-grid"></div>
-  </div>
-
-  <div class="section">
-    <h2 class="section-heading">Dog-friendly bars and restaurants in Liverpool</h2>
-    <div class="venue-grid" id="venue-grid"></div>
+    <div id="map"></div>
   </div>
 
   <script>
@@ -262,74 +226,17 @@
     }
     function starsHtml(r) {
       const n = Math.min(5, Math.round(r));
-      return '<span class="stars">' + '★'.repeat(n) + '☆'.repeat(5 - n) + '</span>';
+      return '<span style="color:#E8C84A;">' + '★'.repeat(n) + '☆'.repeat(5 - n) + '</span>';
     }
-    function openStatus(oh) {
-      if (!oh) return { cls: 'unknown', text: 'Hours not listed' };
-      if (oh.open_now === true) return { cls: 'open', text: 'Open now' };
-      const periods = oh.periods;
-      if (periods && periods.length) {
-        const now = new Date(), day = now.getDay(), mins = now.getHours() * 60 + now.getMinutes();
-        for (let d = 0; d <= 7; d++) {
-          const cd = (day + d) % 7;
-          const ps = periods.filter(p => p.open && p.open.day === cd).sort((a, b) => +a.open.time - +b.open.time);
-          for (const p of ps) {
-            const h = +p.open.time.slice(0, 2), m = +p.open.time.slice(2);
-            if (d === 0 && h * 60 + m <= mins) continue;
-            const ap = h >= 12 ? 'PM' : 'AM', h12 = h % 12 || 12;
-            const tl = h12 + (m ? ':' + String(m).padStart(2, '0') : '') + ' ' + ap;
-            if (d === 0) return { cls: 'closed', text: 'Closed — opens ' + tl };
-            if (d === 1) return { cls: 'closed', text: 'Closed — opens ' + tl + ' tomorrow' };
-            const dn = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-            return { cls: 'closed', text: 'Closed — opens ' + dn[cd] + ' ' + tl };
-          }
-        }
-      }
-      return { cls: 'closed', text: 'Closed now' };
+    /* Match a venue against a chip's filter value. Falls back to the broader
+       `cat` field when an entry has no explicit `category`. */
+    function matchesFilter(v, f) {
+      if (f === 'all') return true;
+      if (v.category) return v.category === f;
+      if (f === 'Pubs' || f === 'Bars') return v.cat === 'pub-bar';
+      if (f === 'Restaurants') return v.cat === 'restaurant';
+      return false;
     }
-
-    /* Return today's hours string from weekday_text, e.g. "12:00 PM – 11:00 PM" */
-    function todayHours(oh) {
-      if (!oh || !oh.weekday_text || !oh.weekday_text.length) return '';
-      /* weekday_text is Mon–Sun (index 0=Mon); JS getDay() is 0=Sun */
-      const idx = (new Date().getDay() + 6) % 7;
-      const entry = oh.weekday_text[idx] || '';
-      const colon = entry.indexOf(':');
-      return colon === -1 ? '' : entry.slice(colon + 2).trim();
-    }
-
-    /* ── BUILD CARDS ── */
-    function buildCards(venues, gridId, featured) {
-      const grid = document.getElementById(gridId);
-      venues.forEach(function(v) {
-        const fallbackDir = 'https://www.google.com/maps/search/' + encodeURIComponent(v.name + ', ' + v.address);
-        const noteHtml = v.note
-          ? '<div class="card-address" style="font-style:italic;">' + esc(v.note) + '</div>'
-          : '';
-        grid.insertAdjacentHTML('beforeend',
-          '<div class="venue-card' + (featured ? ' featured' : '') + '" id="c-' + v.id + '" data-id="' + v.id + '" data-cat="' + v.cat + '">' +
-            '<div class="card-tag">' + esc(v.tag) + '</div>' +
-            '<div class="card-name">' + esc(v.name) + '</div>' +
-            '<div class="card-address">' + esc(v.address) + '</div>' +
-            noteHtml +
-            '<div class="card-status unknown" id="s-' + v.id + '">Loading hours\u2026</div>' +
-            '<a class="card-directions" id="d-' + v.id + '" href="' + esc(fallbackDir) + '" target="_blank" rel="noopener">Get directions \u2192</a>' +
-          '</div>'
-        );
-        document.getElementById('c-' + v.id).addEventListener('click', function(e) {
-          if (e.target.tagName === 'A') return;
-          const mk = markers[v.id];
-          if (!mk) return;
-          map.panTo(mk.getPosition());
-          map.setZoom(15);
-          google.maps.event.trigger(mk, 'click');
-          document.getElementById('map').scrollIntoView({ behavior: 'smooth' });
-        });
-      });
-    }
-
-    buildCards(HANDPICKED, 'handpicked-grid', true);
-    buildCards(VENUES,     'venue-grid',      false);
 
     /* ── MAP STYLES ── */
     const MAP_STYLES = [
@@ -364,52 +271,20 @@
       ALL_VENUES.forEach(function(v) { enrichVenue(v, svc); });
     }
 
-    /* ── ENRICH VENUE ── */
+    /* ── ENRICH VENUE ── Refine pin location and pick up ratings via Places API */
     function enrichVenue(v, svc) {
       svc.findPlaceFromQuery(
         { query: v.name + ', ' + v.address, fields: ['place_id', 'geometry'] },
         function(res, st) {
-          if (st !== google.maps.places.PlacesServiceStatus.OK || !res || !res.length) {
-            setStatus(v.id, 'unknown', 'Details coming soon');
-            return;
-          }
+          if (st !== google.maps.places.PlacesServiceStatus.OK || !res || !res.length) return;
           const placeId = res[0].place_id;
           const fbLoc   = res[0].geometry && res[0].geometry.location;
 
           svc.getDetails(
-            { placeId: placeId, fields: ['formatted_address', 'opening_hours', 'rating', 'user_ratings_total', 'geometry'] },
+            { placeId: placeId, fields: ['rating', 'geometry'] },
             function(place, ds) {
               const ok  = ds === google.maps.places.PlacesServiceStatus.OK;
               const loc = (ok && place && place.geometry) ? place.geometry.location : fbLoc;
-
-              if (ok && place) {
-                const s = openStatus(place.opening_hours);
-                const h = todayHours(place.opening_hours);
-                setStatus(v.id, s.cls, h ? s.text + ' \u00b7 ' + h : s.text);
-
-                if (place.rating && !document.getElementById('r-' + v.id)) {
-                  const nameEl = document.querySelector('#c-' + v.id + ' .card-name');
-                  if (nameEl) {
-                    const ratingText = place.rating +
-                      (place.user_ratings_total ? ' (' + place.user_ratings_total.toLocaleString() + ' reviews)' : '');
-                    nameEl.insertAdjacentHTML('afterend',
-                      '<div class="card-rating" id="r-' + v.id + '">' + starsHtml(place.rating) + ' ' + esc(ratingText) + '</div>'
-                    );
-                  }
-                }
-
-                if (place.formatted_address) {
-                  const addrEl = document.querySelector('#c-' + v.id + ' .card-address');
-                  if (addrEl && !v.note) addrEl.textContent = place.formatted_address;
-                }
-
-                const dirEl = document.getElementById('d-' + v.id);
-                if (dirEl) dirEl.href = 'https://www.google.com/maps/dir/?api=1&destination_place_id=' + placeId;
-              } else {
-                setStatus(v.id, 'unknown', 'Details coming soon');
-              }
-
-              /* Replace hardcoded pin with accurate API-located pin */
               if (loc) addMarker(v, loc, ok && place ? place.rating : null);
             }
           );
@@ -417,15 +292,7 @@
       );
     }
 
-    function setStatus(id, cls, text) {
-      const el = document.getElementById('s-' + id);
-      if (!el) return;
-      el.className = 'card-status ' + cls;
-      el.textContent = text;
-    }
-
     function addMarker(v, loc, rating) {
-      /* Remove previous pin for this venue before placing new one */
       if (markers[v.id]) markers[v.id].setMap(null);
 
       const mk = new google.maps.Marker({
@@ -443,51 +310,35 @@
       });
       markers[v.id] = mk;
 
-      /* Respect any filter already applied when this marker is (re-)created */
-      if (activeFilter !== 'all' && v.cat !== activeFilter) mk.setVisible(false);
+      if (!matchesFilter(v, activeFilter)) mk.setVisible(false);
 
       mk.addListener('click', function() {
-        const stars = rating ? '★'.repeat(Math.min(5, Math.round(rating))) : '';
+        const addrHtml   = '<div style="font-size:12px;color:#777;line-height:1.4;">' + esc(v.address) + '</div>';
+        const descHtml   = v.description ? '<div style="font-size:13px;color:#555;margin-top:4px;line-height:1.4;">' + esc(v.description) + '</div>' : '';
+        const ratingHtml = rating ? '<div style="font-size:13px;color:#777;margin-top:6px;">' + starsHtml(rating) + ' ' + rating + '</div>' : '';
         infoWindow.setContent(
-          '<div style="font-family:\'DM Sans\',sans-serif;padding:4px 2px;min-width:150px;">' +
+          '<div style="font-family:\'DM Sans\',sans-serif;padding:4px 2px;min-width:180px;">' +
             '<div style="font-weight:700;font-size:14px;color:#1C1C1A;margin-bottom:4px;line-height:1.3;">' + esc(v.name) + '</div>' +
-            (rating ? '<div style="font-size:13px;color:#777;"><span style="color:#E8C84A;">' + stars + '</span> ' + rating + '</div>' : '') +
+            addrHtml + descHtml + ratingHtml +
           '</div>'
         );
         infoWindow.open(map, mk);
-
-        const card = document.getElementById('c-' + v.id);
-        if (card && !card.classList.contains('hidden')) {
-          document.querySelectorAll('.venue-card.highlighted').forEach(function(c) { c.classList.remove('highlighted'); });
-          card.classList.add('highlighted');
-          card.scrollIntoView({ behavior: 'smooth', block: 'center' });
-          setTimeout(function() { card.classList.remove('highlighted'); }, 2500);
-        }
       });
     }
 
     /* ── FILTERS ── */
     function applyFilter(f) {
       activeFilter = f;
-
-      /* Update button states */
-      document.querySelectorAll('.filter-btn').forEach(function(b) {
+      document.querySelectorAll('.filter-chip').forEach(function(b) {
         b.classList.toggle('active', b.dataset.filter === f);
       });
-
-      /* Show/hide cards in both grids */
-      document.querySelectorAll('.venue-card').forEach(function(card) {
-        card.classList.toggle('hidden', f !== 'all' && card.dataset.cat !== f);
-      });
-
-      /* Show/hide map markers */
       ALL_VENUES.forEach(function(v) {
         var mk = markers[v.id];
-        if (mk) mk.setVisible(f === 'all' || v.cat === f);
+        if (mk) mk.setVisible(matchesFilter(v, f));
       });
     }
 
-    document.querySelectorAll('.filter-btn').forEach(function(btn) {
+    document.querySelectorAll('.filter-chip').forEach(function(btn) {
       btn.addEventListener('click', function() { applyFilter(btn.dataset.filter); });
     });
   </script>
