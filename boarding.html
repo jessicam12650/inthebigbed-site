@@ -324,6 +324,76 @@
 
     .divider { border: none; border-top: 1px solid #eee; margin: 0; }
 
+    /* ── LICENSED BOARDERS ── */
+    .licensed-wrap {
+      max-width: 1100px; margin: 0 auto;
+      padding: 72px 48px 96px;
+    }
+    .licensed-wrap .section-heading { margin-bottom: 16px; }
+    .licensed-intro {
+      font-size: 16px; color: #555; line-height: 1.65;
+      max-width: 820px; margin-bottom: 32px;
+    }
+    .licensed-controls {
+      display: flex; gap: 16px; flex-wrap: wrap;
+      align-items: flex-end; margin-bottom: 32px;
+    }
+    .licensed-control {
+      display: flex; flex-direction: column; gap: 6px;
+      font-size: 12px; font-weight: 700; letter-spacing: 0.05em;
+      text-transform: uppercase; color: #1C1C1A;
+    }
+    .licensed-control select {
+      font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 400;
+      padding: 9px 16px; border-radius: 4px;
+      border: 1.5px solid #1C1C1A;
+      background: #fff; color: #1C1C1A;
+      min-width: 200px; outline: none;
+      transition: border-color 0.15s;
+      text-transform: none; letter-spacing: 0;
+    }
+    .licensed-control select:focus { border-color: #D4845A; }
+    .licensed-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+    .licensed-card {
+      background: #fff;
+      border: 1px solid #1C1C1A;
+      border-radius: 4px;
+      padding: 22px;
+      display: flex; flex-direction: column; gap: 10px;
+    }
+    .licensed-name {
+      font-weight: 900; font-size: 20px; color: #1C1C1A; line-height: 1.25;
+    }
+    .licensed-area {
+      font-size: 14px; font-weight: 700; color: #555;
+    }
+    .licensed-stars {
+      letter-spacing: 3px; font-size: 18px; color: #E8C84A; line-height: 1;
+    }
+    .licensed-stars .off { color: #d8d3cb; }
+    .licensed-num {
+      font-size: 12px; color: #999; font-family: monospace;
+      letter-spacing: 0.04em;
+    }
+    .licensed-council {
+      margin-top: auto;
+      font-size: 11px; font-weight: 700; letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 6px 10px; border-radius: 2px;
+      background: #F2EDE6; color: #1C1C1A;
+      border: 1px solid #1C1C1A;
+      align-self: flex-start;
+    }
+    .licensed-empty {
+      grid-column: 1 / -1;
+      padding: 24px; color: #777; font-size: 15px; text-align: center;
+      border: 1px dashed #bbb; border-radius: 4px;
+    }
+
     /* ── FOOTER ── */
     .footer {
       background: #1C1C1A;
@@ -355,6 +425,7 @@
     /* ── RESPONSIVE ── */
     @media (max-width: 900px) {
       .tier-grid { grid-template-columns: 1fr; }
+      .licensed-grid { grid-template-columns: repeat(2, 1fr); }
     }
     @media (max-width: 768px) {
       .nav { padding: 0 20px; height: 56px; flex-wrap: wrap; align-content: flex-start; }
@@ -375,6 +446,10 @@
       .search-wrap { padding: 40px 20px 0; }
       .boarders-wrap { padding: 24px 20px 64px; }
       .boarder-grid { grid-template-columns: 1fr; }
+      .licensed-wrap { padding: 48px 20px 64px; }
+      .licensed-grid { grid-template-columns: 1fr; }
+      .licensed-control select { min-width: 100%; width: 100%; }
+      .licensed-control { width: 100%; }
       .trust-box-wrap { padding: 40px 20px; }
       .trust-box-inner { flex-direction: column; gap: 12px; }
       .footer { padding: 40px 20px; }
@@ -695,6 +770,44 @@
     </div>
   </div>
 
+  <!-- ── LICENSED BOARDERS ── -->
+  <section id="licensed" class="licensed-wrap">
+    <h2 class="section-heading">Liverpool's Licensed Dog Home Boarders</h2>
+    <p class="licensed-intro">
+      Every boarder listed below is officially licensed by Liverpool City Council and star-rated for welfare, safety, and quality of care. We only list operators with a valid council licence — so you know your dog is in legal, vetted hands. Source: Liverpool City Council public register of licensed operators.
+    </p>
+
+    <div class="licensed-controls">
+      <label class="licensed-control" for="licensed-postcode">
+        <span>Postcode area</span>
+        <select id="licensed-postcode">
+          <option value="all">All</option>
+          <option value="L4">L4</option>
+          <option value="L8">L8</option>
+          <option value="L9">L9</option>
+          <option value="L10">L10</option>
+          <option value="L11">L11</option>
+          <option value="L12">L12</option>
+          <option value="L13">L13</option>
+          <option value="L14">L14</option>
+          <option value="L16">L16</option>
+          <option value="L19">L19</option>
+          <option value="L25">L25</option>
+          <option value="L27">L27</option>
+        </select>
+      </label>
+      <label class="licensed-control" for="licensed-sort">
+        <span>Sort by rating</span>
+        <select id="licensed-sort">
+          <option value="desc">Highest rated first</option>
+          <option value="asc">Lowest rated first</option>
+        </select>
+      </label>
+    </div>
+
+    <div id="licensed-grid" class="licensed-grid"></div>
+  </section>
+
   <!-- ── FOOTER ── -->
   <footer class="footer">
     <div class="footer-inner">
@@ -718,6 +831,89 @@
     document.getElementById('nav-hamburger').addEventListener('click', function() {
       document.getElementById('nav').classList.toggle('open');
     });
+
+    /* ── LICENSED BOARDERS DATA ── */
+    var LICENSED_BOARDERS = [
+      { name: "A Place4Paws", postcode: "L4", licence: "LCC/AAL09", stars: 5 },
+      { name: "Fairy Dog Mother - Meg", postcode: "L4", licence: "LCC/AAL77", stars: 4 },
+      { name: "Alex WoodsWoof", postcode: "L4", licence: "LCC/AAL79", stars: 4 },
+      { name: "Annas dog walking and sitting", postcode: "L4", licence: "LCC/AAL73", stars: 4 },
+      { name: "Anna", postcode: "L8", licence: "LCC/AAL83", stars: 4 },
+      { name: "The Collar Club", postcode: "L9", licence: "LCC/AAL47", stars: 5 },
+      { name: "Animals at Home", postcode: "L9", licence: "LCC/AAL39", stars: 4 },
+      { name: "PetStay", postcode: "L9", licence: "LCC/AAL86", stars: 4 },
+      { name: "The Paw & Purr Club", postcode: "L10", licence: "LCC/AAL84", stars: 4 },
+      { name: "Paula", postcode: "L11", licence: "LCC/AAL72", stars: 4 },
+      { name: "Parkside Dog Retreat", postcode: "L12", licence: "LCC/AAL61", stars: 4 },
+      { name: "Waggy Dogs", postcode: "L12", licence: "AAL25", stars: 5 },
+      { name: "Woof & Wags", postcode: "L12", licence: "LCC/AAL63", stars: 4 },
+      { name: "Louise", postcode: "L12", licence: "LCC/AAL85", stars: 4 },
+      { name: "Antony", postcode: "L13", licence: "LCC/AAL55", stars: 5 },
+      { name: "Kay", postcode: "L14", licence: "LCC/AAL75", stars: 4 },
+      { name: "Just Like Home", postcode: "L14", licence: "LCC/AAL87", stars: 4 },
+      { name: "Happy Dog (Paul)", postcode: "L16", licence: "LCC/AAL45", stars: 5 },
+      { name: "Pops Pups", postcode: "L16", licence: "LCC/AAL67", stars: 5 },
+      { name: "Allerton Dog Minders", postcode: "L19", licence: "AAL15", stars: 5 },
+      { name: "Anya", postcode: "L19", licence: "LCC/AAL77", stars: 4 },
+      { name: "Anthony (Hound Hub)", postcode: "L25", licence: "LCC/AAL81", stars: 4 },
+      { name: "Fido Dog", postcode: "L25", licence: "LCC/AAL49", stars: 5 },
+      { name: "Sandra", postcode: "L25", licence: "LCC/AAL57", stars: 5 },
+      { name: "Happy Doggy Home Boarding", postcode: "L25", licence: "LCC/AAL68", stars: 5 },
+      { name: "Little Paws Care", postcode: "L25", licence: "LCC/AAL88", stars: 4 },
+      { name: "Never Lonely", postcode: "L27", licence: "LCC/AAL52", stars: 5 }
+    ];
+
+    function escapeHtml(str) {
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    function starsHtml(n) {
+      var filled = Math.max(0, Math.min(5, n));
+      var html = '';
+      for (var i = 0; i < filled; i++) html += '<span>★</span>';
+      for (var j = filled; j < 5; j++) html += '<span class="off">★</span>';
+      return '<div class="licensed-stars" aria-label="' + filled + ' out of 5 stars">' + html + '</div>';
+    }
+
+    function renderLicensedBoarders() {
+      var grid = document.getElementById('licensed-grid');
+      if (!grid) return;
+      var postcode = document.getElementById('licensed-postcode').value;
+      var sort = document.getElementById('licensed-sort').value;
+
+      var list = LICENSED_BOARDERS.filter(function(b) {
+        return postcode === 'all' || b.postcode === postcode;
+      });
+      list.sort(function(a, b) {
+        return sort === 'asc' ? a.stars - b.stars : b.stars - a.stars;
+      });
+
+      if (list.length === 0) {
+        grid.innerHTML = '<div class="licensed-empty">No licensed boarders match this filter.</div>';
+        return;
+      }
+
+      grid.innerHTML = list.map(function(b) {
+        return (
+          '<article class="licensed-card">' +
+            '<div class="licensed-name">' + escapeHtml(b.name) + '</div>' +
+            '<div class="licensed-area">' + escapeHtml(b.postcode) + '</div>' +
+            starsHtml(b.stars) +
+            '<div class="licensed-num">Licence ' + escapeHtml(b.licence) + '</div>' +
+            '<div class="licensed-council">Licensed by Liverpool City Council</div>' +
+          '</article>'
+        );
+      }).join('');
+    }
+
+    document.getElementById('licensed-postcode').addEventListener('change', renderLicensedBoarders);
+    document.getElementById('licensed-sort').addEventListener('change', renderLicensedBoarders);
+    renderLicensedBoarders();
   </script>
 
 </body>
