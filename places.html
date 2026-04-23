@@ -91,6 +91,58 @@
     .filter-chip:hover { background: #f5f0ea; box-shadow: 0 3px 10px rgba(28,28,26,0.22); }
     .filter-chip.active { background: #1C1C1A; color: #F2EDE6; }
 
+    /* ── PLACE CARD ── */
+    .place-card {
+      position: absolute;
+      z-index: 6;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 12px 32px rgba(28,28,26,0.18);
+      padding: 20px 20px 18px;
+      opacity: 0;
+      pointer-events: none;
+      transition: transform 0.28s cubic-bezier(0.2,0.7,0.2,1), opacity 0.2s ease;
+      left: 16px;
+      bottom: 16px;
+      width: 360px;
+      max-width: calc(100% - 32px);
+      transform: translateY(8px);
+    }
+    .place-card.open { opacity: 1; pointer-events: auto; transform: translateY(0); }
+    .pc-close {
+      position: absolute; top: 8px; right: 8px;
+      width: 32px; height: 32px;
+      border: none; background: transparent;
+      font-size: 22px; line-height: 1; color: #555;
+      cursor: pointer; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.15s, color 0.15s;
+    }
+    .pc-close:hover { background: rgba(28,28,26,0.06); color: #1C1C1A; }
+    .pc-name { font-size: 19px; font-weight: 700; color: #1C1C1A; line-height: 1.25; margin: 0 36px 8px 0; }
+    .pc-badge {
+      display: inline-block;
+      font-size: 11px; font-weight: 700; letter-spacing: 0.04em;
+      padding: 4px 10px; border-radius: 999px; margin-bottom: 10px;
+      background: #EEE8E0; color: #555;
+    }
+    .pc-badge[data-cat="Pubs"]        { background: #F4E4D4; color: #8B6F47; }
+    .pc-badge[data-cat="Bars"]        { background: #DCE8F2; color: #3E6084; }
+    .pc-badge[data-cat="Restaurants"] { background: #F7D9D1; color: #A54A3A; }
+    .pc-badge[data-cat="Street Food"] { background: #FCE4B0; color: #8A6B2E; }
+    .pc-badge[data-cat="Live Music"]  { background: #E4D4F2; color: #6B4A8A; }
+    .pc-desc { font-size: 14px; color: #3d3d3d; line-height: 1.45; margin: 0 0 8px; }
+    .pc-addr { font-size: 12px; color: #777; line-height: 1.4; margin: 0 0 14px; }
+    .pc-cta {
+      display: block; text-align: center;
+      background: #D4845A; color: #fff;
+      font-weight: 700; font-size: 14px;
+      padding: 11px 16px; border-radius: 8px;
+      text-decoration: none;
+      transition: opacity 0.15s;
+    }
+    .pc-cta:hover { opacity: 0.88; }
+
     /* ── RESPONSIVE ── */
     @media (max-width: 768px) {
       .nav { padding: 0 20px; height: 56px; flex-wrap: wrap; align-content: flex-start; }
@@ -105,6 +157,14 @@
       .nav-hamburger { display: flex; }
       .filter-bar { top: 12px; left: 12px; right: 12px; gap: 6px; }
       .filter-chip { font-size: 12px; padding: 7px 13px; }
+      .place-card {
+        left: 0; right: 0; bottom: 0;
+        width: 100%; max-width: none;
+        border-radius: 12px 12px 0 0;
+        padding: 18px 18px 16px;
+        transform: translateY(100%);
+        box-shadow: 0 -8px 24px rgba(28,28,26,0.18);
+      }
     }
   </style>
 </head>
@@ -137,6 +197,15 @@
       <button class="filter-chip" data-filter="Live Music">Live Music</button>
     </div>
     <div id="map"></div>
+
+    <aside class="place-card" id="place-card" aria-hidden="true" aria-live="polite">
+      <button class="pc-close" id="pc-close" aria-label="Close">&times;</button>
+      <h2 class="pc-name" id="pc-name"></h2>
+      <span class="pc-badge" id="pc-badge"></span>
+      <p class="pc-desc" id="pc-desc"></p>
+      <p class="pc-addr" id="pc-addr"></p>
+      <a class="pc-cta" id="pc-dir" href="#" target="_blank" rel="noopener">Get directions</a>
+    </aside>
   </div>
 
   <script>
@@ -216,17 +285,13 @@
     const ALL_VENUES = [...HANDPICKED, ...VENUES];
 
     /* ── STATE ── */
-    let map, infoWindow;
+    let map;
     const markers = {};
     let activeFilter = 'all';
 
     /* ── HELPERS ── */
     function esc(s) {
       return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-    }
-    function starsHtml(r) {
-      const n = Math.min(5, Math.round(r));
-      return '<span style="color:#E8C84A;">' + '★'.repeat(n) + '☆'.repeat(5 - n) + '</span>';
     }
     /* Match a venue against a chip's filter value. Falls back to the broader
        `cat` field when an entry has no explicit `category`. */
@@ -259,7 +324,9 @@
         fullscreenControl: true,
         zoomControlOptions: { position: google.maps.ControlPosition.RIGHT_BOTTOM },
       });
-      infoWindow = new google.maps.InfoWindow({ maxWidth: 260 });
+
+      /* Close the card when the user clicks the map background (not a marker) */
+      map.addListener('click', closeCard);
 
       /* Immediate pins from hardcoded coordinates */
       ALL_VENUES.forEach(function(v) {
@@ -312,18 +379,7 @@
 
       if (!matchesFilter(v, activeFilter)) mk.setVisible(false);
 
-      mk.addListener('click', function() {
-        const addrHtml   = '<div style="font-size:12px;color:#777;line-height:1.4;">' + esc(v.address) + '</div>';
-        const descHtml   = v.description ? '<div style="font-size:13px;color:#555;margin-top:4px;line-height:1.4;">' + esc(v.description) + '</div>' : '';
-        const ratingHtml = rating ? '<div style="font-size:13px;color:#777;margin-top:6px;">' + starsHtml(rating) + ' ' + rating + '</div>' : '';
-        infoWindow.setContent(
-          '<div style="font-family:\'DM Sans\',sans-serif;padding:4px 2px;min-width:180px;">' +
-            '<div style="font-weight:700;font-size:14px;color:#1C1C1A;margin-bottom:4px;line-height:1.3;">' + esc(v.name) + '</div>' +
-            addrHtml + descHtml + ratingHtml +
-          '</div>'
-        );
-        infoWindow.open(map, mk);
-      });
+      mk.addListener('click', function() { openCard(v); });
     }
 
     /* ── FILTERS ── */
@@ -341,6 +397,45 @@
     document.querySelectorAll('.filter-chip').forEach(function(btn) {
       btn.addEventListener('click', function() { applyFilter(btn.dataset.filter); });
     });
+
+    /* ── PLACE CARD ── */
+    const placeCard = document.getElementById('place-card');
+    const pcName    = document.getElementById('pc-name');
+    const pcBadge   = document.getElementById('pc-badge');
+    const pcDesc    = document.getElementById('pc-desc');
+    const pcAddr    = document.getElementById('pc-addr');
+    const pcDir     = document.getElementById('pc-dir');
+
+    /* Category used for the badge — falls back from `category` to a label
+       derived from the broader `cat` field so every card shows something. */
+    function displayCategory(v) {
+      if (v.category) return v.category;
+      if (v.cat === 'pub-bar') return 'Pubs';
+      if (v.cat === 'restaurant') return 'Restaurants';
+      return '';
+    }
+
+    function openCard(v) {
+      pcName.textContent = v.name;
+      const cat = displayCategory(v);
+      pcBadge.textContent = cat;
+      pcBadge.setAttribute('data-cat', cat);
+      pcBadge.style.display = cat ? 'inline-block' : 'none';
+      pcDesc.textContent = v.description || '';
+      pcDesc.style.display = v.description ? 'block' : 'none';
+      pcAddr.textContent = v.address;
+      pcDir.href = 'https://www.google.com/maps/dir/?api=1&destination=' +
+        encodeURIComponent(v.name + ', ' + v.address);
+      placeCard.classList.add('open');
+      placeCard.setAttribute('aria-hidden', 'false');
+    }
+
+    function closeCard() {
+      placeCard.classList.remove('open');
+      placeCard.setAttribute('aria-hidden', 'true');
+    }
+
+    document.getElementById('pc-close').addEventListener('click', closeCard);
   </script>
 
   <script>
