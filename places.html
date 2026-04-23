@@ -178,12 +178,13 @@
   <script>
     /* ── HANDPICKED VENUES ── */
     const HANDPICKED = [
-      { id: 'baltic-market',  name: 'Baltic Market',                 address: 'Stanhope Street, Liverpool',   cat: 'restaurant', tag: 'Handpicked 🐾', latLng: { lat: 53.3972, lng: -2.9802 } },
-      { id: 'bao-and-bap',    name: 'Bao and Bap',                   address: 'Rodney Street, Liverpool',     cat: 'restaurant', tag: 'Handpicked 🐾', latLng: { lat: 53.4034, lng: -2.9682 } },
+      { id: 'baltic-market',  name: 'Baltic Market',                 address: 'Stanhope Street, Liverpool',   cat: 'restaurant', tag: 'Handpicked 🐾', latLng: { lat: 53.3972, lng: -2.9802 }, description: "Liverpool's first street food market, craft beers, independent vendors, DJs", category: 'Street Food' },
+      { id: 'bao-and-bap',    name: 'Bao and Bap',                   address: 'Rodney Street, Liverpool',     cat: 'restaurant', tag: 'Handpicked 🐾', latLng: { lat: 53.4034, lng: -2.9682 }, description: 'Cozy Asian comfort food', category: 'Restaurants' },
       { id: 'dereks',         name: "Derek's Coffee & Sandwiches",    address: 'Lark Lane, Liverpool',         cat: 'restaurant', tag: 'Handpicked 🐾', latLng: { lat: 53.3858, lng: -2.9596 },
-        note: 'Dog-friendly at all locations — Lark Lane · Berry Street · Allerton Road · College Road, Crosby' },
-      { id: 'halton-castle',  name: 'The Halton Castle',              address: 'Mill Lane, Liverpool',         cat: 'pub-bar',    tag: 'Handpicked 🐾', latLng: { lat: 53.4072, lng: -2.9890 } },
-      { id: 'eden-bar',       name: 'Eden Bar',                       address: 'Eaton Road, Liverpool',        cat: 'pub-bar',    tag: 'Handpicked 🐾', latLng: { lat: 53.3840, lng: -2.9388 } },
+        note: 'Dog-friendly at all locations — Lark Lane · Berry Street · Allerton Road · College Road, Crosby',
+        description: 'Sopranos themed sandwich shop serving New York classics', category: 'Restaurants' },
+      { id: 'halton-castle',  name: 'The Halton Castle',              address: 'Mill Lane, Liverpool',         cat: 'pub-bar',    tag: 'Handpicked 🐾', latLng: { lat: 53.4072, lng: -2.9890 }, description: 'Old school pub with beer garden and darts board', category: 'Pubs' },
+      { id: 'eden-bar',       name: 'Eden Bar',                       address: 'Eaton Road, Liverpool',        cat: 'pub-bar',    tag: 'Handpicked 🐾', latLng: { lat: 53.3840, lng: -2.9388 }, description: 'Hidden gem with craft beers and live music', category: 'Bars' },
     ];
 
     /* ── MAIN VENUE LIST ── */
@@ -200,7 +201,7 @@
       { id: 'slug-lettuce',   name: 'Slug and Lettuce',               address: 'City Centre, Liverpool',                  cat: 'pub-bar',    tag: 'Dog-friendly 🐾', latLng: { lat: 53.4072, lng: -2.9857 } },
       { id: 'refinery',       name: 'The Refinery Liverpool',         address: 'City Centre, Liverpool',                  cat: 'restaurant', tag: 'Dog-friendly 🐾', latLng: { lat: 53.4050, lng: -2.9887 } },
       { id: 'club-house',     name: 'The Club House',                 address: 'City Centre, Liverpool',                  cat: 'pub-bar',    tag: 'Dog-friendly 🐾', latLng: { lat: 53.4055, lng: -2.9882 } },
-      { id: 'kazimier',       name: 'Kazimier Garden',                address: '32 Seel St, Liverpool',                   cat: 'pub-bar',    tag: 'Dog-friendly 🐾', latLng: { lat: 53.4003, lng: -2.9765 } },
+      { id: 'kazimier',       name: 'Kazimier Garden',                address: '32 Seel St, Liverpool',                   cat: 'pub-bar',    tag: 'Dog-friendly 🐾', latLng: { lat: 53.4003, lng: -2.9765 }, description: 'Open-air side-street venue with sheltered areas and live music', category: 'Live Music' },
       { id: 'brewdog',        name: 'BrewDog Liverpool',              address: 'Colquitt St, Liverpool',                  cat: 'pub-bar',    tag: 'Dog-friendly 🐾', latLng: { lat: 53.4014, lng: -2.9719 } },
       { id: 'buyers-club',    name: 'Buyers Club',                    address: 'Hardman St, Liverpool',                   cat: 'pub-bar',    tag: 'Dog-friendly 🐾', latLng: { lat: 53.4010, lng: -2.9696 } },
       { id: 'baltic-fleet',   name: 'Baltic Fleet',                   address: '33A Wapping, Liverpool',                  cat: 'pub-bar',    tag: 'Dog-friendly 🐾', latLng: { lat: 53.4009, lng: -2.9942 } },
@@ -240,7 +241,7 @@
       { id: 'rhubarb',        name: 'Rhubarb',                        address: 'Lark Lane, Liverpool',                    cat: 'restaurant', tag: 'Dog-friendly 🐾', latLng: { lat: 53.3862, lng: -2.9598 } },
       { id: 'queens-arms',    name: 'Queens Arms',                    address: 'Victoria Street, Liverpool',              cat: 'pub-bar',    tag: 'Dog-friendly 🐾', latLng: { lat: 53.4062, lng: -2.9894 } },
       { id: 'permit-room',    name: 'Permit Room by Dishoom',         address: 'Liverpool City Centre',                   cat: 'restaurant', tag: 'Dog-friendly 🐾', latLng: { lat: 53.4064, lng: -2.9863 } },
-      { id: 'mowgli',         name: 'Mowgli',                         address: 'Bold Street, Liverpool',                  cat: 'restaurant', tag: 'Dog-friendly 🐾', latLng: { lat: 53.4022, lng: -2.9783 } },
+      { id: 'mowgli',         name: 'Mowgli',                         address: 'Bold Street, Liverpool',                  cat: 'restaurant', tag: 'Dog-friendly 🐾', latLng: { lat: 53.4022, lng: -2.9783 }, description: 'Indian street food', category: 'Restaurants' },
       { id: 'mcnastys',       name: "McNasty's",                      address: 'Seel Street, Liverpool',                  cat: 'pub-bar',    tag: 'Dog-friendly 🐾', latLng: { lat: 53.4006, lng: -2.9768 } },
       { id: 'frederiks',      name: 'Frederiks',                      address: 'Hope Street, Liverpool',                  cat: 'pub-bar',    tag: 'Dog-friendly 🐾', latLng: { lat: 53.4021, lng: -2.9695 } },
       { id: 'shandon-bells',  name: 'The Shandon Bells',              address: 'Hope Street, Liverpool',                  cat: 'pub-bar',    tag: 'Dog-friendly 🐾', latLng: { lat: 53.4019, lng: -2.9692 } },
