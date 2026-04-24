@@ -25,6 +25,72 @@ export default function BoarderDetailPage({ params }: { params: Params }) {
   const boarder = BOARDERS.find((b) => b.id === params.id);
   if (!boarder) notFound();
 
+  if (!boarder.claimed) {
+    return (
+      <article className="bg-cream">
+        <section className="px-5 py-12 md:px-12 md:py-16">
+          <div className="mx-auto max-w-4xl">
+            <Link
+              href="/boarding"
+              className="mb-6 inline-flex items-center gap-1 text-sm font-sub text-ink/60 transition-opacity hover:opacity-80"
+            >
+              ← All boarders
+            </Link>
+
+            <h1 className="font-head text-4xl tracking-tight text-ink md:text-5xl">
+              {boarder.name}
+            </h1>
+            <p className="mt-1 text-base text-ink/60">{boarder.area}</p>
+
+            <div className="mt-4 flex flex-wrap items-center gap-3">
+              <span className="chip border-sage/30 bg-sage/10 text-sage">
+                Council Licensed ✓
+              </span>
+              <span className="chip border-ink/15 text-ink/70">
+                LCC licence {boarder.licenceNumber}
+              </span>
+            </div>
+
+            <div
+              className="mt-4 flex items-center gap-1"
+              aria-label={`Liverpool City Council rating: ${boarder.rating} out of 5`}
+            >
+              {[1, 2, 3, 4, 5].map((i) => (
+                <span
+                  key={i}
+                  aria-hidden
+                  className={`text-xl ${i <= boarder.rating ? "text-rust" : "text-ink/20"}`}
+                >
+                  ★
+                </span>
+              ))}
+              <span className="ml-2 text-sm font-sub text-ink/70">
+                {boarder.rating}/5 Liverpool City Council rating
+              </span>
+            </div>
+
+            <div className="mt-8 rounded-sm border border-ink/10 bg-white p-6 md:p-8">
+              <h2 className="font-head text-2xl text-ink md:text-3xl">
+                This profile hasn&apos;t been claimed yet
+              </h2>
+              <p className="mt-3 max-w-2xl text-base leading-relaxed text-ink/75">
+                {boarder.name} is licensed by Liverpool City Council but hasn&apos;t claimed their
+                profile yet. If you&apos;re {boarder.name}, claim your free profile to add photos,
+                prices and availability.
+              </p>
+              <Link
+                href={`/signup?claim=${boarder.id}`}
+                className="btn-primary btn-block-mobile mt-6"
+              >
+                Claim this profile
+              </Link>
+            </div>
+          </div>
+        </section>
+      </article>
+    );
+  }
+
   return (
     <article className="bg-cream">
       <section className="px-5 py-12 md:px-12 md:py-16">
