@@ -2,6 +2,7 @@
 
 import { useEffect, useState, type FormEvent } from "react";
 import { getSupabaseBrowserClient } from "@/lib/supabase";
+import { convertHeicIfNeeded } from "@/lib/imageConvert";
 
 type PhotoState =
   // No photo yet
@@ -54,16 +55,17 @@ export default function LostPage() {
     };
   }, []);
 
-  function handleFileChange(file: File | null) {
+  async function handleFileChange(file: File | null) {
     if (!file) {
       setPhoto({ kind: "none" });
       return;
     }
+    const converted = await convertHeicIfNeeded(file);
     const reader = new FileReader();
     reader.onload = () => {
-      setPhoto({ kind: "file", file, preview: reader.result as string });
+      setPhoto({ kind: "file", file: converted, preview: reader.result as string });
     };
-    reader.readAsDataURL(file);
+    reader.readAsDataURL(converted);
   }
 
   function photoPreviewUrl(): string | null {
@@ -229,7 +231,7 @@ export default function LostPage() {
                       {previewUrl ? "Change photo" : "Upload photo"}
                       <input
                         type="file"
-                        accept="image/*"
+                        accept="image/*,.heic,.heif"
                         onChange={(e) => handleFileChange(e.target.files?.[0] ?? null)}
                         className="hidden"
                       />

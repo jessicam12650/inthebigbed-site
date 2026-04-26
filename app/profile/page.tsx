@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { getSupabaseBrowserClient } from "@/lib/supabase";
 import type { User } from "@supabase/supabase-js";
 import BookingRequests from "@/components/BookingRequests";
+import { convertHeicIfNeeded } from "@/lib/imageConvert";
 
 type DogRow = {
   id: string;
@@ -204,18 +205,19 @@ export default function ProfilePage() {
     setDogs((prev) => prev.filter((d) => d.id !== id));
   }
 
-  function onPhotoChange(file: File | null) {
+  async function onPhotoChange(file: File | null) {
     if (!editing) return;
     if (!file) {
       setEditing({ ...editing, photoFile: null, photoPreview: null, photo_url: null });
       return;
     }
+    const converted = await convertHeicIfNeeded(file);
     const reader = new FileReader();
     reader.onload = () =>
       setEditing((e) =>
-        e ? { ...e, photoFile: file, photoPreview: reader.result as string } : e,
+        e ? { ...e, photoFile: converted, photoPreview: reader.result as string } : e,
       );
-    reader.readAsDataURL(file);
+    reader.readAsDataURL(converted);
   }
 
   if (loading) {
@@ -290,7 +292,7 @@ export default function ProfilePage() {
                       {editing.photoPreview || editing.photo_url ? "Change photo" : "Upload photo"}
                       <input
                         type="file"
-                        accept="image/*"
+                        accept="image/*,.heic,.heif"
                         onChange={(e) => onPhotoChange(e.target.files?.[0] ?? null)}
                         className="hidden"
                       />
