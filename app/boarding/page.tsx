@@ -3,29 +3,11 @@
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import { BOARDERS } from "@/data/boarders";
-import type { Tier } from "@/data/walkers";
 import TierBadge from "@/components/TierBadge";
 import Rating from "@/components/Rating";
 import PageHeader from "@/components/PageHeader";
 import FilterChip from "@/components/FilterChip";
-import FilterCheckbox from "@/components/FilterCheckbox";
 import EmptyState from "@/components/EmptyState";
-
-const TIER_FILTERS: Array<{ value: "all" | Tier; label: string }> = [
-  { value: "all", label: "All tiers" },
-  { value: "silver", label: "Silver" },
-  { value: "gold", label: "Gold" },
-  { value: "pro", label: "Pro" },
-];
-
-type CouncilFilter = "all" | "Liverpool" | "Sefton" | "Knowsley";
-
-const COUNCIL_FILTERS: Array<{ value: CouncilFilter; label: string }> = [
-  { value: "all", label: "All councils" },
-  { value: "Liverpool", label: "Liverpool" },
-  { value: "Sefton", label: "Sefton" },
-  { value: "Knowsley", label: "Knowsley" },
-];
 
 type BoardingTypeFilter = "all" | "home" | "kennels";
 
@@ -65,27 +47,19 @@ function renderBoardingTypeChip(location: string) {
 
 export default function BoardingPage() {
   const [query, setQuery] = useState("");
-  const [tier, setTier] = useState<"all" | Tier>("all");
-  const [council, setCouncil] = useState<CouncilFilter>("all");
   const [boardingType, setBoardingType] = useState<BoardingTypeFilter>("all");
-  const [availableOnly, setAvailableOnly] = useState(false);
-  const [gardenOnly, setGardenOnly] = useState(false);
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
     return BOARDERS.filter((b) => {
-      if (tier !== "all" && b.tier !== tier) return false;
-      if (council !== "all" && b.council !== council) return false;
       if (!matchesBoardingType(b.location, boardingType)) return false;
-      if (availableOnly && !b.available) return false;
-      if (gardenOnly && !b.garden.toLowerCase().includes("enclosed")) return false;
       if (q) {
         const hay = `${b.name} ${b.area} ${b.licenceNumber} ${b.features.join(" ")}`.toLowerCase();
         if (!hay.includes(q)) return false;
       }
       return true;
     });
-  }, [query, tier, council, boardingType, availableOnly, gardenOnly]);
+  }, [query, boardingType]);
 
   return (
     <>
@@ -126,26 +100,6 @@ export default function BoardingPage() {
                 {t.label}
               </FilterChip>
             ))}
-            {COUNCIL_FILTERS.map((c) => (
-              <FilterChip
-                key={c.value}
-                active={council === c.value}
-                onClick={() => setCouncil(c.value)}
-              >
-                {c.label}
-              </FilterChip>
-            ))}
-            {TIER_FILTERS.map((t) => (
-              <FilterChip key={t.value} active={tier === t.value} onClick={() => setTier(t.value)}>
-                {t.label}
-              </FilterChip>
-            ))}
-            <FilterCheckbox checked={gardenOnly} onChange={setGardenOnly}>
-              Enclosed garden
-            </FilterCheckbox>
-            <FilterCheckbox checked={availableOnly} onChange={setAvailableOnly}>
-              Available now
-            </FilterCheckbox>
           </div>
         </div>
       </section>
