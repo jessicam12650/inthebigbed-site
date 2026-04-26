@@ -84,7 +84,7 @@ export default function LostPage() {
       .upload(path, file, { upsert: false, contentType: file.type });
     if (upErr) return null;
     const { data } = supabase.storage.from("lost-dog-photos").getPublicUrl(path);
-    return data.publicUrl;
+    return `${data.publicUrl}?v=${Date.now()}`;
   }
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {

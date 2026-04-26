@@ -143,7 +143,7 @@ export default function ProfilePage() {
       .upload(path, dog.photoFile, { upsert: true, contentType: dog.photoFile.type });
     if (upErr) throw upErr;
     const { data } = supabase.storage.from("dog-photos").getPublicUrl(path);
-    return data.publicUrl;
+    return `${data.publicUrl}?v=${Date.now()}`;
   }
 
   async function saveDog(e: FormEvent<HTMLFormElement>) {
