@@ -27,6 +27,14 @@ const COUNCIL_FILTERS: Array<{ value: CouncilFilter; label: string }> = [
   { value: "Knowsley", label: "Knowsley" },
 ];
 
+type BoardingTypeFilter = "all" | "home" | "kennels";
+
+const BOARDING_TYPE_FILTERS: Array<{ value: BoardingTypeFilter; label: string }> = [
+  { value: "all", label: "All types" },
+  { value: "home", label: "Home boarding" },
+  { value: "kennels", label: "Kennels" },
+];
+
 const COUNCIL_LABELS: Record<"Liverpool" | "Sefton" | "Knowsley", string> = {
   Liverpool: "Liverpool City Council",
   Sefton: "Sefton Council",
@@ -40,10 +48,26 @@ function licensedByLine(b: { council?: "Liverpool" | "Sefton" | "Knowsley"; lice
   return `Licensed by ${label} · ${b.licenceNumber}`;
 }
 
+function matchesBoardingType(location: string, type: BoardingTypeFilter): boolean {
+  if (type === "all") return true;
+  const loc = location.toLowerCase();
+  if (type === "kennels") return loc.includes("kennel");
+  if (type === "home") return loc.includes("home");
+  return true;
+}
+
+function renderBoardingTypeChip(location: string) {
+  const loc = location.toLowerCase();
+  if (loc.includes("kennel")) return <span className="chip">🏢 Kennels</span>;
+  if (loc.includes("home")) return <span className="chip">🏠 Home boarding</span>;
+  return null;
+}
+
 export default function BoardingPage() {
   const [query, setQuery] = useState("");
   const [tier, setTier] = useState<"all" | Tier>("all");
   const [council, setCouncil] = useState<CouncilFilter>("all");
+  const [boardingType, setBoardingType] = useState<BoardingTypeFilter>("all");
   const [availableOnly, setAvailableOnly] = useState(false);
   const [gardenOnly, setGardenOnly] = useState(false);
 
@@ -52,6 +76,7 @@ export default function BoardingPage() {
     return BOARDERS.filter((b) => {
       if (tier !== "all" && b.tier !== tier) return false;
       if (council !== "all" && b.council !== council) return false;
+      if (!matchesBoardingType(b.location, boardingType)) return false;
       if (availableOnly && !b.available) return false;
       if (gardenOnly && !b.garden.toLowerCase().includes("enclosed")) return false;
       if (q) {
@@ -60,14 +85,14 @@ export default function BoardingPage() {
       }
       return true;
     });
-  }, [query, tier, council, availableOnly, gardenOnly]);
+  }, [query, tier, council, boardingType, availableOnly, gardenOnly]);
 
   return (
     <>
       <PageHeader
         eyebrow="Licensed boarders"
-        title="Boarding & daycare in Liverpool."
-        subtitle="Every boarder holds a current home boarding licence from their local council. Licence numbers shown on every listing."
+        title="Boarding in Liverpool."
+        subtitle="Home boarders and licensed kennels — every operator holds a current licence from their local council. Licence numbers shown on every listing."
       />
 
       <section className="border-b border-ink/10 bg-cream px-5 py-5 md:px-12">
@@ -92,6 +117,15 @@ export default function BoardingPage() {
             aria-label="Search boarders"
           />
           <div className="flex flex-wrap items-center gap-2">
+            {BOARDING_TYPE_FILTERS.map((t) => (
+              <FilterChip
+                key={t.value}
+                active={boardingType === t.value}
+                onClick={() => setBoardingType(t.value)}
+              >
+                {t.label}
+              </FilterChip>
+            ))}
             {COUNCIL_FILTERS.map((c) => (
               <FilterChip
                 key={c.value}
@@ -142,6 +176,7 @@ export default function BoardingPage() {
                             </p>
                           )}
                           <p className="mt-1 text-sm text-ink/60">{b.area}</p>
+                          <div className="mt-2">{renderBoardingTypeChip(b.location)}</div>
                         </div>
                         <span className="chip border-sage/30 bg-sage/10 text-sage">
                           Council Licensed ✓
@@ -192,6 +227,7 @@ export default function BoardingPage() {
                         <p className="mt-0.5 text-sm text-ink/60">
                           {b.area} · {b.distance}
                         </p>
+                        <div className="mt-2">{renderBoardingTypeChip(b.location)}</div>
                       </div>
                       <TierBadge tier={b.tier} />
                     </header>

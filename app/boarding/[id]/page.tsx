@@ -18,6 +18,13 @@ function councilLabel(council?: "Liverpool" | "Sefton" | "Knowsley") {
   return COUNCIL_LABELS[council ?? "Liverpool"];
 }
 
+function renderBoardingTypeChip(location: string) {
+  const loc = location.toLowerCase();
+  if (loc.includes("kennel")) return <span className="chip">🏢 Kennels</span>;
+  if (loc.includes("home")) return <span className="chip">🏠 Home boarding</span>;
+  return null;
+}
+
 export function generateStaticParams(): Params[] {
   return BOARDERS.map((b) => ({ id: b.id }));
 }
@@ -56,6 +63,7 @@ export default function BoarderDetailPage({ params }: { params: Params }) {
               {boarder.name}
             </h1>
             <p className="mt-1 text-base text-ink/60">{boarder.area}</p>
+            <div className="mt-3">{renderBoardingTypeChip(boarder.location)}</div>
 
             <div className="mt-4 flex flex-wrap items-center gap-3">
               <span className="chip border-sage/30 bg-sage/10 text-sage">
@@ -131,6 +139,7 @@ export default function BoarderDetailPage({ params }: { params: Params }) {
               <p className="mt-1 text-base text-ink/60">
                 {boarder.area} · {boarder.distance}
               </p>
+              <div className="mt-3">{renderBoardingTypeChip(boarder.location)}</div>
             </div>
             <TierBadge tier={boarder.tier} />
           </div>
