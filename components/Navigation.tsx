@@ -6,7 +6,8 @@ import { usePathname } from "next/navigation";
 
 const navLinks = [
   { href: "/walkers", label: "Walkers" },
-  { href: "/boarding", label: "Boarders & Daycare" },
+  { href: "/boarding", label: "Boarding" },
+  { href: "/daycare", label: "Day care" },
   { href: "/groomers", label: "Groomers" },
   { href: "/vets", label: "Vets" },
   { href: "/places", label: "Dog-friendly places" },

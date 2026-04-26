@@ -1,0 +1,150 @@
+import type { Tier } from "./walkers";
+
+export type Daycare = {
+  id: string;
+  name: string;
+  area: string;
+  distance: string;
+  tier: Tier;
+  licenceNumber: string;
+  rating: number;
+  reviews: number;
+  pricePerDay: number;
+  maxDogs: number;
+  features: string[];
+  available: boolean;
+  capacityAlert?: string;
+  claimed?: boolean;
+  council?: "Liverpool" | "Sefton" | "Knowsley";
+};
+
+export const DAYCARES: Daycare[] = [
+  {
+    id: "woof-wonderland",
+    name: "Woof Wonderland",
+    area: "City Centre / Pier Head (L3)",
+    distance: "—",
+    tier: "silver",
+    licenceNumber: "LCC/AAL50",
+    rating: 5,
+    reviews: 0,
+    pricePerDay: 0,
+    maxDogs: 0,
+    features: [],
+    available: true,
+    claimed: false,
+    council: "Liverpool",
+  },
+  {
+    id: "tails-in-the-city",
+    name: "Tails in the City",
+    area: "Toxteth / Dingle (L8)",
+    distance: "—",
+    tier: "silver",
+    licenceNumber: "LCC/ABO0005",
+    rating: 5,
+    reviews: 0,
+    pricePerDay: 0,
+    maxDogs: 0,
+    features: [],
+    available: true,
+    claimed: false,
+    council: "Liverpool",
+  },
+  {
+    id: "baileys-doggy-daycare",
+    name: "Baileys Doggy Daycare",
+    area: "Wavertree (L15)",
+    distance: "—",
+    tier: "silver",
+    licenceNumber: "LCC/AAL70",
+    rating: 4,
+    reviews: 0,
+    pricePerDay: 0,
+    maxDogs: 0,
+    features: [],
+    available: true,
+    claimed: false,
+    council: "Liverpool",
+  },
+  {
+    id: "fayes-doggy-boutique",
+    name: "Faye's Doggy Boutique",
+    area: "Garston / Aigburth (L19)",
+    distance: "—",
+    tier: "silver",
+    licenceNumber: "LCC/AAL44",
+    rating: 5,
+    reviews: 0,
+    pricePerDay: 0,
+    maxDogs: 0,
+    features: [],
+    available: true,
+    claimed: false,
+    council: "Liverpool",
+  },
+  {
+    id: "yappy-days",
+    name: "Yappy Days",
+    area: "Garston / Aigburth (L19)",
+    distance: "—",
+    tier: "silver",
+    licenceNumber: "LCC/AAL023",
+    rating: 5,
+    reviews: 0,
+    pricePerDay: 0,
+    maxDogs: 0,
+    features: [],
+    available: true,
+    claimed: false,
+    council: "Liverpool",
+  },
+  {
+    id: "precious-paws",
+    name: "Precious Paws",
+    area: "Speke / Hunts Cross (L24)",
+    distance: "—",
+    tier: "silver",
+    licenceNumber: "AAL24",
+    rating: 5,
+    reviews: 0,
+    pricePerDay: 0,
+    maxDogs: 0,
+    features: [],
+    available: true,
+    claimed: false,
+    council: "Liverpool",
+  },
+  {
+    id: "wag-n-waves",
+    name: "Wag n'Waves",
+    area: "Speke / Hunts Cross (L24)",
+    distance: "—",
+    tier: "silver",
+    licenceNumber: "LCC/AAL78",
+    rating: 4,
+    reviews: 0,
+    pricePerDay: 0,
+    maxDogs: 0,
+    features: [],
+    available: true,
+    claimed: false,
+    council: "Liverpool",
+  },
+  {
+    id: "the-dog-house-daycare",
+    name: "The Dog House",
+    area: "Woolton / Gateacre (L25)",
+    distance: "—",
+    tier: "silver",
+    licenceNumber: "LCC/AAL71",
+    rating: 4,
+    reviews: 0,
+    pricePerDay: 0,
+    maxDogs: 0,
+    features: [],
+    available: true,
+    claimed: false,
+    council: "Liverpool",
+  },
+];

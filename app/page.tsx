@@ -10,7 +10,7 @@ const HERO_FEATURES = [
 
 const FEATURES = [
   { emoji: "🐾", title: "Verified walkers", desc: "Every walker DBS checked, insured and rated", href: "/walkers" },
-  { emoji: "🏠", title: "Doggy daycare", desc: "Licensed centres and vetted home sitters", href: "/boarding" },
+  { emoji: "🏠", title: "Doggy daycare", desc: "Licensed centres and vetted home sitters", href: "/daycare" },
   { emoji: "🛏", title: "Dog boarding", desc: "Trusted overnight stays with daily photo updates", href: "/boarding" },
   { emoji: "✂️", title: "Groomers", desc: "Salons and mobile groomers near you", href: "/groomers" },
   { emoji: "🏥", title: "Vets and healthcare", desc: "Find your nearest vet — emergency always at the top", href: "/vets" },
