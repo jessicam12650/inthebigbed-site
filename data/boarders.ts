@@ -24,7 +24,7 @@ export const BOARDERS: Boarder[] = [
   {
     id: "a-place-4-paws",
     name: "A Place4Paws",
-    area: "Walton / Anfield",
+    area: "Walton / Anfield (L4)",
     distance: "—",
     tier: "silver",
     licenceNumber: "LCC/AAL09",
@@ -42,7 +42,7 @@ export const BOARDERS: Boarder[] = [
   {
     id: "fairy-dog-mother-meg",
     name: "Fairy Dog Mother - Meg",
-    area: "Walton / Anfield",
+    area: "Walton / Anfield (L4)",
     distance: "—",
     tier: "silver",
     licenceNumber: "LCC/AAL77",
@@ -60,7 +60,7 @@ export const BOARDERS: Boarder[] = [
   {
     id: "alex-woodswoof",
     name: "Alex WoodsWoof",
-    area: "Walton / Anfield",
+    area: "Walton / Anfield (L4)",
     distance: "—",
     tier: "silver",
     licenceNumber: "LCC/AAL79",
@@ -78,7 +78,7 @@ export const BOARDERS: Boarder[] = [
   {
     id: "annas-dog-walking-and-sitting",
     name: "Annas dog walking and sitting",
-    area: "Walton / Anfield",
+    area: "Walton / Anfield (L4)",
     distance: "—",
     tier: "silver",
     licenceNumber: "LCC/AAL73",
@@ -96,7 +96,7 @@ export const BOARDERS: Boarder[] = [
   {
     id: "anna-l8",
     name: "Anna",
-    area: "Toxteth / Dingle",
+    area: "Toxteth / Dingle (L8)",
     distance: "—",
     tier: "silver",
     licenceNumber: "LCC/AAL83",
@@ -114,7 +114,7 @@ export const BOARDERS: Boarder[] = [
   {
     id: "the-collar-club",
     name: "The Collar Club",
-    area: "Walton / Aintree",
+    area: "Walton / Aintree (L9)",
     distance: "—",
     tier: "silver",
     licenceNumber: "LCC/AAL47",
@@ -132,7 +132,7 @@ export const BOARDERS: Boarder[] = [
   {
     id: "animals-at-home",
     name: "Animals at Home",
-    area: "Walton / Aintree",
+    area: "Walton / Aintree (L9)",
     distance: "—",
     tier: "silver",
     licenceNumber: "LCC/AAL39",
@@ -150,7 +150,7 @@ export const BOARDERS: Boarder[] = [
   {
     id: "petstay",
     name: "PetStay",
-    area: "Walton / Aintree",
+    area: "Walton / Aintree (L9)",
     distance: "—",
     tier: "silver",
     licenceNumber: "LCC/AAL86",
@@ -168,7 +168,7 @@ export const BOARDERS: Boarder[] = [
   {
     id: "the-paw-and-purr-club",
     name: "The Paw & Purr Club",
-    area: "Fazakerley",
+    area: "Fazakerley (L10)",
     distance: "—",
     tier: "silver",
     licenceNumber: "LCC/AAL84",
@@ -186,7 +186,7 @@ export const BOARDERS: Boarder[] = [
   {
     id: "paula-l11",
     name: "Paula",
-    area: "Croxteth / Norris Green",
+    area: "Croxteth / Norris Green (L11)",
     distance: "—",
     tier: "silver",
     licenceNumber: "LCC/AAL72",
@@ -204,7 +204,7 @@ export const BOARDERS: Boarder[] = [
   {
     id: "parkside-dog-retreat",
     name: "Parkside Dog Retreat",
-    area: "West Derby",
+    area: "West Derby (L12)",
     distance: "—",
     tier: "silver",
     licenceNumber: "LCC/AAL61",
@@ -222,7 +222,7 @@ export const BOARDERS: Boarder[] = [
   {
     id: "waggy-dogs",
     name: "Waggy Dogs",
-    area: "West Derby",
+    area: "West Derby (L12)",
     distance: "—",
     tier: "silver",
     licenceNumber: "AAL25",
@@ -240,7 +240,7 @@ export const BOARDERS: Boarder[] = [
   {
     id: "woof-and-wags",
     name: "Woof & Wags",
-    area: "West Derby",
+    area: "West Derby (L12)",
     distance: "—",
     tier: "silver",
     licenceNumber: "LCC/AAL63",
@@ -258,7 +258,7 @@ export const BOARDERS: Boarder[] = [
   {
     id: "louise-l12",
     name: "Louise",
-    area: "West Derby",
+    area: "West Derby (L12)",
     distance: "—",
     tier: "silver",
     licenceNumber: "LCC/AAL85",
@@ -276,7 +276,7 @@ export const BOARDERS: Boarder[] = [
   {
     id: "antony-l13",
     name: "Antony",
-    area: "Old Swan / Tuebrook",
+    area: "Old Swan / Tuebrook (L13)",
     distance: "—",
     tier: "silver",
     licenceNumber: "LCC/AAL55",
@@ -294,7 +294,7 @@ export const BOARDERS: Boarder[] = [
   {
     id: "kay-l14",
     name: "Kay",
-    area: "Knotty Ash / Dovecot",
+    area: "Knotty Ash / Dovecot (L14)",
     distance: "—",
     tier: "silver",
     licenceNumber: "LCC/AAL75",
@@ -312,7 +312,7 @@ export const BOARDERS: Boarder[] = [
   {
     id: "just-like-home",
     name: "Just Like Home",
-    area: "Knotty Ash / Dovecot",
+    area: "Knotty Ash / Dovecot (L14)",
     distance: "—",
     tier: "silver",
     licenceNumber: "LCC/AAL87",
@@ -330,7 +330,7 @@ export const BOARDERS: Boarder[] = [
   {
     id: "happy-dog-paul",
     name: "Happy Dog (Paul)",
-    area: "Childwall",
+    area: "Childwall (L16)",
     distance: "—",
     tier: "silver",
     licenceNumber: "LCC/AAL45",
@@ -348,7 +348,7 @@ export const BOARDERS: Boarder[] = [
   {
     id: "pops-pups",
     name: "Pops Pups",
-    area: "Childwall",
+    area: "Childwall (L16)",
     distance: "—",
     tier: "silver",
     licenceNumber: "LCC/AAL67",
@@ -366,7 +366,7 @@ export const BOARDERS: Boarder[] = [
   {
     id: "allerton-dog-minders",
     name: "Allerton Dog Minders",
-    area: "Garston / Aigburth",
+    area: "Garston / Aigburth (L19)",
     distance: "—",
     tier: "silver",
     licenceNumber: "AAL15",
@@ -384,7 +384,7 @@ export const BOARDERS: Boarder[] = [
   {
     id: "anya-l19",
     name: "Anya",
-    area: "Garston / Aigburth",
+    area: "Garston / Aigburth (L19)",
     distance: "—",
     tier: "silver",
     licenceNumber: "LCC/AAL77",
@@ -402,7 +402,7 @@ export const BOARDERS: Boarder[] = [
   {
     id: "anthony-hound-hub",
     name: "Anthony (Hound Hub)",
-    area: "Woolton / Gateacre",
+    area: "Woolton / Gateacre (L25)",
     distance: "—",
     tier: "silver",
     licenceNumber: "LCC/AAL81",
@@ -420,7 +420,7 @@ export const BOARDERS: Boarder[] = [
   {
     id: "fido-dog",
     name: "Fido Dog",
-    area: "Woolton / Gateacre",
+    area: "Woolton / Gateacre (L25)",
     distance: "—",
     tier: "silver",
     licenceNumber: "LCC/AAL49",
@@ -438,7 +438,7 @@ export const BOARDERS: Boarder[] = [
   {
     id: "sandra-l25",
     name: "Sandra",
-    area: "Woolton / Gateacre",
+    area: "Woolton / Gateacre (L25)",
     distance: "—",
     tier: "silver",
     licenceNumber: "LCC/AAL57",
@@ -456,7 +456,7 @@ export const BOARDERS: Boarder[] = [
   {
     id: "happy-doggy-home-boarding",
     name: "Happy Doggy Home Boarding",
-    area: "Woolton / Gateacre",
+    area: "Woolton / Gateacre (L25)",
     distance: "—",
     tier: "silver",
     licenceNumber: "LCC/AAL68",
@@ -474,7 +474,7 @@ export const BOARDERS: Boarder[] = [
   {
     id: "little-paws-care",
     name: "Little Paws Care",
-    area: "Woolton / Gateacre",
+    area: "Woolton / Gateacre (L25)",
     distance: "—",
     tier: "silver",
     licenceNumber: "LCC/AAL88",
@@ -492,7 +492,7 @@ export const BOARDERS: Boarder[] = [
   {
     id: "never-lonely",
     name: "Never Lonely",
-    area: "Belle Vale",
+    area: "Belle Vale (L27)",
     distance: "—",
     tier: "silver",
     licenceNumber: "LCC/AAL52",

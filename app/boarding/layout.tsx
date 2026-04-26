@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Boarding & daycare in Liverpool",
+  title: "Boarding in Liverpool",
   description:
-    "Licensed dog boarders and daycare hosts across Liverpool. Licence numbers shown on every profile.",
+    "Licensed dog home boarders and kennels across Liverpool, Sefton and Knowsley. Every operator holds a current council licence.",
 };
 
 export default function BoardingLayout({ children }: { children: React.ReactNode }) {
