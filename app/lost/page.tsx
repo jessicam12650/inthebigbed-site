@@ -227,20 +227,26 @@ export default function LostPage() {
                     )}
                   </div>
                   <div className="flex flex-col gap-2">
-                    <label className="btn-outline cursor-pointer justify-center text-xs">
+                    <label
+                      className={`btn-outline cursor-pointer justify-center text-xs ${
+                        submitting ? "pointer-events-none opacity-60" : ""
+                      }`}
+                    >
                       {previewUrl ? "Change photo" : "Upload photo"}
                       <input
                         type="file"
                         accept="image/*,.heic,.heif"
                         onChange={(e) => handleFileChange(e.target.files?.[0] ?? null)}
                         className="hidden"
+                        disabled={submitting}
                       />
                     </label>
                     {previewUrl && (
                       <button
                         type="button"
                         onClick={() => setPhoto({ kind: "none" })}
-                        className="text-xs font-sub text-ink/55 hover:text-ink"
+                        disabled={submitting}
+                        className="text-xs font-sub text-ink/55 hover:text-ink disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:text-ink/55"
                       >
                         Remove photo
                       </button>
@@ -263,7 +269,7 @@ export default function LostPage() {
               <button
                 type="submit"
                 disabled={submitting}
-                className="inline-flex w-full items-center justify-center rounded-sm bg-emergency px-6 py-4 text-base font-sub uppercase tracking-wide text-white transition-opacity hover:opacity-90 disabled:opacity-70"
+                className="inline-flex w-full items-center justify-center rounded-sm bg-emergency px-6 py-4 text-base font-sub uppercase tracking-wide text-white transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-70"
               >
                 {submitting ? "Sending alert…" : "🚨 Send alert now"}
               </button>

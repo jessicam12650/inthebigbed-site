@@ -288,20 +288,26 @@ export default function ProfilePage() {
                         <span className="text-3xl text-ink/40">🐾</span>
                       )}
                     </div>
-                    <label className="btn-outline w-full cursor-pointer justify-center text-xs">
+                    <label
+                      className={`btn-outline w-full cursor-pointer justify-center text-xs ${
+                        saving ? "pointer-events-none opacity-60" : ""
+                      }`}
+                    >
                       {editing.photoPreview || editing.photo_url ? "Change photo" : "Upload photo"}
                       <input
                         type="file"
                         accept="image/*,.heic,.heif"
                         onChange={(e) => onPhotoChange(e.target.files?.[0] ?? null)}
                         className="hidden"
+                        disabled={saving}
                       />
                     </label>
                     {(editing.photoPreview || editing.photo_url) && (
                       <button
                         type="button"
                         onClick={() => onPhotoChange(null)}
-                        className="text-xs font-sub text-ink/55 hover:text-ink"
+                        disabled={saving}
+                        className="text-xs font-sub text-ink/55 hover:text-ink disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:text-ink/55"
                       >
                         Remove photo
                       </button>
@@ -372,7 +378,7 @@ export default function ProfilePage() {
                   </div>
                 )}
                 <div className="flex gap-3">
-                  <button type="submit" disabled={saving} className="btn-primary disabled:opacity-60">
+                  <button type="submit" disabled={saving} className="btn-primary disabled:cursor-not-allowed disabled:opacity-60">
                     {saving ? "Saving…" : "Save dog"}
                   </button>
                   <button
