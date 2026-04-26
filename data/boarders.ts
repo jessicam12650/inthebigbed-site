@@ -17,6 +17,7 @@ export type Boarder = {
   capacityAlert?: string;
   features: string[];
   claimed?: boolean;
+  council?: "Liverpool" | "Sefton" | "Knowsley";
 };
 
 export const BOARDERS: Boarder[] = [
@@ -36,6 +37,7 @@ export const BOARDERS: Boarder[] = [
     available: true,
     features: [],
     claimed: false,
+    council: "Liverpool",
   },
   {
     id: "fairy-dog-mother-meg",
@@ -53,6 +55,7 @@ export const BOARDERS: Boarder[] = [
     available: true,
     features: [],
     claimed: false,
+    council: "Liverpool",
   },
   {
     id: "alex-woodswoof",
@@ -70,6 +73,7 @@ export const BOARDERS: Boarder[] = [
     available: true,
     features: [],
     claimed: false,
+    council: "Liverpool",
   },
   {
     id: "annas-dog-walking-and-sitting",
@@ -87,6 +91,7 @@ export const BOARDERS: Boarder[] = [
     available: true,
     features: [],
     claimed: false,
+    council: "Liverpool",
   },
   {
     id: "anna-l8",
@@ -104,6 +109,7 @@ export const BOARDERS: Boarder[] = [
     available: true,
     features: [],
     claimed: false,
+    council: "Liverpool",
   },
   {
     id: "the-collar-club",
@@ -121,6 +127,7 @@ export const BOARDERS: Boarder[] = [
     available: true,
     features: [],
     claimed: false,
+    council: "Liverpool",
   },
   {
     id: "animals-at-home",
@@ -138,6 +145,7 @@ export const BOARDERS: Boarder[] = [
     available: true,
     features: [],
     claimed: false,
+    council: "Liverpool",
   },
   {
     id: "petstay",
@@ -155,6 +163,7 @@ export const BOARDERS: Boarder[] = [
     available: true,
     features: [],
     claimed: false,
+    council: "Liverpool",
   },
   {
     id: "the-paw-and-purr-club",
@@ -172,6 +181,7 @@ export const BOARDERS: Boarder[] = [
     available: true,
     features: [],
     claimed: false,
+    council: "Liverpool",
   },
   {
     id: "paula-l11",
@@ -189,6 +199,7 @@ export const BOARDERS: Boarder[] = [
     available: true,
     features: [],
     claimed: false,
+    council: "Liverpool",
   },
   {
     id: "parkside-dog-retreat",
@@ -206,6 +217,7 @@ export const BOARDERS: Boarder[] = [
     available: true,
     features: [],
     claimed: false,
+    council: "Liverpool",
   },
   {
     id: "waggy-dogs",
@@ -223,6 +235,7 @@ export const BOARDERS: Boarder[] = [
     available: true,
     features: [],
     claimed: false,
+    council: "Liverpool",
   },
   {
     id: "woof-and-wags",
@@ -240,6 +253,7 @@ export const BOARDERS: Boarder[] = [
     available: true,
     features: [],
     claimed: false,
+    council: "Liverpool",
   },
   {
     id: "louise-l12",
@@ -257,6 +271,7 @@ export const BOARDERS: Boarder[] = [
     available: true,
     features: [],
     claimed: false,
+    council: "Liverpool",
   },
   {
     id: "antony-l13",
@@ -274,6 +289,7 @@ export const BOARDERS: Boarder[] = [
     available: true,
     features: [],
     claimed: false,
+    council: "Liverpool",
   },
   {
     id: "kay-l14",
@@ -291,6 +307,7 @@ export const BOARDERS: Boarder[] = [
     available: true,
     features: [],
     claimed: false,
+    council: "Liverpool",
   },
   {
     id: "just-like-home",
@@ -308,6 +325,7 @@ export const BOARDERS: Boarder[] = [
     available: true,
     features: [],
     claimed: false,
+    council: "Liverpool",
   },
   {
     id: "happy-dog-paul",
@@ -325,6 +343,7 @@ export const BOARDERS: Boarder[] = [
     available: true,
     features: [],
     claimed: false,
+    council: "Liverpool",
   },
   {
     id: "pops-pups",
@@ -342,6 +361,7 @@ export const BOARDERS: Boarder[] = [
     available: true,
     features: [],
     claimed: false,
+    council: "Liverpool",
   },
   {
     id: "allerton-dog-minders",
@@ -359,6 +379,7 @@ export const BOARDERS: Boarder[] = [
     available: true,
     features: [],
     claimed: false,
+    council: "Liverpool",
   },
   {
     id: "anya-l19",
@@ -376,6 +397,7 @@ export const BOARDERS: Boarder[] = [
     available: true,
     features: [],
     claimed: false,
+    council: "Liverpool",
   },
   {
     id: "anthony-hound-hub",
@@ -393,6 +415,7 @@ export const BOARDERS: Boarder[] = [
     available: true,
     features: [],
     claimed: false,
+    council: "Liverpool",
   },
   {
     id: "fido-dog",
@@ -410,6 +433,7 @@ export const BOARDERS: Boarder[] = [
     available: true,
     features: [],
     claimed: false,
+    council: "Liverpool",
   },
   {
     id: "sandra-l25",
@@ -427,6 +451,7 @@ export const BOARDERS: Boarder[] = [
     available: true,
     features: [],
     claimed: false,
+    council: "Liverpool",
   },
   {
     id: "happy-doggy-home-boarding",
@@ -444,6 +469,7 @@ export const BOARDERS: Boarder[] = [
     available: true,
     features: [],
     claimed: false,
+    council: "Liverpool",
   },
   {
     id: "little-paws-care",
@@ -461,6 +487,7 @@ export const BOARDERS: Boarder[] = [
     available: true,
     features: [],
     claimed: false,
+    council: "Liverpool",
   },
   {
     id: "never-lonely",
@@ -478,5 +505,114 @@ export const BOARDERS: Boarder[] = [
     available: true,
     features: [],
     claimed: false,
+    council: "Liverpool",
+  },
+  {
+    id: "petpals-sefton",
+    name: "Petpals Sefton",
+    area: "Sefton-wide",
+    distance: "—",
+    tier: "silver",
+    licenceNumber: "MA037008",
+    rating: 5,
+    reviews: 0,
+    pricePerNight: 0,
+    maxDogs: 0,
+    location: "In the home",
+    garden: "Not specified",
+    available: true,
+    features: [],
+    claimed: false,
+    council: "Sefton",
+  },
+  {
+    id: "brookhouse-farmhouse-kennels",
+    name: "Brookhouse Farmhouse Boarding Kennels",
+    area: "Netherton (L30)",
+    distance: "—",
+    tier: "silver",
+    licenceNumber: "MA032713",
+    rating: 5,
+    reviews: 0,
+    pricePerNight: 0,
+    maxDogs: 0,
+    location: "Boarding kennels",
+    garden: "Not specified",
+    available: true,
+    features: [],
+    claimed: false,
+    council: "Sefton",
+  },
+  {
+    id: "l-and-j-petcare",
+    name: "L and J Petcare",
+    area: "Formby (L37)",
+    distance: "—",
+    tier: "silver",
+    licenceNumber: "MA047328",
+    rating: 5,
+    reviews: 0,
+    pricePerNight: 0,
+    maxDogs: 0,
+    location: "In the home",
+    garden: "Not specified",
+    available: true,
+    features: [],
+    claimed: false,
+    council: "Sefton",
+  },
+  {
+    id: "lazy-days-pet-care",
+    name: "Lazy Days Pet Care",
+    area: "Sefton",
+    distance: "—",
+    tier: "silver",
+    licenceNumber: "MA046544",
+    rating: 5,
+    reviews: 0,
+    pricePerNight: 0,
+    maxDogs: 0,
+    location: "In the home",
+    garden: "Not specified",
+    available: true,
+    features: [],
+    claimed: false,
+    council: "Sefton",
+  },
+  {
+    id: "ellas-dog-services",
+    name: "Ella's Dog Walking and Pet Sitting Services",
+    area: "Kirkby (L33)",
+    distance: "—",
+    tier: "silver",
+    licenceNumber: "24/08994/ANBOAR",
+    rating: 5,
+    reviews: 0,
+    pricePerNight: 0,
+    maxDogs: 0,
+    location: "In the home",
+    garden: "Not specified",
+    available: true,
+    features: [],
+    claimed: false,
+    council: "Knowsley",
+  },
+  {
+    id: "nursery-farm-kennels",
+    name: "Nursery Farm Boarding Kennels",
+    area: "Knowsley / Prescot (L34)",
+    distance: "—",
+    tier: "silver",
+    licenceNumber: "—",
+    rating: 0,
+    reviews: 0,
+    pricePerNight: 0,
+    maxDogs: 0,
+    location: "Boarding kennels",
+    garden: "Not specified",
+    available: true,
+    features: [],
+    claimed: false,
+    council: "Knowsley",
   },
 ];

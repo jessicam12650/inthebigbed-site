@@ -18,9 +18,32 @@ const TIER_FILTERS: Array<{ value: "all" | Tier; label: string }> = [
   { value: "pro", label: "Pro" },
 ];
 
+type CouncilFilter = "all" | "Liverpool" | "Sefton" | "Knowsley";
+
+const COUNCIL_FILTERS: Array<{ value: CouncilFilter; label: string }> = [
+  { value: "all", label: "All councils" },
+  { value: "Liverpool", label: "Liverpool" },
+  { value: "Sefton", label: "Sefton" },
+  { value: "Knowsley", label: "Knowsley" },
+];
+
+const COUNCIL_LABELS: Record<"Liverpool" | "Sefton" | "Knowsley", string> = {
+  Liverpool: "Liverpool City Council",
+  Sefton: "Sefton Council",
+  Knowsley: "Knowsley Council",
+};
+
+function licensedByLine(b: { council?: "Liverpool" | "Sefton" | "Knowsley"; licenceNumber: string }) {
+  const council = b.council ?? "Liverpool";
+  const label = COUNCIL_LABELS[council];
+  if (b.licenceNumber === "—") return `Licensed by ${label} (licence number pending)`;
+  return `Licensed by ${label} · ${b.licenceNumber}`;
+}
+
 export default function BoardingPage() {
   const [query, setQuery] = useState("");
   const [tier, setTier] = useState<"all" | Tier>("all");
+  const [council, setCouncil] = useState<CouncilFilter>("all");
   const [availableOnly, setAvailableOnly] = useState(false);
   const [gardenOnly, setGardenOnly] = useState(false);
 
@@ -28,6 +51,7 @@ export default function BoardingPage() {
     const q = query.trim().toLowerCase();
     return BOARDERS.filter((b) => {
       if (tier !== "all" && b.tier !== tier) return false;
+      if (council !== "all" && b.council !== council) return false;
       if (availableOnly && !b.available) return false;
       if (gardenOnly && !b.garden.toLowerCase().includes("enclosed")) return false;
       if (q) {
@@ -36,23 +60,23 @@ export default function BoardingPage() {
       }
       return true;
     });
-  }, [query, tier, availableOnly, gardenOnly]);
+  }, [query, tier, council, availableOnly, gardenOnly]);
 
   return (
     <>
       <PageHeader
         eyebrow="Licensed boarders"
         title="Boarding & daycare in Liverpool."
-        subtitle="Every boarder holds a current home boarding licence from Liverpool City Council. Licence numbers shown on every listing."
+        subtitle="Every boarder holds a current home boarding licence from their local council. Licence numbers shown on every listing."
       />
 
       <section className="border-b border-ink/10 bg-cream px-5 py-5 md:px-12">
         <div className="mx-auto max-w-5xl">
           <p className="font-sub text-sm leading-snug text-ink">
-            Every boarder on this page is licensed and star-rated by Liverpool City Council. We only list the legal ones.
+            Every boarder on this page is licensed and star-rated by their local council. We only list the legal ones.
           </p>
           <p className="mt-1 text-xs text-ink/60">
-            Source: Liverpool City Council Animal Activity Licenced Operators register, April 2026.
+            Sources: Liverpool City Council Animal Activity Licenced Operators register, plus verified Sefton and Knowsley Council licences. April 2026.
           </p>
         </div>
       </section>
@@ -68,6 +92,15 @@ export default function BoardingPage() {
             aria-label="Search boarders"
           />
           <div className="flex flex-wrap items-center gap-2">
+            {COUNCIL_FILTERS.map((c) => (
+              <FilterChip
+                key={c.value}
+                active={council === c.value}
+                onClick={() => setCouncil(c.value)}
+              >
+                {c.label}
+              </FilterChip>
+            ))}
             {TIER_FILTERS.map((t) => (
               <FilterChip key={t.value} active={tier === t.value} onClick={() => setTier(t.value)}>
                 {t.label}
@@ -102,9 +135,12 @@ export default function BoardingPage() {
                       <header className="flex items-start justify-between gap-3">
                         <div>
                           <h3 className="font-head text-xl text-ink">{b.name}</h3>
-                          <p className="mt-1 text-xs text-ink/60">
-                            Licensed by Liverpool City Council · {b.licenceNumber}
-                          </p>
+                          <p className="mt-1 text-xs text-ink/60">{licensedByLine(b)}</p>
+                          {b.licenceNumber === "—" && (
+                            <p className="mt-1 text-xs italic text-ink/55">
+                              Licence number pending verification — confirmed licensed via Knowsley Council register
+                            </p>
+                          )}
                           <p className="mt-1 text-sm text-ink/60">{b.area}</p>
                         </div>
                         <span className="chip border-sage/30 bg-sage/10 text-sage">
@@ -112,23 +148,27 @@ export default function BoardingPage() {
                         </span>
                       </header>
 
-                      <div
-                        className="flex items-center gap-1"
-                        aria-label={`Liverpool City Council rating: ${b.rating} out of 5`}
-                      >
-                        {[1, 2, 3, 4, 5].map((i) => (
-                          <span
-                            key={i}
-                            aria-hidden
-                            className={`text-lg ${i <= b.rating ? "text-rust" : "text-ink/20"}`}
-                          >
-                            ★
+                      {b.rating > 0 ? (
+                        <div
+                          className="flex items-center gap-1"
+                          aria-label={`${b.council ?? "Liverpool"} council rating: ${b.rating} out of 5`}
+                        >
+                          {[1, 2, 3, 4, 5].map((i) => (
+                            <span
+                              key={i}
+                              aria-hidden
+                              className={`text-lg ${i <= b.rating ? "text-rust" : "text-ink/20"}`}
+                            >
+                              ★
+                            </span>
+                          ))}
+                          <span className="ml-1.5 text-sm font-sub text-ink/70">
+                            {b.rating}/5 council rating
                           </span>
-                        ))}
-                        <span className="ml-1.5 text-sm font-sub text-ink/70">
-                          {b.rating}/5 council rating
-                        </span>
-                      </div>
+                        </div>
+                      ) : (
+                        <p className="text-sm text-ink/55">Council star rating not yet published</p>
+                      )}
 
                       <Link
                         href={`/signup?claim=${b.id}`}

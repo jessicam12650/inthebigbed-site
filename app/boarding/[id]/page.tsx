@@ -8,6 +8,16 @@ import BookingCTA from "@/components/BookingCTA";
 
 type Params = { id: string };
 
+const COUNCIL_LABELS: Record<"Liverpool" | "Sefton" | "Knowsley", string> = {
+  Liverpool: "Liverpool City Council",
+  Sefton: "Sefton Council",
+  Knowsley: "Knowsley Council",
+};
+
+function councilLabel(council?: "Liverpool" | "Sefton" | "Knowsley") {
+  return COUNCIL_LABELS[council ?? "Liverpool"];
+}
+
 export function generateStaticParams(): Params[] {
   return BOARDERS.map((b) => ({ id: b.id }));
 }
@@ -15,9 +25,14 @@ export function generateStaticParams(): Params[] {
 export function generateMetadata({ params }: { params: Params }): Metadata {
   const boarder = BOARDERS.find((b) => b.id === params.id);
   if (!boarder) return {};
+  const label = councilLabel(boarder.council);
+  const licenceClause =
+    boarder.licenceNumber === "—"
+      ? `${label} licence (number pending verification)`
+      : `${label} licence ${boarder.licenceNumber}`;
   return {
     title: `${boarder.name} — licensed dog boarder in ${boarder.area}`,
-    description: `Licensed dog boarding in ${boarder.area}. Liverpool City Council licence ${boarder.licenceNumber}.`,
+    description: `Licensed dog boarding in ${boarder.area}. ${licenceClause}.`,
   };
 }
 
@@ -47,36 +62,44 @@ export default function BoarderDetailPage({ params }: { params: Params }) {
                 Council Licensed ✓
               </span>
               <span className="chip border-ink/15 text-ink/70">
-                LCC licence {boarder.licenceNumber}
+                {boarder.licenceNumber === "—"
+                  ? `${councilLabel(boarder.council)} (licence number pending)`
+                  : `${councilLabel(boarder.council)} licence ${boarder.licenceNumber}`}
               </span>
             </div>
 
-            <div
-              className="mt-4 flex items-center gap-1"
-              aria-label={`Liverpool City Council rating: ${boarder.rating} out of 5`}
-            >
-              {[1, 2, 3, 4, 5].map((i) => (
-                <span
-                  key={i}
-                  aria-hidden
-                  className={`text-xl ${i <= boarder.rating ? "text-rust" : "text-ink/20"}`}
-                >
-                  ★
+            {boarder.rating > 0 ? (
+              <div
+                className="mt-4 flex items-center gap-1"
+                aria-label={`${councilLabel(boarder.council)} rating: ${boarder.rating} out of 5`}
+              >
+                {[1, 2, 3, 4, 5].map((i) => (
+                  <span
+                    key={i}
+                    aria-hidden
+                    className={`text-xl ${i <= boarder.rating ? "text-rust" : "text-ink/20"}`}
+                  >
+                    ★
+                  </span>
+                ))}
+                <span className="ml-2 text-sm font-sub text-ink/70">
+                  {boarder.rating}/5 {councilLabel(boarder.council)} rating
                 </span>
-              ))}
-              <span className="ml-2 text-sm font-sub text-ink/70">
-                {boarder.rating}/5 Liverpool City Council rating
-              </span>
-            </div>
+              </div>
+            ) : (
+              <p className="mt-4 text-sm text-ink/60">
+                {councilLabel(boarder.council)} star rating not yet published.
+              </p>
+            )}
 
             <div className="mt-8 rounded-sm border border-ink/10 bg-white p-6 md:p-8">
               <h2 className="font-head text-2xl text-ink md:text-3xl">
                 This profile hasn&apos;t been claimed yet
               </h2>
               <p className="mt-3 max-w-2xl text-base leading-relaxed text-ink/75">
-                {boarder.name} is licensed by Liverpool City Council but hasn&apos;t claimed their
-                profile yet. If you&apos;re {boarder.name}, claim your free profile to add photos,
-                prices and availability.
+                {boarder.name} is licensed by {councilLabel(boarder.council)} but hasn&apos;t claimed
+                their profile yet. If you&apos;re {boarder.name}, claim your free profile to add
+                photos, prices and availability.
               </p>
               <Link
                 href={`/signup?claim=${boarder.id}`}
@@ -115,7 +138,9 @@ export default function BoarderDetailPage({ params }: { params: Params }) {
           <div className="mt-4 flex flex-wrap items-center gap-3">
             <Rating rating={boarder.rating} reviews={boarder.reviews} />
             <span className="chip border-sage/30 bg-sage/10 text-sage">
-              🏛 LCC licence {boarder.licenceNumber}
+              🏛 {boarder.licenceNumber === "—"
+                ? `${councilLabel(boarder.council)} (licence pending)`
+                : `${councilLabel(boarder.council)} licence ${boarder.licenceNumber}`}
             </span>
             {boarder.available ? (
               <span className="chip border-sage/30 bg-sage/10 text-sage">Available now</span>
