@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
+import { useUser } from "@/lib/useUser";
 
 const navLinks = [
   { href: "/walkers", label: "Walkers" },
@@ -16,6 +17,7 @@ const navLinks = [
 export default function Navigation() {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
+  const { user, loading: authLoading } = useUser();
 
   const close = () => setOpen(false);
 
@@ -62,15 +64,23 @@ export default function Navigation() {
               </Link>
             );
           })}
-          <Link
-            href="/login"
-            className="text-sm font-body text-ink transition-opacity hover:opacity-60"
-          >
-            Log in
-          </Link>
-          <Link href="/signup" className="btn-dark px-4 py-2 text-sm">
-            Sign up
-          </Link>
+          {authLoading ? null : user ? (
+            <Link href="/profile" className="btn-outline px-4 py-2 text-sm">
+              Profile
+            </Link>
+          ) : (
+            <>
+              <Link
+                href="/login"
+                className="text-sm font-body text-ink transition-opacity hover:opacity-60"
+              >
+                Log in
+              </Link>
+              <Link href="/signup" className="btn-dark px-4 py-2 text-sm">
+                Sign up
+              </Link>
+            </>
+          )}
           <Link href="/lost" className="btn-emergency px-4 py-2 text-sm">
             Find my dog
           </Link>
@@ -112,21 +122,34 @@ export default function Navigation() {
               </Link>
             ))}
             <div className="my-2 h-px bg-ink/10" />
-            <Link
-              href="/login"
-              onClick={close}
-              className="flex min-h-[48px] items-center text-base font-body text-ink"
-            >
-              Log in
-            </Link>
-            <div className="flex flex-col gap-3 pb-1 pt-3">
-              <Link href="/signup" onClick={close} className="btn-dark w-full">
-                Sign up
-              </Link>
-              <Link href="/lost" onClick={close} className="btn-emergency w-full">
-                Find my dog
-              </Link>
-            </div>
+            {authLoading ? null : user ? (
+              <div className="flex flex-col gap-3 pb-1 pt-1">
+                <Link href="/profile" onClick={close} className="btn-outline w-full">
+                  Profile
+                </Link>
+                <Link href="/lost" onClick={close} className="btn-emergency w-full">
+                  Find my dog
+                </Link>
+              </div>
+            ) : (
+              <>
+                <Link
+                  href="/login"
+                  onClick={close}
+                  className="flex min-h-[48px] items-center text-base font-body text-ink"
+                >
+                  Log in
+                </Link>
+                <div className="flex flex-col gap-3 pb-1 pt-3">
+                  <Link href="/signup" onClick={close} className="btn-dark w-full">
+                    Sign up
+                  </Link>
+                  <Link href="/lost" onClick={close} className="btn-emergency w-full">
+                    Find my dog
+                  </Link>
+                </div>
+              </>
+            )}
           </div>
         </div>
       )}
