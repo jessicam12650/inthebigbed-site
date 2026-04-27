@@ -4,6 +4,7 @@ import { getSupabaseServerClient } from "@/lib/supabase-server";
 export async function GET(req: NextRequest) {
   const { searchParams, origin } = new URL(req.url);
   const code = searchParams.get("code");
+  const type = searchParams.get("type");
   const next = searchParams.get("next") ?? "/profile";
 
   if (code) {
@@ -11,5 +12,6 @@ export async function GET(req: NextRequest) {
     await supabase.auth.exchangeCodeForSession(code);
   }
 
-  return NextResponse.redirect(`${origin}${next}`);
+  const destination = type === "signup" ? "/auth/confirmed" : next;
+  return NextResponse.redirect(`${origin}${destination}`);
 }
