@@ -97,7 +97,7 @@ export default function SignupForm() {
           },
           emailRedirectTo:
             typeof window !== "undefined"
-              ? `${window.location.origin}/auth/callback?type=signup&next=${encodeURIComponent(intent?.returnTo ?? "/profile")}`
+              ? `${window.location.origin}/auth/callback/signup`
               : undefined,
         },
       });
