@@ -4,8 +4,8 @@ import WaitlistForm from "@/components/WaitlistForm";
 const HERO_FEATURES = [
   { href: "/walkers", emoji: "🐾", title: "Verified Walkers", desc: "Find a DBS checked walker near you" },
   { href: "/boarding", emoji: "🏠", title: "Dog Boarding", desc: "Licensed boarders only" },
+  { href: "/daycare", emoji: "☀️", title: "Dog Day care", desc: "Licensed daytime care while you work" },
   { href: "/places", emoji: "📍", title: "Dog-friendly Places", desc: "Pubs, bars and cafes that love dogs" },
-  { href: "#waitlist", emoji: "💼", title: "Join the waitlist", desc: "Be first when we launch" },
 ];
 
 const FEATURES = [
@@ -35,9 +35,17 @@ export default function HomePage() {
             Liverpool's dog platform — verified walkers, licensed daycares, groomers, vets, dog-friendly places,
             and a community of people who completely get it.
           </p>
-          <Link href="#waitlist" className="btn-primary btn-block-mobile px-7 py-4 text-base">
-            Join the waitlist
-          </Link>
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-center md:justify-start">
+            <Link href="/boarding" className="btn-primary btn-block-mobile px-7 py-4 text-base">
+              Find a boarder
+            </Link>
+            <Link
+              href="/walkers"
+              className="inline-flex min-h-[48px] w-full items-center justify-center rounded-sm border-2 border-cream/80 bg-transparent px-7 py-4 text-base font-sub text-cream transition-colors hover:bg-cream hover:text-ink sm:w-auto"
+            >
+              Browse all services
+            </Link>
+          </div>
           <p className="mt-4 text-xs text-cream/40">
             10% of every booking goes to Carla Lane Animals in Need 🐾
           </p>
@@ -138,12 +146,12 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* WAITLIST */}
+      {/* NEWSLETTER */}
       <section id="waitlist" className="section bg-cream">
         <div className="mx-auto max-w-5xl">
-          <h2 className="mb-4 font-head text-4xl text-ink md:text-5xl">Be first in Liverpool.</h2>
+          <h2 className="mb-4 font-head text-4xl text-ink md:text-5xl">Stay in the loop.</h2>
           <p className="mb-10 max-w-xl text-base leading-relaxed text-ink/60 md:text-[17px]">
-            Join the waitlist and get early access before we launch. No spam. Just your dog's new favourite app.
+            New listings, product updates and Liverpool dog stories — straight to your inbox. No spam.
           </p>
           <WaitlistForm />
         </div>
