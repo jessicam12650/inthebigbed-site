@@ -118,46 +118,48 @@ export default function BoardingPage() {
                   return (
                     <div
                       key={b.id}
-                      className="flex flex-col gap-4 rounded-sm border border-ink/10 bg-white p-6"
+                      className="group flex flex-col gap-4 rounded-sm border border-ink/10 bg-white p-6 transition-all hover:-translate-y-0.5 hover:border-ink/25 hover:shadow-pop"
                     >
-                      <header className="flex items-start justify-between gap-3">
-                        <div>
-                          <h3 className="font-head text-xl text-ink">{b.name}</h3>
-                          <p className="mt-1 text-xs text-ink/60">{licensedByLine(b)}</p>
-                          {b.licenceNumber === "—" && (
-                            <p className="mt-1 text-xs italic text-ink/55">
-                              Licence number pending verification — confirmed licensed via Knowsley Council register
-                            </p>
-                          )}
-                          <p className="mt-1 text-sm text-ink/60">{b.area}</p>
-                          <div className="mt-2">{renderBoardingTypeChip(b.location)}</div>
-                        </div>
-                        <span className="chip border-sage/30 bg-sage/10 text-sage">
-                          Council Licensed ✓
-                        </span>
-                      </header>
-
-                      {b.rating > 0 ? (
-                        <div
-                          className="flex items-center gap-1"
-                          aria-label={`${b.council ?? "Liverpool"} council rating: ${b.rating} out of 5`}
-                        >
-                          {[1, 2, 3, 4, 5].map((i) => (
-                            <span
-                              key={i}
-                              aria-hidden
-                              className={`text-lg ${i <= b.rating ? "text-rust" : "text-ink/20"}`}
-                            >
-                              ★
-                            </span>
-                          ))}
-                          <span className="ml-1.5 text-sm font-sub text-ink/70">
-                            {b.rating}/5 council rating
+                      <Link href={`/boarding/${b.id}`} className="flex flex-col gap-4">
+                        <header className="flex items-start justify-between gap-3">
+                          <div>
+                            <h3 className="font-head text-xl text-ink group-hover:underline">{b.name}</h3>
+                            <p className="mt-1 text-xs text-ink/60">{licensedByLine(b)}</p>
+                            {b.licenceNumber === "—" && (
+                              <p className="mt-1 text-xs italic text-ink/55">
+                                Licence number pending verification — confirmed licensed via Knowsley Council register
+                              </p>
+                            )}
+                            <p className="mt-1 text-sm text-ink/60">{b.area}</p>
+                            <div className="mt-2">{renderBoardingTypeChip(b.location)}</div>
+                          </div>
+                          <span className="chip border-sage/30 bg-sage/10 text-sage">
+                            Council Licensed ✓
                           </span>
-                        </div>
-                      ) : (
-                        <p className="text-sm text-ink/55">Council star rating not yet published</p>
-                      )}
+                        </header>
+
+                        {b.rating > 0 ? (
+                          <div
+                            className="flex items-center gap-1"
+                            aria-label={`${b.council ?? "Liverpool"} council rating: ${b.rating} out of 5`}
+                          >
+                            {[1, 2, 3, 4, 5].map((i) => (
+                              <span
+                                key={i}
+                                aria-hidden
+                                className={`text-lg ${i <= b.rating ? "text-rust" : "text-ink/20"}`}
+                              >
+                                ★
+                              </span>
+                            ))}
+                            <span className="ml-1.5 text-sm font-sub text-ink/70">
+                              {b.rating}/5 council rating
+                            </span>
+                          </div>
+                        ) : (
+                          <p className="text-sm text-ink/55">Council star rating not yet published</p>
+                        )}
+                      </Link>
 
                       <Link
                         href={`/signup?claim=${b.id}`}
