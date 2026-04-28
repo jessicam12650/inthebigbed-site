@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { DAYCARES } from "@/data/daycares";
 import TierBadge from "@/components/TierBadge";
 import Rating from "@/components/Rating";
+import EnquirySection from "@/components/EnquirySection";
 
 type Params = { id: string };
 
@@ -107,16 +108,27 @@ export default function DaycareDetailPage({ params }: { params: Params }) {
                 Claim this profile
               </Link>
             </div>
+
+            <section className="mt-10 rounded-sm bg-ink p-6 md:p-8">
+              <h2 className="font-head text-2xl text-cream md:text-3xl">Send an enquiry</h2>
+              <p className="mb-5 mt-1 text-sm text-cream/70">
+                We&apos;ll forward your message to {daycare.name} on your behalf.
+              </p>
+              <EnquirySection
+                providerKind="daycare"
+                providerId={daycare.id}
+                providerName={daycare.name}
+                claimed={false}
+                browseHref="/daycare"
+                browseLabel="Browse more licensed day cares"
+              />
+            </section>
           </div>
         </section>
       </article>
     );
   }
 
-  // Claimed branch — currently unreachable: all 8 day cares are unclaimed.
-  // Note: the booking CTA is intentionally omitted here. BookingCTA's `kind`
-  // prop and the booking_requests CHECK constraint do not include 'daycare';
-  // wiring it up requires both a schema migration and a type change.
   return (
     <article className="bg-cream">
       <section className="px-5 py-12 md:px-12 md:py-16">
@@ -183,6 +195,25 @@ export default function DaycareDetailPage({ params }: { params: Params }) {
               </li>
             ))}
           </ul>
+        </div>
+      </section>
+
+      <section className="bg-ink px-5 py-12 text-cream md:px-12 md:py-16">
+        <div className="mx-auto max-w-4xl">
+          <h2 className="font-head text-2xl text-cream md:text-3xl">Send an enquiry</h2>
+          <p className="mt-1 text-sm text-cream/70">
+            Send {daycare.name} your dates and dog details — we&apos;ll pass it on.
+          </p>
+          <div className="mt-6">
+            <EnquirySection
+              providerKind="daycare"
+              providerId={daycare.id}
+              providerName={daycare.name}
+              claimed={true}
+              browseHref="/daycare"
+              browseLabel="Browse more licensed day cares"
+            />
+          </div>
         </div>
       </section>
     </article>

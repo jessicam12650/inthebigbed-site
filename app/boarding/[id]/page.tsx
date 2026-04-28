@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { BOARDERS } from "@/data/boarders";
 import TierBadge from "@/components/TierBadge";
 import Rating from "@/components/Rating";
-import BookingCTA from "@/components/BookingCTA";
+import EnquirySection from "@/components/EnquirySection";
 
 type Params = { id: string };
 
@@ -116,6 +116,21 @@ export default function BoarderDetailPage({ params }: { params: Params }) {
                 Claim this profile
               </Link>
             </div>
+
+            <section className="mt-10 rounded-sm bg-ink p-6 md:p-8">
+              <h2 className="font-head text-2xl text-cream md:text-3xl">Send an enquiry</h2>
+              <p className="mb-5 mt-1 text-sm text-cream/70">
+                We&apos;ll forward your message to {boarder.name} on your behalf.
+              </p>
+              <EnquirySection
+                providerKind="boarder"
+                providerId={boarder.id}
+                providerName={boarder.name}
+                claimed={false}
+                browseHref="/boarding"
+                browseLabel="Browse more licensed boarders"
+              />
+            </section>
           </div>
         </section>
       </article>
@@ -201,19 +216,21 @@ export default function BoarderDetailPage({ params }: { params: Params }) {
       </section>
 
       <section className="bg-ink px-5 py-12 text-cream md:px-12 md:py-16">
-        <div className="mx-auto flex max-w-4xl flex-col items-start justify-between gap-4 md:flex-row md:items-center">
-          <div>
-            <h2 className="font-head text-2xl text-cream md:text-3xl">Book a stay</h2>
-            <p className="mt-1 text-sm text-cream/70">
-              Send {boarder.name.split(" ")[0]} the dates and we'll confirm availability.
-            </p>
+        <div className="mx-auto max-w-4xl">
+          <h2 className="font-head text-2xl text-cream md:text-3xl">Send an enquiry</h2>
+          <p className="mt-1 text-sm text-cream/70">
+            Send {boarder.name.split(" ")[0]} your dates and dog details — we&apos;ll pass it on.
+          </p>
+          <div className="mt-6">
+            <EnquirySection
+              providerKind="boarder"
+              providerId={boarder.id}
+              providerName={boarder.name}
+              claimed={true}
+              browseHref="/boarding"
+              browseLabel="Browse more licensed boarders"
+            />
           </div>
-          <BookingCTA
-            kind="boarder"
-            id={boarder.id}
-            available={boarder.available}
-            label="Request to book"
-          />
         </div>
       </section>
     </article>

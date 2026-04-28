@@ -162,3 +162,49 @@ create policy "booking_requests_update_own"
   on public.booking_requests for update
   using (auth.uid() = user_id)
   with check (auth.uid() = user_id);
+
+-- ─── booking_requests: enquiry-form migration (2026-04-28) ─────────────────
+-- Widen the table for the public enquiry form: guest details, dog details,
+-- date range, provider name snapshot. Allow user_id to be NULL so guests
+-- (unauthenticated visitors) can submit. Widen provider_kind CHECK to
+-- include 'daycare'. Open INSERTs to anyone; SELECT stays owner-only.
+alter table public.booking_requests
+  add column if not exists guest_name text,
+  add column if not exists guest_email text,
+  add column if not exists guest_phone text,
+  add column if not exists dog_name text,
+  add column if not exists dog_breed text,
+  add column if not exists dog_size text,
+  add column if not exists start_date date,
+  add column if not exists end_date date,
+  add column if not exists provider_name text;
+
+alter table public.booking_requests
+  alter column user_id drop not null;
+
+do $$
+begin
+  if exists (
+    select 1 from pg_constraint
+    where conname = 'booking_requests_provider_kind_check'
+      and conrelid = 'public.booking_requests'::regclass
+  ) then
+    alter table public.booking_requests
+      drop constraint booking_requests_provider_kind_check;
+  end if;
+end $$;
+
+alter table public.booking_requests
+  add constraint booking_requests_provider_kind_check
+  check (provider_kind in ('walker', 'boarder', 'groomer', 'daycare'));
+
+drop policy if exists "booking_requests_insert_own" on public.booking_requests;
+drop policy if exists "booking_requests_insert_any" on public.booking_requests;
+create policy "booking_requests_insert_any"
+  on public.booking_requests for insert
+  with check (true);
+
+drop policy if exists "booking_requests_delete_own" on public.booking_requests;
+create policy "booking_requests_delete_own"
+  on public.booking_requests for delete
+  using (user_id is not null and auth.uid() = user_id);
