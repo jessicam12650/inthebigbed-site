@@ -4,13 +4,14 @@ import TierBadge from "@/components/TierBadge";
 import Rating from "@/components/Rating";
 import PageHeader from "@/components/PageHeader";
 
-const COUNCIL_LABELS: Record<"Liverpool" | "Sefton" | "Knowsley", string> = {
+const COUNCIL_LABELS: Record<"Liverpool" | "Sefton" | "Knowsley" | "St Helens", string> = {
   Liverpool: "Liverpool City Council",
   Sefton: "Sefton Council",
   Knowsley: "Knowsley Council",
+  "St Helens": "St Helens Council",
 };
 
-function licensedByLine(d: { council?: "Liverpool" | "Sefton" | "Knowsley"; licenceNumber: string }) {
+function licensedByLine(d: { council?: "Liverpool" | "Sefton" | "Knowsley" | "St Helens"; licenceNumber: string }) {
   const council = d.council ?? "Liverpool";
   const label = COUNCIL_LABELS[council];
   if (d.licenceNumber === "—") return `Licensed by ${label} (licence number pending)`;
@@ -29,10 +30,10 @@ export default function DaycarePage() {
       <section className="border-b border-ink/10 bg-cream px-5 py-5 md:px-12">
         <div className="mx-auto max-w-5xl">
           <p className="font-sub text-sm leading-snug text-ink">
-            Every day care on this page is licensed and star-rated by Liverpool City Council. We only list the legal ones.
+            Every day care on this page is licensed and star-rated by their local council. We only list the legal ones.
           </p>
           <p className="mt-1 text-xs text-ink/60">
-            Source: Liverpool City Council Animal Activity Licenced Operators register, April 2026.
+            Sources: Liverpool City Council Animal Activity Licenced Operators register, plus verified Sefton, Knowsley and St Helens Council licences. April 2026.
           </p>
         </div>
       </section>

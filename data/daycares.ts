@@ -15,7 +15,7 @@ export type Daycare = {
   available: boolean;
   capacityAlert?: string;
   claimed?: boolean;
-  council?: "Liverpool" | "Sefton" | "Knowsley";
+  council?: "Liverpool" | "Sefton" | "Knowsley" | "St Helens";
 };
 
 export const DAYCARES: Daycare[] = [
@@ -146,5 +146,22 @@ export const DAYCARES: Daycare[] = [
     available: true,
     claimed: false,
     council: "Liverpool",
+  },
+  // ─── St Helens Council day care ───────────────────────────────────────────
+  {
+    id: "windle-wonder-touch-daycare",
+    name: "Windle Wonder Touch Doggy Daycare",
+    area: "St Helens (WA10)",
+    distance: "—",
+    tier: "silver",
+    licenceNumber: "DDC0001",
+    rating: 5,
+    reviews: 0,
+    pricePerDay: 0,
+    maxDogs: 0,
+    features: [],
+    available: true,
+    claimed: false,
+    council: "St Helens",
   },
 ];
