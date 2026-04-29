@@ -20,13 +20,11 @@ function providerExists(kind: ProviderKind, id: string): boolean {
   return DAYCARES.some((d) => d.id === id);
 }
 
-function escapeHtml(input: string): string {
-  return input
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#39;");
+function providerListingPath(kind: ProviderKind): string {
+  if (kind === "boarder") return "boarding";
+  if (kind === "daycare") return "daycare";
+  if (kind === "walker") return "walkers";
+  return "groomers";
 }
 
 type EnquiryRecord = {
@@ -43,12 +41,13 @@ type EnquiryRecord = {
   provider_id: string;
   provider_name: string;
   claimed: boolean;
+  user_id: string | null;
 };
 
 async function sendEmail(payload: {
   to: string;
   subject: string;
-  html: string;
+  text: string;
   replyTo?: string;
 }): Promise<boolean> {
   const apiKey = process.env.RESEND_API_KEY;
@@ -67,7 +66,7 @@ async function sendEmail(payload: {
         from: FROM_EMAIL,
         to: [payload.to],
         subject: payload.subject,
-        html: payload.html,
+        text: payload.text,
         reply_to: payload.replyTo,
       }),
     });
@@ -83,51 +82,79 @@ async function sendEmail(payload: {
   }
 }
 
-function ownerEmailHtml(r: EnquiryRecord): string {
-  const claimedTag = r.claimed ? "[CLAIMED LISTING]" : "[UNCLAIMED LISTING]";
-  const providerLink = `${SITE_URL}/${r.provider_kind === "boarder" ? "boarding" : r.provider_kind === "daycare" ? "daycare" : r.provider_kind === "walker" ? "walkers" : "groomers"}/${r.provider_id}`;
-  const rows: Array<[string, string]> = [
-    ["Provider", `${r.provider_name} (${r.provider_kind})`],
-    ["Listing", providerLink],
-    ["Status", claimedTag],
-    ["Name", r.guest_name],
-    ["Email", r.guest_email],
-    ["Phone", r.guest_phone || "—"],
-    ["Dog name", r.dog_name],
-    ["Dog breed", r.dog_breed || "—"],
-    ["Dog size", r.dog_size || "—"],
-    ["Dates", `${r.start_date} → ${r.end_date}`],
-    ["Message", r.message || "—"],
-  ];
-  const tableRows = rows
-    .map(
-      ([k, v]) =>
-        `<tr><td style="padding:6px 12px;border-bottom:1px solid #eee;font-weight:600;color:#666;">${escapeHtml(k)}</td><td style="padding:6px 12px;border-bottom:1px solid #eee;">${escapeHtml(v)}</td></tr>`,
-    )
-    .join("");
-  return `
-    <div style="font-family:-apple-system,Segoe UI,Roboto,sans-serif;color:#222;max-width:600px;">
-      <h2 style="margin:0 0 4px 0;">🐾 New enquiry: ${escapeHtml(r.provider_name)}</h2>
-      <p style="margin:0 0 16px 0;color:#666;font-size:14px;"><strong>${claimedTag}</strong></p>
-      <table style="border-collapse:collapse;width:100%;font-size:14px;">${tableRows}</table>
-      <p style="margin-top:24px;font-size:13px;color:#666;">Reply directly to this email to reach ${escapeHtml(r.guest_name)}.</p>
-    </div>
-  `;
+function ownerEmailText(r: EnquiryRecord): string {
+  const status = r.claimed ? "[CLAIMED LISTING]" : "[UNCLAIMED LISTING]";
+  const breed = r.dog_breed ?? "—";
+  const size = r.dog_size ?? "—";
+  const message = r.message ?? "—";
+  const userLine = r.user_id ? `Yes — user ID: ${r.user_id}` : "Guest enquiry";
+  const listingUrl = `${SITE_URL}/${providerListingPath(r.provider_kind)}/${r.provider_id}`;
+
+  const fromLines = [r.guest_name, r.guest_email];
+  if (r.guest_phone) fromLines.push(r.guest_phone);
+
+  return [
+    "New enquiry just came in.",
+    "",
+    `Listing: ${r.provider_name} (${r.provider_kind})`,
+    `Status: ${status}`,
+    `Provider ID: ${r.provider_id}`,
+    "",
+    "From:",
+    ...fromLines,
+    "",
+    "Their dog:",
+    `${r.dog_name} — ${breed} — ${size}`,
+    "",
+    "Dates:",
+    `${r.start_date} → ${r.end_date}`,
+    "",
+    "Message:",
+    message,
+    "",
+    "—",
+    "",
+    "Database: View this enquiry at https://supabase.com/dashboard/project/cvhutjpxflynrfcvszdy/editor",
+    "",
+    `Logged in user? ${userLine}`,
+    "",
+    `Provider listing: ${listingUrl}`,
+  ].join("\n");
 }
 
-function userEmailHtml(r: EnquiryRecord): string {
-  const unclaimedNote = r.claimed
-    ? ""
-    : `<p style="margin:16px 0;padding:12px;background:#fff7ed;border-left:3px solid #c2410c;font-size:14px;">Note: ${escapeHtml(r.provider_name)} hasn&apos;t claimed their In The Big Bed profile yet, so we&apos;re forwarding your enquiry to them directly. Replies may take a little longer.</p>`;
-  return `
-    <div style="font-family:-apple-system,Segoe UI,Roboto,sans-serif;color:#222;max-width:600px;">
-      <h2 style="margin:0 0 12px 0;">Thanks, ${escapeHtml(r.guest_name)} 🐾</h2>
-      <p style="font-size:15px;line-height:1.5;">We&apos;ve received your enquiry to <strong>${escapeHtml(r.provider_name)}</strong> and passed it on. You should hear back within a few days.</p>
-      <p style="font-size:15px;line-height:1.5;">In the meantime, you can browse other licensed boarders at <a href="${SITE_URL}/boarding" style="color:#c2410c;">inthebigbed.co.uk/boarding</a>.</p>
-      ${unclaimedNote}
-      <p style="margin-top:24px;font-size:13px;color:#888;">— In The Big Bed</p>
-    </div>
-  `;
+function userEmailText(r: EnquiryRecord): string {
+  const dogLine = r.dog_breed
+    ? `Dog: ${r.dog_name} — ${r.dog_breed}`
+    : `Dog: ${r.dog_name}`;
+  const claimedMessage = r.claimed
+    ? "will be in touch directly. They typically respond within 1-2 days."
+    : "hasn't claimed their In The Big Bed profile yet, so we're forwarding your enquiry to them directly. Replies may take a few days.";
+
+  const lines: string[] = [
+    `Hi ${r.guest_name},`,
+    "",
+    `Thanks for sending an enquiry to ${r.provider_name} via In The Big Bed.`,
+    "",
+    "Here's what you sent:",
+    "",
+    dogLine,
+    `Dates: ${r.start_date} – ${r.end_date}`,
+  ];
+  if (r.message) lines.push(`Your message: ${r.message}`);
+  lines.push(
+    "",
+    "What happens next?",
+    "",
+    `${r.provider_name} ${claimedMessage}`,
+    "",
+    "While you wait, you might want to browse other licensed boarders:",
+    `${SITE_URL}/boarding`,
+    "",
+    "Any questions, just reply to this email.",
+    "",
+    "The In The Big Bed team",
+  );
+  return lines.join("\n");
 }
 
 export async function POST(req: NextRequest) {
@@ -235,6 +262,7 @@ export async function POST(req: NextRequest) {
     provider_id: providerId,
     provider_name: providerName,
     claimed,
+    user_id: user?.id ?? null,
   };
 
   if (!process.env.RESEND_API_KEY) {
@@ -242,17 +270,19 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ success: true, emails_sent: false });
   }
 
+  const ownerStatusTag = claimed ? "[CLAIMED LISTING]" : "[UNCLAIMED LISTING]";
+
   const [ownerOk, userOk] = await Promise.all([
     sendEmail({
       to: OWNER_EMAIL,
-      subject: `🐾 New enquiry: ${providerName}`,
-      html: ownerEmailHtml(record),
+      subject: `🐾 New enquiry: ${providerName} ${ownerStatusTag}`,
+      text: ownerEmailText(record),
       replyTo: guestEmail,
     }),
     sendEmail({
       to: guestEmail,
-      subject: `We've received your enquiry to ${providerName} 🐾`,
-      html: userEmailHtml(record),
+      subject: `We've passed on your enquiry to ${providerName} 🐾`,
+      text: userEmailText(record),
     }),
   ]);
 
