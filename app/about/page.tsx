@@ -93,14 +93,16 @@ export default function AboutPage() {
             added.
           </p>
           <p className="mt-4 text-base leading-relaxed text-ink/80 md:text-[17px]">
-            Licensed and not seeing your business?{" "}
+            Licensed and not seeing your business?
+          </p>
+          <p className="mt-2 text-base leading-relaxed text-ink/80 md:text-[17px]">
+            Email us at{" "}
             <a
               href="mailto:hello@inthebigbed.co.uk"
               className="font-sub text-rust underline hover:opacity-80"
             >
-              Get in touch
+              hello@inthebigbed.co.uk
             </a>
-            .
           </p>
         </div>
       </section>
