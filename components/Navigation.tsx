@@ -12,6 +12,7 @@ const navLinks = [
   { href: "/groomers", label: "Groomers" },
   { href: "/vets", label: "Vets" },
   { href: "/places", label: "Dog-friendly places" },
+  { href: "/about", label: "About" },
 ];
 
 export default function Navigation() {
