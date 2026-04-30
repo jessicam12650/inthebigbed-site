@@ -106,6 +106,9 @@ export default function PlacesPage() {
   const [query, setQuery] = useState("");
   const [cat, setCat] = useState<"all" | Category>("all");
   const [activeId, setActiveId] = useState<string | null>(null);
+  // For grouped venues, also track WHICH pin in the venue's locations[] was
+  // clicked so we can highlight the matching row inside the shared card.
+  const [activePinId, setActivePinId] = useState<string | null>(null);
   const [mapReady, setMapReady] = useState(false);
 
   const mapDivRef = useRef<HTMLDivElement>(null);
@@ -114,7 +117,7 @@ export default function PlacesPage() {
   const markersRef = useRef<Record<string, google.maps.Marker>>({});
   const cardRefs = useRef<Record<string, HTMLElement | null>>({});
   const highlightTimeoutRef = useRef<number | null>(null);
-  const handlePinClickRef = useRef<(venueId: string) => void>(() => {});
+  const handlePinClickRef = useRef<(venueId: string, pinId: string) => void>(() => {});
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -205,7 +208,7 @@ export default function PlacesPage() {
           strokeWeight: 2,
         },
       });
-      marker.addListener("click", () => handlePinClickRef.current(pin.venue.id));
+      marker.addListener("click", () => handlePinClickRef.current(pin.venue.id, pin.pinId));
       markersRef.current[pin.pinId] = marker;
       bounds.extend({ lat, lng });
       placed += 1;
@@ -246,8 +249,9 @@ export default function PlacesPage() {
     }, 2000);
   }
 
-  function handlePinClick(venueId: string) {
+  function handlePinClick(venueId: string, pinId: string) {
     setActiveId(venueId);
+    setActivePinId(pinId);
     const card = cardRefs.current[venueId];
     if (card) {
       card.scrollIntoView({ block: "start", behavior: "smooth", inline: "nearest" });
@@ -259,6 +263,9 @@ export default function PlacesPage() {
 
   function handleCardClick(v: Venue) {
     setActiveId(v.id);
+    // Card click clears any per-location selection — we don't know which one
+    // the user is interested in.
+    setActivePinId(null);
     // For grouped venues, focus the first valid pin. Single-location venues
     // share the venue id as the pin id.
     const candidatePinIds = v.locations
@@ -336,6 +343,7 @@ export default function PlacesPage() {
                       key={v.id}
                       venue={v}
                       isActive={activeId === v.id}
+                      activePinId={activeId === v.id ? activePinId : null}
                       onClick={() => handleCardClick(v)}
                       setRef={(el) => (cardRefs.current[v.id] = el)}
                     />
@@ -360,6 +368,7 @@ export default function PlacesPage() {
                       key={v.id}
                       venue={v}
                       isActive={activeId === v.id}
+                      activePinId={activeId === v.id ? activePinId : null}
                       onClick={() => handleCardClick(v)}
                       setRef={(el) => (cardRefs.current[v.id] = el)}
                     />
@@ -377,11 +386,13 @@ export default function PlacesPage() {
 function VenueCard({
   venue,
   isActive,
+  activePinId,
   onClick,
   setRef,
 }: {
   venue: Venue;
   isActive: boolean;
+  activePinId: string | null;
   onClick: () => void;
   setRef: (el: HTMLElement | null) => void;
 }) {
@@ -495,24 +506,40 @@ function VenueCard({
           <div className="mb-2 text-[11px] font-sub uppercase tracking-wider text-ink/50">
             {venue.locations!.length} locations
           </div>
-          <ul className="flex flex-col gap-2">
-            {venue.locations!.map((loc) => (
-              <li key={loc.address} className="flex items-start justify-between gap-3 text-sm">
-                <span className="flex items-start gap-2 text-ink/70">
-                  <span aria-hidden>📍</span>
-                  <span>{loc.address}</span>
-                </span>
-                <a
-                  href={directionsUrl(loc)}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={(e) => e.stopPropagation()}
-                  className="shrink-0 text-xs font-sub text-rust underline hover:text-ink"
+          <ul className="flex flex-col gap-1.5">
+            {venue.locations!.map((loc, i) => {
+              const pinId = `${venue.id}::${i}`;
+              const isActiveLoc = activePinId === pinId;
+              return (
+                <li
+                  key={loc.address}
+                  className={`flex items-start justify-between gap-3 rounded-sm px-2 py-1.5 text-sm transition-colors ${
+                    isActiveLoc ? "bg-rust/10 ring-1 ring-rust/40" : ""
+                  }`}
                 >
-                  Directions
-                </a>
-              </li>
-            ))}
+                  <span className="flex items-start gap-2 text-ink/70">
+                    <span aria-hidden>📍</span>
+                    <span>
+                      {loc.address}
+                      {isActiveLoc && (
+                        <span className="ml-2 align-middle text-[11px] font-sub uppercase tracking-wider text-rust">
+                          you clicked this one
+                        </span>
+                      )}
+                    </span>
+                  </span>
+                  <a
+                    href={directionsUrl(loc)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={(e) => e.stopPropagation()}
+                    className="shrink-0 text-xs font-sub text-rust underline hover:text-ink"
+                  >
+                    Directions
+                  </a>
+                </li>
+              );
+            })}
           </ul>
         </div>
       )}
