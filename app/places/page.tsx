@@ -11,6 +11,7 @@ import {
 } from "@/data/venues";
 import FilterChip from "@/components/FilterChip";
 import EmptyState from "@/components/EmptyState";
+import BottomSheet, { type SheetState } from "@/components/BottomSheet";
 
 const CAT_FILTERS: Array<{ value: "all" | Category; label: string }> = [
   { value: "all", label: "All" },
@@ -110,9 +111,12 @@ export default function PlacesPage() {
   // clicked so we can highlight the matching row inside the shared card.
   const [activePinId, setActivePinId] = useState<string | null>(null);
   const [mapReady, setMapReady] = useState(false);
+  // Mobile-only — desktop layout ignores sheetState entirely.
+  const [sheetState, setSheetState] = useState<SheetState>("peek");
 
   const mapDivRef = useRef<HTMLDivElement>(null);
   const cardsScrollRef = useRef<HTMLDivElement>(null);
+  const sheetScrollRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<google.maps.Map | null>(null);
   const markersRef = useRef<Record<string, google.maps.Marker>>({});
   const cardRefs = useRef<Record<string, HTMLElement | null>>({});
@@ -138,6 +142,11 @@ export default function PlacesPage() {
   const standard = filtered.filter((v) => !v.featured);
 
   const pins = useMemo(() => venuePins(filtered), [filtered]);
+
+  const activeVenue = useMemo(
+    () => (activeId ? ALL_VENUES.find((v) => v.id === activeId) ?? null : null),
+    [activeId],
+  );
 
   useEffect(() => {
     let cancelled = false;
@@ -236,6 +245,17 @@ export default function PlacesPage() {
     };
   }, []);
 
+  // Move focus into the sheet's scrollable area when it opens, per a11y spec.
+  useEffect(() => {
+    if (sheetState === "peek") return;
+    const node = sheetScrollRef.current;
+    if (!node) return;
+    const firstFocusable = node.querySelector<HTMLElement>(
+      "a, button, [tabindex]:not([tabindex='-1'])",
+    );
+    firstFocusable?.focus({ preventScroll: true });
+  }, [sheetState]);
+
   function applyHighlight(card: HTMLElement) {
     card.classList.remove("card-highlight");
     void card.offsetWidth;
@@ -252,6 +272,9 @@ export default function PlacesPage() {
   function handlePinClick(venueId: string, pinId: string) {
     setActiveId(venueId);
     setActivePinId(pinId);
+    // Mobile: pop the sheet up to half so the card is visible. No-op on
+    // desktop — the sheet isn't rendered there.
+    setSheetState("half");
     const card = cardRefs.current[venueId];
     if (card) {
       card.scrollIntoView({ block: "start", behavior: "smooth", inline: "nearest" });
@@ -263,11 +286,8 @@ export default function PlacesPage() {
 
   function handleCardClick(v: Venue) {
     setActiveId(v.id);
-    // Card click clears any per-location selection — we don't know which one
-    // the user is interested in.
     setActivePinId(null);
-    // For grouped venues, focus the first valid pin. Single-location venues
-    // share the venue id as the pin id.
+    setSheetState("half");
     const candidatePinIds = v.locations
       ? v.locations.map((_, i) => `${v.id}::${i}`)
       : [v.id];
@@ -283,6 +303,31 @@ export default function PlacesPage() {
     }
   }
 
+  function handleSheetStateChange(s: SheetState) {
+    setSheetState(s);
+    // Dragging the sheet back down to peek dismisses any active venue —
+    // matches Apple/Google maps behaviour.
+    if (s === "peek") {
+      setActiveId(null);
+      setActivePinId(null);
+    }
+  }
+
+  function backToList() {
+    setActiveId(null);
+    setActivePinId(null);
+  }
+
+  const filterChipsRow = (
+    <div className="flex flex-wrap items-center gap-2">
+      {CAT_FILTERS.map((c) => (
+        <FilterChip key={c.value} active={cat === c.value} onClick={() => setCat(c.value)}>
+          {c.label}
+        </FilterChip>
+      ))}
+    </div>
+  );
+
   return (
     <section className="flex h-[calc(100dvh-4rem)] flex-col overflow-hidden bg-cream">
       <header className="shrink-0 border-b border-ink/10 px-5 py-2.5 md:px-8">
@@ -297,7 +342,9 @@ export default function PlacesPage() {
       </header>
 
       <div className="flex min-h-0 flex-1 flex-col md:flex-row">
-        <div className="h-[300px] shrink-0 border-b border-ink/10 md:h-full md:w-2/5 md:border-b-0 md:border-r">
+        {/* Map: full-bleed on mobile (fills remaining viewport, with bottom
+         * sheet floating over it). Desktop: 40% wide, fixed height. */}
+        <div className="min-h-0 flex-1 md:h-full md:w-2/5 md:flex-none md:border-r md:border-ink/10">
           <div
             ref={mapDivRef}
             className="h-full w-full bg-ink/5"
@@ -306,9 +353,11 @@ export default function PlacesPage() {
           />
         </div>
 
+        {/* Desktop cards pane — hidden on mobile, where the bottom sheet
+         * takes its place. */}
         <div
           ref={cardsScrollRef}
-          className="flex min-h-0 flex-1 flex-col overflow-y-auto md:w-3/5"
+          className="hidden min-h-0 flex-col overflow-y-auto md:flex md:w-3/5"
         >
           <div className="sticky top-0 z-10 shrink-0 border-b border-ink/10 bg-cream/95 backdrop-blur">
             <div className="mx-auto flex max-w-5xl flex-col gap-3 px-5 py-3 md:flex-row md:items-center md:px-8">
@@ -320,13 +369,7 @@ export default function PlacesPage() {
                 className="field flex-1"
                 aria-label="Search venues"
               />
-              <div className="flex flex-wrap items-center gap-2">
-                {CAT_FILTERS.map((c) => (
-                  <FilterChip key={c.value} active={cat === c.value} onClick={() => setCat(c.value)}>
-                    {c.label}
-                  </FilterChip>
-                ))}
-              </div>
+              {filterChipsRow}
             </div>
           </div>
 
@@ -379,6 +422,95 @@ export default function PlacesPage() {
           </div>
         </div>
       </div>
+
+      {/* Mobile bottom sheet — only renders below md breakpoint. */}
+      <BottomSheet
+        state={sheetState}
+        onStateChange={handleSheetStateChange}
+        expandedRef={sheetScrollRef}
+        peek={
+          <div className="flex flex-col gap-2">
+            <p className="text-xs font-sub text-ink/60">
+              {filtered.length} {filtered.length === 1 ? "place" : "places"} — drag up to browse
+            </p>
+            {filterChipsRow}
+          </div>
+        }
+      >
+        {activeVenue ? (
+          <div className="pt-3">
+            <button
+              type="button"
+              onClick={backToList}
+              className="mb-3 inline-flex items-center gap-1 text-sm font-sub text-rust hover:text-ink"
+            >
+              ← Back to list
+            </button>
+            <VenueCard
+              venue={activeVenue}
+              isActive
+              activePinId={activePinId}
+              onClick={() => {}}
+              setRef={() => {}}
+            />
+          </div>
+        ) : (
+          <div className="pt-3">
+            <input
+              type="search"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Search venues…"
+              className="field mb-4 w-full"
+              aria-label="Search venues"
+            />
+            {featured.length > 0 && (
+              <div className="mb-6">
+                <div className="mb-3 flex items-baseline gap-2">
+                  <h2 className="font-head text-base text-ink">Handpicked 🐾</h2>
+                  <span className="text-xs text-ink/55">{featured.length}</span>
+                </div>
+                <div className="flex flex-col gap-3">
+                  {featured.map((v) => (
+                    <VenueCard
+                      key={v.id}
+                      venue={v}
+                      isActive={false}
+                      activePinId={null}
+                      onClick={() => handleCardClick(v)}
+                      setRef={() => {}}
+                    />
+                  ))}
+                </div>
+              </div>
+            )}
+            <div>
+              <div className="mb-3 flex items-baseline gap-2">
+                <h2 className="font-head text-base text-ink">All venues</h2>
+                <span className="text-xs text-ink/55">
+                  {standard.length} {standard.length === 1 ? "place" : "places"}
+                </span>
+              </div>
+              {standard.length === 0 ? (
+                <EmptyState>No venues match your filters.</EmptyState>
+              ) : (
+                <div className="flex flex-col gap-3">
+                  {standard.map((v) => (
+                    <VenueCard
+                      key={v.id}
+                      venue={v}
+                      isActive={false}
+                      activePinId={null}
+                      onClick={() => handleCardClick(v)}
+                      setRef={() => {}}
+                    />
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+      </BottomSheet>
     </section>
   );
 }
