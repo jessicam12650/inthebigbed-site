@@ -119,7 +119,7 @@ export default function PlacesPage() {
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
     return ALL_VENUES.filter((v) => {
-      if (cat !== "all" && v.cat !== cat) return false;
+      if (cat !== "all" && !v.cat.includes(cat)) return false;
       if (q) {
         const addrs = v.locations
           ? v.locations.map((l) => l.address).join(" ")
@@ -412,7 +412,11 @@ function VenueCard({
       )}
 
       <div className="mt-1 flex flex-wrap items-center gap-2 text-xs text-ink/55">
-        <span className="chip">{CAT_LABELS[venue.cat]}</span>
+        {venue.cat.map((c) => (
+          <span key={c} className="chip">
+            {CAT_LABELS[c]}
+          </span>
+        ))}
         {typeof venue.rating === "number" && (
           <span className="font-sub text-ink/70">
             ⭐ {venue.rating.toFixed(1)}

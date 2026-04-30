@@ -185,7 +185,7 @@ function formatVenue(v: Venue, indent: string): string {
   const lines: string[] = [];
   lines.push(`${I2}id: ${s(v.id)},`);
   lines.push(`${I2}name: ${s(v.name)},`);
-  lines.push(`${I2}cat: ${s(v.cat)},`);
+  lines.push(`${I2}cat: [${v.cat.map(s).join(", ")}],`);
   if (v.description) lines.push(`${I2}description: ${s(v.description)},`);
   if (v.rating != null) lines.push(`${I2}rating: ${v.rating},`);
   if (v.userRatingsTotal != null) lines.push(`${I2}userRatingsTotal: ${v.userRatingsTotal},`);
