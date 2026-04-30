@@ -64,7 +64,34 @@ type Details = {
 type ApiError = { status: string; message?: string };
 type ApiResult<T> = { ok: T } | { err: ApiError };
 
-async function findPlace(query: string): Promise<ApiResult<Candidate | null>> {
+// Google's Places REST API returns spurious REQUEST_DENIED ("API key is
+// expired") on roughly 15-20% of calls — confirmed reproducible against the
+// same place_id, with serial calls and pacing. Retrying clears it almost
+// every time. ZERO_RESULTS and INVALID_REQUEST are real and not retried.
+const RETRYABLE_STATUSES = new Set([
+  "REQUEST_DENIED",
+  "UNKNOWN_ERROR",
+  "OVER_QUERY_LIMIT",
+  "NETWORK_ERROR",
+]);
+const RETRY_DELAYS_MS = [1000, 3000];
+
+async function withRetry<T>(
+  label: string,
+  attempt: () => Promise<ApiResult<T>>,
+): Promise<ApiResult<T>> {
+  let last: ApiResult<T> = await attempt();
+  for (let i = 0; i < RETRY_DELAYS_MS.length; i++) {
+    if (!("err" in last) || !RETRYABLE_STATUSES.has(last.err.status)) return last;
+    const delay = RETRY_DELAYS_MS[i];
+    console.log(`    ↻ retry ${i + 1}/${RETRY_DELAYS_MS.length} for ${label} after ${last.err.status} (waiting ${delay}ms)`);
+    await sleep(delay);
+    last = await attempt();
+  }
+  return last;
+}
+
+async function rawFindPlace(query: string): Promise<ApiResult<Candidate | null>> {
   const url = new URL("https://maps.googleapis.com/maps/api/place/findplacefromtext/json");
   url.searchParams.set("input", query);
   url.searchParams.set("inputtype", "textquery");
@@ -87,7 +114,7 @@ async function findPlace(query: string): Promise<ApiResult<Candidate | null>> {
   }
 }
 
-async function placeDetails(placeId: string): Promise<ApiResult<Details | null>> {
+async function rawPlaceDetails(placeId: string): Promise<ApiResult<Details | null>> {
   const url = new URL("https://maps.googleapis.com/maps/api/place/details/json");
   url.searchParams.set("place_id", placeId);
   url.searchParams.set(
@@ -108,6 +135,14 @@ async function placeDetails(placeId: string): Promise<ApiResult<Details | null>>
   } catch (err) {
     return { err: { status: "NETWORK_ERROR", message: err instanceof Error ? err.message : String(err) } };
   }
+}
+
+function findPlace(query: string): Promise<ApiResult<Candidate | null>> {
+  return withRetry(`findPlace("${query}")`, () => rawFindPlace(query));
+}
+
+function placeDetails(placeId: string): Promise<ApiResult<Details | null>> {
+  return withRetry(`details(${placeId})`, () => rawPlaceDetails(placeId));
 }
 
 function locationNeedsEnrichment(loc: VenueLocation): boolean {
