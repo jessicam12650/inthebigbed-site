@@ -61,19 +61,33 @@ type Details = {
   place_id?: string;
 };
 
-async function findPlace(query: string): Promise<Candidate | null> {
+type ApiError = { status: string; message?: string };
+type ApiResult<T> = { ok: T } | { err: ApiError };
+
+async function findPlace(query: string): Promise<ApiResult<Candidate | null>> {
   const url = new URL("https://maps.googleapis.com/maps/api/place/findplacefromtext/json");
   url.searchParams.set("input", query);
   url.searchParams.set("inputtype", "textquery");
   url.searchParams.set("fields", "place_id,formatted_address,geometry,name");
   url.searchParams.set("key", API_KEY!);
-  const res = await fetch(url);
-  const json = (await res.json()) as { status: string; candidates?: Candidate[] };
-  if (json.status !== "OK" || !json.candidates || json.candidates.length === 0) return null;
-  return json.candidates[0];
+  try {
+    const res = await fetch(url);
+    const json = (await res.json()) as {
+      status: string;
+      candidates?: Candidate[];
+      error_message?: string;
+    };
+    if (json.status === "OK") {
+      return { ok: json.candidates && json.candidates.length > 0 ? json.candidates[0] : null };
+    }
+    if (json.status === "ZERO_RESULTS") return { ok: null };
+    return { err: { status: json.status, message: json.error_message } };
+  } catch (err) {
+    return { err: { status: "NETWORK_ERROR", message: err instanceof Error ? err.message : String(err) } };
+  }
 }
 
-async function placeDetails(placeId: string): Promise<Details | null> {
+async function placeDetails(placeId: string): Promise<ApiResult<Details | null>> {
   const url = new URL("https://maps.googleapis.com/maps/api/place/details/json");
   url.searchParams.set("place_id", placeId);
   url.searchParams.set(
@@ -81,10 +95,19 @@ async function placeDetails(placeId: string): Promise<Details | null> {
     "rating,user_ratings_total,opening_hours,formatted_phone_number,website,editorial_summary,formatted_address,geometry,place_id",
   );
   url.searchParams.set("key", API_KEY!);
-  const res = await fetch(url);
-  const json = (await res.json()) as { status: string; result?: Details };
-  if (json.status !== "OK" || !json.result) return null;
-  return json.result;
+  try {
+    const res = await fetch(url);
+    const json = (await res.json()) as {
+      status: string;
+      result?: Details;
+      error_message?: string;
+    };
+    if (json.status === "OK") return { ok: json.result ?? null };
+    if (json.status === "ZERO_RESULTS") return { ok: null };
+    return { err: { status: json.status, message: json.error_message } };
+  } catch (err) {
+    return { err: { status: "NETWORK_ERROR", message: err instanceof Error ? err.message : String(err) } };
+  }
 }
 
 function locationNeedsEnrichment(loc: VenueLocation): boolean {
@@ -100,67 +123,143 @@ function venueNeedsEnrichment(v: Venue): boolean {
   return false;
 }
 
-async function enrichLocation(name: string, loc: VenueLocation): Promise<void> {
+type Outcome = "enriched" | "partial" | "no_result" | "error" | "skipped";
+
+type FailedQuery = { name: string; query: string; status: string; message?: string };
+
+type ProcessResult = {
+  outcome: Outcome;
+  failed: FailedQuery[];
+};
+
+async function enrichLocation(
+  name: string,
+  loc: VenueLocation,
+): Promise<{ enriched: boolean; failed?: FailedQuery }> {
   const query = `${name}, ${loc.address}`;
-  const candidate = await findPlace(query);
-  if (!candidate) {
-    console.warn(`⚠️  no result for "${query}"`);
-    return;
+  const result = await findPlace(query);
+  if ("err" in result) {
+    return { enriched: false, failed: { name, query, ...result.err } };
   }
-  loc.placeId = candidate.place_id;
-  if (candidate.geometry?.location) {
-    loc.latLng = [candidate.geometry.location.lat, candidate.geometry.location.lng];
+  if (result.ok == null) {
+    return { enriched: false, failed: { name, query, status: "ZERO_RESULTS" } };
   }
-  if (candidate.formatted_address) loc.address = candidate.formatted_address;
+  const c = result.ok;
+  let touched = false;
+  if (c.place_id && c.place_id !== loc.placeId) {
+    loc.placeId = c.place_id;
+    touched = true;
+  }
+  if (c.geometry?.location) {
+    const newLatLng: [number, number] = [c.geometry.location.lat, c.geometry.location.lng];
+    if (loc.latLng[0] !== newLatLng[0] || loc.latLng[1] !== newLatLng[1]) {
+      loc.latLng = newLatLng;
+      touched = true;
+    }
+  }
+  if (c.formatted_address && c.formatted_address !== loc.address) {
+    loc.address = c.formatted_address;
+    touched = true;
+  }
+  return { enriched: touched };
 }
 
-async function enrichVenueDetails(v: Venue, placeId: string): Promise<void> {
-  const details = await placeDetails(placeId);
-  if (!details) return;
-  if (details.rating != null) v.rating = details.rating;
-  if (details.user_ratings_total != null) v.userRatingsTotal = details.user_ratings_total;
-  if (details.opening_hours?.weekday_text) v.hours = details.opening_hours.weekday_text;
-  if (details.formatted_phone_number) v.phone = details.formatted_phone_number;
-  if (details.website) v.website = details.website;
-  if (!v.description && details.editorial_summary?.overview) {
-    v.description = details.editorial_summary.overview;
+async function enrichVenueDetails(
+  v: Venue,
+  placeId: string,
+): Promise<{ enriched: boolean; failed?: FailedQuery }> {
+  const result = await placeDetails(placeId);
+  if ("err" in result) {
+    return { enriched: false, failed: { name: v.name, query: `details:${placeId}`, ...result.err } };
   }
+  if (result.ok == null) {
+    return { enriched: false };
+  }
+  const d = result.ok;
+  let touched = false;
+  if (d.rating != null && d.rating !== v.rating) {
+    v.rating = d.rating;
+    touched = true;
+  }
+  if (d.user_ratings_total != null && d.user_ratings_total !== v.userRatingsTotal) {
+    v.userRatingsTotal = d.user_ratings_total;
+    touched = true;
+  }
+  if (d.opening_hours?.weekday_text) {
+    v.hours = d.opening_hours.weekday_text;
+    touched = true;
+  }
+  if (d.formatted_phone_number && d.formatted_phone_number !== v.phone) {
+    v.phone = d.formatted_phone_number;
+    touched = true;
+  }
+  if (d.website && d.website !== v.website) {
+    v.website = d.website;
+    touched = true;
+  }
+  if (!v.description && d.editorial_summary?.overview) {
+    v.description = d.editorial_summary.overview;
+    touched = true;
+  }
+  return { enriched: touched };
 }
 
-async function processVenue(v: Venue): Promise<void> {
+async function processVenue(v: Venue): Promise<ProcessResult> {
   if (!venueNeedsEnrichment(v)) {
     console.log(`⏭️   ${v.name} — already enriched`);
-    return;
+    return { outcome: "skipped", failed: [] };
   }
 
-  try {
-    if (v.locations) {
-      for (const loc of v.locations) {
-        if (locationNeedsEnrichment(loc)) {
-          await enrichLocation(v.name, loc);
-          await sleep(DELAY_MS);
-        }
-      }
-      // Use the first resolved place_id for venue-level details (rating etc).
-      const firstWithId = v.locations.find((l) => l.placeId);
-      if (firstWithId?.placeId) {
-        await enrichVenueDetails(v, firstWithId.placeId);
-        await sleep(DELAY_MS);
-      }
-    } else if (v.location) {
-      if (locationNeedsEnrichment(v.location)) {
-        await enrichLocation(v.name, v.location);
-        await sleep(DELAY_MS);
-      }
-      if (v.location.placeId) {
-        await enrichVenueDetails(v, v.location.placeId);
-        await sleep(DELAY_MS);
-      }
-    }
-    console.log(`✅  ${v.name}`);
-  } catch (err) {
-    console.error(`❌  ${v.name}:`, err);
+  const failed: FailedQuery[] = [];
+  let anyEnriched = false;
+  let anyMissed = false;
+  let firstFatal: FailedQuery | null = null;
+
+  const recordFailure = (f: FailedQuery) => {
+    failed.push(f);
+    // ZERO_RESULTS = expected miss, anything else = real API error.
+    if (f.status === "ZERO_RESULTS") anyMissed = true;
+    else if (!firstFatal) firstFatal = f;
+  };
+
+  const locsToProcess = v.locations ?? (v.location ? [v.location] : []);
+  for (const loc of locsToProcess) {
+    if (!locationNeedsEnrichment(loc)) continue;
+    const r = await enrichLocation(v.name, loc);
+    if (r.enriched) anyEnriched = true;
+    if (r.failed) recordFailure(r.failed);
+    await sleep(DELAY_MS);
+    if (firstFatal) break;
   }
+
+  if (!firstFatal) {
+    const placeId = v.locations
+      ? v.locations.find((l) => l.placeId)?.placeId
+      : v.location?.placeId;
+    if (placeId) {
+      const r = await enrichVenueDetails(v, placeId);
+      if (r.enriched) anyEnriched = true;
+      if (r.failed) recordFailure(r.failed);
+      await sleep(DELAY_MS);
+    }
+  }
+
+  let outcome: Outcome;
+  if (firstFatal) {
+    outcome = "error";
+    const f = firstFatal as FailedQuery;
+    console.error(`❌  ${v.name} — ${f.status}${f.message ? `: ${f.message}` : ""}`);
+  } else if (anyEnriched && anyMissed) {
+    outcome = "partial";
+    console.log(`⚠️  ${v.name} — partial (some locations had no match)`);
+  } else if (anyEnriched) {
+    outcome = "enriched";
+    console.log(`✅  ${v.name} — enriched`);
+  } else {
+    outcome = "no_result";
+    console.warn(`⚠️  ${v.name} — no result`);
+  }
+  return { outcome, failed };
 }
 
 // ─── Serializer ─────────────────────────────────────────────────────────────
@@ -236,12 +335,38 @@ async function main() {
     `Enriching ${HANDPICKED.length + VENUES.length} venues against the Google Places API…\n`,
   );
 
-  for (const v of HANDPICKED) await processVenue(v);
-  for (const v of VENUES) await processVenue(v);
+  const counts: Record<Outcome, number> = {
+    enriched: 0,
+    partial: 0,
+    no_result: 0,
+    error: 0,
+    skipped: 0,
+  };
+  const allFailed: FailedQuery[] = [];
+
+  for (const v of [...HANDPICKED, ...VENUES]) {
+    const r = await processVenue(v);
+    counts[r.outcome] += 1;
+    allFailed.push(...r.failed);
+  }
 
   const source = await fs.readFile(VENUES_PATH, "utf8");
   const next = rewriteFile(source, HANDPICKED, VENUES);
   await fs.writeFile(VENUES_PATH, next, "utf8");
+
+  console.log(`\n──── SUMMARY ────`);
+  console.log(`✅  enriched:   ${counts.enriched}`);
+  console.log(`⚠️  partial:    ${counts.partial}`);
+  console.log(`⚠️  no_result:  ${counts.no_result}`);
+  console.log(`❌  error:      ${counts.error}`);
+  console.log(`⏭️   skipped:    ${counts.skipped}`);
+
+  if (allFailed.length > 0) {
+    console.log(`\n──── FAILED QUERIES ────`);
+    for (const f of allFailed) {
+      console.log(`  [${f.status}] ${f.name} → "${f.query}"${f.message ? ` (${f.message})` : ""}`);
+    }
+  }
 
   console.log(`\nWrote ${VENUES_PATH}.`);
   console.log("Review the diff before committing.");
