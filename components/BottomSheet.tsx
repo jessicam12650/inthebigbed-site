@@ -23,20 +23,26 @@ type Props = {
 // strip at the bottom), half (~50% of viewport), full (~90%). Drag the
 // handle vertically to slide between states; tap or Enter on the handle
 // cycles peek → half → full → peek. Esc collapses to peek.
+//
+// Implementation note: the sheet's height itself is what changes between
+// states (not a translateY on a fixed-height element). This means the
+// inner scroll container has a bounded height that matches the visible
+// portion, so children that exceed that height get a real `overflow-y`
+// scroll inside the sheet — required for grouped venue cards (Derek's,
+// Rudy's, etc.) that list multiple locations.
 export default function BottomSheet({ state, onStateChange, peek, children, expandedRef }: Props) {
-  const dragRef = useRef<{ startY: number; startTranslate: number } | null>(null);
-  const [dragTranslate, setDragTranslate] = useState<number | null>(null);
+  const dragRef = useRef<{ startY: number; startHeight: number } | null>(null);
+  const [dragHeight, setDragHeight] = useState<number | null>(null);
 
   function vhPx(): number {
     return typeof window === "undefined" ? 800 : window.innerHeight;
   }
 
-  function stateToTranslate(s: SheetState): number {
+  function stateToHeightPx(s: SheetState): number {
     const vh = vhPx();
-    const sheetHeight = (FULL_VH * vh) / 100;
-    if (s === "full") return 0;
-    if (s === "half") return sheetHeight - (HALF_VH * vh) / 100;
-    return sheetHeight - PEEK_PX;
+    if (s === "full") return (FULL_VH * vh) / 100;
+    if (s === "half") return (HALF_VH * vh) / 100;
+    return PEEK_PX;
   }
 
   useEffect(() => {
@@ -53,28 +59,33 @@ export default function BottomSheet({ state, onStateChange, peek, children, expa
   function onTouchStart(e: React.TouchEvent) {
     dragRef.current = {
       startY: e.touches[0].clientY,
-      startTranslate: stateToTranslate(state),
+      startHeight: stateToHeightPx(state),
     };
-    setDragTranslate(dragRef.current.startTranslate);
+    setDragHeight(dragRef.current.startHeight);
   }
 
   function onTouchMove(e: React.TouchEvent) {
     if (!dragRef.current) return;
-    const delta = e.touches[0].clientY - dragRef.current.startY;
-    const proposed = dragRef.current.startTranslate + delta;
-    const max = stateToTranslate("peek");
-    const min = stateToTranslate("full");
-    setDragTranslate(Math.max(min, Math.min(max, proposed)));
+    // Dragging up shrinks Y → grows the sheet.
+    const delta = dragRef.current.startY - e.touches[0].clientY;
+    const proposed = dragRef.current.startHeight + delta;
+    const min = PEEK_PX;
+    const max = (FULL_VH * vhPx()) / 100;
+    setDragHeight(Math.max(min, Math.min(max, proposed)));
   }
 
   function onTouchEnd() {
     if (!dragRef.current) return;
-    const final = dragTranslate ?? dragRef.current.startTranslate;
-    const candidates: SheetState[] = ["full", "half", "peek"];
+    const final = dragHeight ?? dragRef.current.startHeight;
+    const candidates: Array<[SheetState, number]> = [
+      ["full", stateToHeightPx("full")],
+      ["half", stateToHeightPx("half")],
+      ["peek", stateToHeightPx("peek")],
+    ];
     let best: SheetState = state;
     let bestDist = Infinity;
-    for (const s of candidates) {
-      const d = Math.abs(stateToTranslate(s) - final);
+    for (const [s, h] of candidates) {
+      const d = Math.abs(h - final);
       if (d < bestDist) {
         bestDist = d;
         best = s;
@@ -82,7 +93,7 @@ export default function BottomSheet({ state, onStateChange, peek, children, expa
     }
     onStateChange(best);
     dragRef.current = null;
-    setDragTranslate(null);
+    setDragHeight(null);
   }
 
   function cycleState() {
@@ -98,17 +109,17 @@ export default function BottomSheet({ state, onStateChange, peek, children, expa
     }
   }
 
-  // While dragging we drive the transform from JS in px (no transition).
-  // Otherwise we use vh-based CSS so the sheet renders correctly on first
-  // paint without needing window measurements.
-  const transformStyle: React.CSSProperties =
-    dragTranslate !== null
-      ? { transform: `translateY(${dragTranslate}px)`, transition: "none" }
+  // While dragging we drive height in px from JS (no transition for snappy
+  // feel). Otherwise we use vh-based CSS so the sheet renders correctly on
+  // first paint without needing window measurements.
+  const heightStyle: React.CSSProperties =
+    dragHeight !== null
+      ? { height: `${dragHeight}px`, transition: "none" }
       : state === "full"
-        ? { transform: "translateY(0)" }
+        ? { height: `${FULL_VH}vh` }
         : state === "half"
-          ? { transform: `translateY(${FULL_VH - HALF_VH}vh)` }
-          : { transform: `translateY(calc(${FULL_VH}vh - ${PEEK_PX}px))` };
+          ? { height: `${HALF_VH}vh` }
+          : { height: `${PEEK_PX}px` };
 
   return (
     <div
@@ -116,14 +127,17 @@ export default function BottomSheet({ state, onStateChange, peek, children, expa
       aria-label="Venue list"
       className="fixed inset-x-0 bottom-0 z-30 flex flex-col rounded-t-2xl border-t border-ink/10 bg-cream shadow-[0_-8px_32px_rgba(0,0,0,0.18)] md:hidden"
       style={{
-        height: `${FULL_VH}vh`,
-        willChange: "transform",
-        transitionProperty: "transform",
+        willChange: "height",
+        transitionProperty: "height",
         transitionDuration: "260ms",
         transitionTimingFunction: "cubic-bezier(0.16, 1, 0.3, 1)",
-        ...transformStyle,
+        ...heightStyle,
       }}
     >
+      {/* Handle is its own touch target — sits above the scrollable content
+       * so users can always grab it to drag the sheet, even when the body
+       * is mid-scroll. `touch-none` prevents the browser from claiming the
+       * gesture for native scroll. */}
       <div
         role="button"
         tabIndex={0}
@@ -139,7 +153,13 @@ export default function BottomSheet({ state, onStateChange, peek, children, expa
         <div className="mx-auto h-1.5 w-10 rounded-full bg-ink/25" />
       </div>
       <div className="shrink-0 px-4 pb-2">{peek}</div>
-      <div ref={expandedRef} className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-4 pb-6">
+      {/* min-h-0 + flex-1 lets this container shrink to the remaining sheet
+       * height; overflow-y-auto then engages because the sheet's outer
+       * height is now bounded to the current state (not always 90vh). */}
+      <div
+        ref={expandedRef}
+        className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-4 pb-6"
+      >
         {children}
       </div>
     </div>
