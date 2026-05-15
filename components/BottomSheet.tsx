@@ -1,12 +1,12 @@
 "use client";
 
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useRef, type ReactNode } from "react";
 
 export type SheetState = "peek" | "half" | "full";
 
 const PEEK_PX = 130; // visible height in peek (handle + count + chips)
-const HALF_VH = 50;
-const FULL_VH = 90;
+const HALF_DVH = 50;
+const FULL_DVH = 90;
 
 type Props = {
   state: SheetState;
@@ -20,30 +20,142 @@ type Props = {
 };
 
 // Bottom sheet for the mobile places page. Three snap points: peek (small
-// strip at the bottom), half (~50% of viewport), full (~90%). Drag the
-// handle vertically to slide between states; tap or Enter on the handle
-// cycles peek → half → full → peek. Esc collapses to peek.
+// strip at the bottom), half (~50% of viewport), full (~90%).
 //
-// Implementation note: the sheet's height itself is what changes between
-// states (not a translateY on a fixed-height element). This means the
-// inner scroll container has a bounded height that matches the visible
-// portion, so children that exceed that height get a real `overflow-y`
-// scroll inside the sheet — required for grouped venue cards (Derek's,
-// Rudy's, etc.) that list multiple locations.
+// Drag the sheet anywhere — handle, peek row, or the body. When dragging
+// from the body, native scroll wins as long as the user isn't pulling away
+// from a scroll boundary; only the boundary cases (atTop + drag-down,
+// atBottom + drag-up) hijack the gesture for sheet drag.
+//
+// Heights use `dvh` so the sheet matches the dynamic viewport on iOS Safari
+// (excluding the bottom toolbar). During drag we mutate `style.height`
+// directly via a ref + rAF — avoids a React re-render per frame and keeps
+// the gesture at 60fps even on older iPhones.
 export default function BottomSheet({ state, onStateChange, peek, children, expandedRef }: Props) {
-  const dragRef = useRef<{ startY: number; startHeight: number } | null>(null);
-  const [dragHeight, setDragHeight] = useState<number | null>(null);
+  const sheetRef = useRef<HTMLDivElement | null>(null);
+  const bodyRef = useRef<HTMLDivElement | null>(null);
+  // Refs hold latest state/callback so the touch effect doesn't re-bind
+  // listeners on every state change (causing dropped touches mid-drag).
+  const stateRef = useRef(state);
+  const onStateChangeRef = useRef(onStateChange);
+  stateRef.current = state;
+  onStateChangeRef.current = onStateChange;
 
-  function vhPx(): number {
-    return typeof window === "undefined" ? 800 : window.innerHeight;
-  }
+  // Forward the body element to an external ref, if one was passed in.
+  const setBodyRef = useCallback(
+    (el: HTMLDivElement | null) => {
+      bodyRef.current = el;
+      if (!expandedRef) return;
+      if (typeof expandedRef === "function") expandedRef(el);
+      else (expandedRef as { current: HTMLDivElement | null }).current = el;
+    },
+    [expandedRef],
+  );
 
-  function stateToHeightPx(s: SheetState): number {
-    const vh = vhPx();
-    if (s === "full") return (FULL_VH * vh) / 100;
-    if (s === "half") return (HALF_VH * vh) / 100;
-    return PEEK_PX;
-  }
+  useEffect(() => {
+    const sheet = sheetRef.current;
+    if (!sheet) return;
+
+    const vhPx = () => (typeof window === "undefined" ? 800 : window.innerHeight);
+    const stateHeight = (s: SheetState): number => {
+      if (s === "full") return (FULL_DVH * vhPx()) / 100;
+      if (s === "half") return (HALF_DVH * vhPx()) / 100;
+      return PEEK_PX;
+    };
+
+    let drag:
+      | { startY: number; startHeight: number; fromBody: boolean; bodyScrollAtStart: number }
+      | null = null;
+    let raf = 0;
+    let lastHeight = 0;
+
+    const onStart = (e: TouchEvent) => {
+      const target = e.target as Node;
+      const fromBody = bodyRef.current?.contains(target) ?? false;
+      drag = {
+        startY: e.touches[0].clientY,
+        startHeight: stateHeight(stateRef.current),
+        fromBody,
+        bodyScrollAtStart: bodyRef.current?.scrollTop ?? 0,
+      };
+      lastHeight = drag.startHeight;
+    };
+
+    const onMove = (e: TouchEvent) => {
+      if (!drag) return;
+      const deltaY = drag.startY - e.touches[0].clientY; // up = positive
+
+      // If the gesture started inside the scrollable body, let native scroll
+      // handle it UNLESS we're at a scroll boundary that matches the drag
+      // direction — that's when we hijack to drag the sheet.
+      if (drag.fromBody) {
+        const body = bodyRef.current;
+        if (!body) return;
+        const atTop = body.scrollTop <= 0;
+        const atBottom = body.scrollTop + body.clientHeight >= body.scrollHeight - 1;
+        const draggingDown = deltaY < 0;
+        const draggingUp = deltaY > 0;
+        const wantsSheetDrag =
+          (draggingDown && atTop) ||
+          (draggingUp && atBottom && stateRef.current !== "full");
+        if (!wantsSheetDrag) return; // native scroll handles this
+      }
+
+      // Hijack: prevent the browser's scroll/overscroll bounce.
+      e.preventDefault();
+      const proposed = drag.startHeight + deltaY;
+      const min = PEEK_PX;
+      const max = (FULL_DVH * vhPx()) / 100;
+      const clamped = Math.max(min, Math.min(max, proposed));
+
+      // Skip the rAF if nothing changed to avoid spurious paints.
+      if (Math.abs(clamped - lastHeight) < 0.5) return;
+      lastHeight = clamped;
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(() => {
+        sheet.style.transition = "none";
+        sheet.style.height = `${clamped}px`;
+      });
+    };
+
+    const onEnd = () => {
+      if (!drag) return;
+      cancelAnimationFrame(raf);
+      const finalHeight = parseFloat(sheet.style.height) || drag.startHeight;
+      const candidates: Array<[SheetState, number]> = [
+        ["full", stateHeight("full")],
+        ["half", stateHeight("half")],
+        ["peek", stateHeight("peek")],
+      ];
+      let best: SheetState = stateRef.current;
+      let bestDist = Infinity;
+      for (const [s, h] of candidates) {
+        const d = Math.abs(h - finalHeight);
+        if (d < bestDist) {
+          bestDist = d;
+          best = s;
+        }
+      }
+      // Restore CSS transition for the snap, then sync React state — the
+      // state-driven inline style takes over and animates to the snap point.
+      sheet.style.transition = "";
+      sheet.style.height = "";
+      onStateChangeRef.current(best);
+      drag = null;
+    };
+
+    sheet.addEventListener("touchstart", onStart, { passive: true });
+    sheet.addEventListener("touchmove", onMove, { passive: false });
+    sheet.addEventListener("touchend", onEnd, { passive: true });
+    sheet.addEventListener("touchcancel", onEnd, { passive: true });
+    return () => {
+      sheet.removeEventListener("touchstart", onStart);
+      sheet.removeEventListener("touchmove", onMove);
+      sheet.removeEventListener("touchend", onEnd);
+      sheet.removeEventListener("touchcancel", onEnd);
+      cancelAnimationFrame(raf);
+    };
+  }, []);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -55,46 +167,6 @@ export default function BottomSheet({ state, onStateChange, peek, children, expa
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [state, onStateChange]);
-
-  function onTouchStart(e: React.TouchEvent) {
-    dragRef.current = {
-      startY: e.touches[0].clientY,
-      startHeight: stateToHeightPx(state),
-    };
-    setDragHeight(dragRef.current.startHeight);
-  }
-
-  function onTouchMove(e: React.TouchEvent) {
-    if (!dragRef.current) return;
-    // Dragging up shrinks Y → grows the sheet.
-    const delta = dragRef.current.startY - e.touches[0].clientY;
-    const proposed = dragRef.current.startHeight + delta;
-    const min = PEEK_PX;
-    const max = (FULL_VH * vhPx()) / 100;
-    setDragHeight(Math.max(min, Math.min(max, proposed)));
-  }
-
-  function onTouchEnd() {
-    if (!dragRef.current) return;
-    const final = dragHeight ?? dragRef.current.startHeight;
-    const candidates: Array<[SheetState, number]> = [
-      ["full", stateToHeightPx("full")],
-      ["half", stateToHeightPx("half")],
-      ["peek", stateToHeightPx("peek")],
-    ];
-    let best: SheetState = state;
-    let bestDist = Infinity;
-    for (const [s, h] of candidates) {
-      const d = Math.abs(h - final);
-      if (d < bestDist) {
-        bestDist = d;
-        best = s;
-      }
-    }
-    onStateChange(best);
-    dragRef.current = null;
-    setDragHeight(null);
-  }
 
   function cycleState() {
     if (state === "peek") onStateChange("half");
@@ -109,20 +181,18 @@ export default function BottomSheet({ state, onStateChange, peek, children, expa
     }
   }
 
-  // While dragging we drive height in px from JS (no transition for snappy
-  // feel). Otherwise we use vh-based CSS so the sheet renders correctly on
-  // first paint without needing window measurements.
+  // CSS-driven height for snap states. Drag overrides this via inline style,
+  // which is reset on touchend so the snap animates to the new state height.
   const heightStyle: React.CSSProperties =
-    dragHeight !== null
-      ? { height: `${dragHeight}px`, transition: "none" }
-      : state === "full"
-        ? { height: `${FULL_VH}vh` }
-        : state === "half"
-          ? { height: `${HALF_VH}vh` }
-          : { height: `${PEEK_PX}px` };
+    state === "full"
+      ? { height: `${FULL_DVH}dvh` }
+      : state === "half"
+        ? { height: `${HALF_DVH}dvh` }
+        : { height: `${PEEK_PX}px` };
 
   return (
     <div
+      ref={sheetRef}
       role="dialog"
       aria-label="Venue list"
       className="fixed inset-x-0 bottom-0 z-30 flex flex-col rounded-t-2xl border-t border-ink/10 bg-cream shadow-[0_-8px_32px_rgba(0,0,0,0.18)] md:hidden"
@@ -134,10 +204,8 @@ export default function BottomSheet({ state, onStateChange, peek, children, expa
         ...heightStyle,
       }}
     >
-      {/* Handle is its own touch target — sits above the scrollable content
-       * so users can always grab it to drag the sheet, even when the body
-       * is mid-scroll. `touch-none` prevents the browser from claiming the
-       * gesture for native scroll. */}
+      {/* Handle is a tap target for cycle + a drag origin. touch-action:none
+       * keeps the browser from claiming the gesture for native scroll. */}
       <div
         role="button"
         tabIndex={0}
@@ -145,20 +213,23 @@ export default function BottomSheet({ state, onStateChange, peek, children, expa
         aria-expanded={state !== "peek"}
         onClick={cycleState}
         onKeyDown={onHandleKeyDown}
-        onTouchStart={onTouchStart}
-        onTouchMove={onTouchMove}
-        onTouchEnd={onTouchEnd}
-        className="shrink-0 cursor-grab touch-none select-none px-4 pt-2.5 pb-2 active:cursor-grabbing"
+        className="shrink-0 cursor-grab select-none px-4 pt-2.5 pb-2 active:cursor-grabbing"
+        style={{ touchAction: "none" }}
       >
         <div className="mx-auto h-1.5 w-10 rounded-full bg-ink/25" />
       </div>
-      <div className="shrink-0 px-4 pb-2">{peek}</div>
-      {/* min-h-0 + flex-1 lets this container shrink to the remaining sheet
-       * height; overflow-y-auto then engages because the sheet's outer
-       * height is now bounded to the current state (not always 90vh). */}
+      {/* Peek row (count + chips) is also a sheet-drag origin. touch-action:
+       * none lets the drag handler claim the gesture without the browser
+       * trying to scroll. Chip taps still register as clicks. */}
+      <div className="shrink-0 px-4 pb-2" style={{ touchAction: "none" }}>
+        {peek}
+      </div>
+      {/* Body: native scroll. touch-action: pan-y allows vertical scroll;
+       * the drag handler still hijacks at the scroll boundaries. */}
       <div
-        ref={expandedRef}
+        ref={setBodyRef}
         className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-4 pb-6"
+        style={{ touchAction: "pan-y", WebkitOverflowScrolling: "touch" }}
       >
         {children}
       </div>
