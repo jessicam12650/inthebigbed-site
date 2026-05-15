@@ -153,3 +153,4 @@ Designed for Vercel but works on any Next.js host.
    `*.html` path to its Next.js equivalent.
 
 The OG image is generated at the edge from `app/opengraph-image.tsx`.
+
