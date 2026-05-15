@@ -8,14 +8,15 @@ import EnquirySection from "@/components/EnquirySection";
 
 type Params = { id: string };
 
-const COUNCIL_LABELS: Record<"Liverpool" | "Sefton" | "Knowsley" | "St Helens", string> = {
+const COUNCIL_LABELS: Record<"Liverpool" | "Sefton" | "Knowsley" | "St Helens" | "Wirral", string> = {
   Liverpool: "Liverpool City Council",
   Sefton: "Sefton Council",
   Knowsley: "Knowsley Council",
   "St Helens": "St Helens Council",
+  Wirral: "Wirral Council",
 };
 
-function councilLabel(council?: "Liverpool" | "Sefton" | "Knowsley" | "St Helens") {
+function councilLabel(council?: "Liverpool" | "Sefton" | "Knowsley" | "St Helens" | "Wirral") {
   return COUNCIL_LABELS[council ?? "Liverpool"];
 }
 

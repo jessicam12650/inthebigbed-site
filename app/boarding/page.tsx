@@ -17,14 +17,15 @@ const BOARDING_TYPE_FILTERS: Array<{ value: BoardingTypeFilter; label: string }>
   { value: "kennels", label: "Kennels" },
 ];
 
-const COUNCIL_LABELS: Record<"Liverpool" | "Sefton" | "Knowsley" | "St Helens", string> = {
+const COUNCIL_LABELS: Record<"Liverpool" | "Sefton" | "Knowsley" | "St Helens" | "Wirral", string> = {
   Liverpool: "Liverpool City Council",
   Sefton: "Sefton Council",
   Knowsley: "Knowsley Council",
   "St Helens": "St Helens Council",
+  Wirral: "Wirral Council",
 };
 
-function licensedByLine(b: { council?: "Liverpool" | "Sefton" | "Knowsley" | "St Helens"; licenceNumber: string }) {
+function licensedByLine(b: { council?: "Liverpool" | "Sefton" | "Knowsley" | "St Helens" | "Wirral"; licenceNumber: string }) {
   const council = b.council ?? "Liverpool";
   const label = COUNCIL_LABELS[council];
   if (b.licenceNumber === "—") return `Licensed by ${label} (licence number pending)`;
@@ -76,7 +77,7 @@ export default function BoardingPage() {
             Every boarder on this page is licensed and star-rated by their local council. We only list the legal ones.
           </p>
           <p className="mt-1 text-xs text-ink/60">
-            Sources: Liverpool City Council Animal Activity Licenced Operators register, plus verified Sefton, Knowsley and St Helens Council licences. April 2026.
+            Sources: Liverpool City Council, Sefton, Knowsley, St Helens, and Wirral animal welfare licence registers. May 2026.
           </p>
         </div>
       </section>
