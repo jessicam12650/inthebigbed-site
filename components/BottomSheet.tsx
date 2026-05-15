@@ -69,9 +69,21 @@ export default function BottomSheet({ state, onStateChange, peek, children, expa
     let raf = 0;
     let lastHeight = 0;
 
+    const INTERACTIVE_SELECTOR =
+      'input, textarea, select, button, a, [role="button"], [contenteditable="true"], [data-no-drag]';
+
     const onStart = (e: TouchEvent) => {
-      const target = e.target as Node;
-      const fromBody = bodyRef.current?.contains(target) ?? false;
+      const target = e.target as Element | null;
+      // Bail out if the gesture starts on an interactive element — we'd
+      // otherwise steal taps that should focus an input or click a button.
+      // The Element.closest call walks ancestors up to (and including) the
+      // sheet root; the handle / peek / body containers themselves don't
+      // match this selector, so drag still works from non-interactive areas.
+      if (target?.closest?.(INTERACTIVE_SELECTOR)) {
+        drag = null;
+        return;
+      }
+      const fromBody = bodyRef.current?.contains(target as Node) ?? false;
       drag = {
         startY: e.touches[0].clientY,
         startHeight: stateHeight(stateRef.current),
