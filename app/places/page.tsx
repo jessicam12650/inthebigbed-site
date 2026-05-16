@@ -15,17 +15,13 @@ import BottomSheet, { type SheetState } from "@/components/BottomSheet";
 
 const CAT_FILTERS: Array<{ value: "all" | Category; label: string }> = [
   { value: "all", label: "All" },
-  { value: "pub", label: "Pubs" },
-  { value: "bar", label: "Bars" },
-  { value: "restaurant", label: "Restaurants" },
-  { value: "cafe", label: "Cafes" },
+  { value: "food", label: "Food" },
+  { value: "drinks", label: "Drinks" },
 ];
 
 const CAT_LABELS: Record<Category, string> = {
-  pub: "Pub",
-  bar: "Bar",
-  restaurant: "Restaurant",
-  cafe: "Cafe",
+  food: "Food",
+  drinks: "Drinks",
 };
 
 const GMAPS_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;

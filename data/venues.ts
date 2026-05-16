@@ -3,7 +3,7 @@
 // scripts/enrich-places.ts. New entries should be added with latLng=[0, 0]
 // and no placeId; the script picks those up on the next run.
 
-export type Category = "pub" | "bar" | "restaurant" | "cafe";
+export type Category = "food" | "drinks";
 
 export type VenueLocation = {
   address: string;
@@ -32,7 +32,7 @@ export const HANDPICKED: Venue[] = [
   {
     id: "baltic-market",
     name: "Baltic Market",
-    cat: ["restaurant"],
+    cat: ["food"],
     description: "Airy, industrial-style food court featuring global street fare, picnic tables and outdoor seating.",
     rating: 4.5,
     userRatingsTotal: 4994,
@@ -52,7 +52,7 @@ export const HANDPICKED: Venue[] = [
   {
     id: "bao-and-bap",
     name: "Bao and Bap",
-    cat: ["restaurant"],
+    cat: ["food"],
     description: "Cosy eatery featuring hefty Asian fare, including rice bowls, noodles & other staples.",
     rating: 4.8,
     userRatingsTotal: 257,
@@ -73,7 +73,7 @@ export const HANDPICKED: Venue[] = [
   {
     id: "dereks",
     name: "Derek's Coffee & Sandwiches",
-    cat: ["cafe"],
+    cat: ["food"],
     rating: 4.7,
     userRatingsTotal: 97,
     hours: [
@@ -97,14 +97,14 @@ export const HANDPICKED: Venue[] = [
   {
     id: "halton-castle",
     name: "The Halton Castle",
-    cat: ["pub"],
+    cat: ["drinks"],
     featured: true,
     location: { address: "Halton Castle, 82 Mill Ln, West Derby, Liverpool L12 7JD, UK", latLng: [53.4305593, -2.9112782], placeId: "ChIJI2IkKe4he0gRvk8SENfbEMw" },
   },
   {
     id: "eden-bar",
     name: "Eden Bar",
-    cat: ["bar"],
+    cat: ["drinks"],
     rating: 4.6,
     userRatingsTotal: 34,
     hours: [
@@ -125,13 +125,13 @@ export const VENUES: Venue[] = [
   {
     id: "ship-mitre",
     name: "The Ship and Mitre",
-    cat: ["pub"],
+    cat: ["drinks"],
     location: { address: "Ship Mitre, 133 Dale St, Liverpool L2 2JH, UK", latLng: [53.4096929, -2.9846071], placeId: "ChIJvwU1gjohe0gRM_kb17lFzgU" },
   },
   {
     id: "dead-crafty",
     name: "The Dead Crafty Beer Company",
-    cat: ["bar"],
+    cat: ["drinks"],
     description: "An extensive array of beers on tap & craft bottles in a rustic setting with bar & table seating.",
     rating: 4.7,
     userRatingsTotal: 1248,
@@ -151,7 +151,7 @@ export const VENUES: Venue[] = [
   {
     id: "philharmonic",
     name: "The Philharmonic Dining Rooms",
-    cat: ["pub"],
+    cat: ["drinks"],
     description: "Ornate Victorian pub with wood panelling, rich tiling, leather sofas, stained glass and chandeliers.",
     rating: 4.5,
     userRatingsTotal: 6055,
@@ -171,7 +171,7 @@ export const VENUES: Venue[] = [
   {
     id: "hope-anchor",
     name: "The Hope and Anchor",
-    cat: ["pub"],
+    cat: ["drinks"],
     description: "Bar with extensive range of beers and a burger menu, plus pool table and TV sports.",
     rating: 4.4,
     userRatingsTotal: 1367,
@@ -191,7 +191,7 @@ export const VENUES: Venue[] = [
   {
     id: "ma-boyles",
     name: "Ma Boyle's Alehouse and Eatery",
-    cat: ["pub"],
+    cat: ["drinks"],
     description: "British fare & cocktails in a retro-inspired locale with Sunday roasts & bottomless brunch.",
     rating: 4.5,
     userRatingsTotal: 2166,
@@ -211,7 +211,7 @@ export const VENUES: Venue[] = [
   {
     id: "cosy-club",
     name: "Cosy Club",
-    cat: ["restaurant"],
+    cat: ["food"],
     rating: 4.5,
     userRatingsTotal: 2686,
     hours: [
@@ -230,7 +230,7 @@ export const VENUES: Venue[] = [
   {
     id: "salt-dog",
     name: "Salt Dog Slims",
-    cat: ["bar"],
+    cat: ["drinks"],
     description: "Chic bar with dark stripped wood flooring, a wood-panelled ceiling, pool table and leather sofas.",
     rating: 4.4,
     userRatingsTotal: 667,
@@ -249,7 +249,7 @@ export const VENUES: Venue[] = [
   {
     id: "pins",
     name: "Pins Social Club",
-    cat: ["bar"],
+    cat: ["drinks"],
     description: "Lively, spacious bar offering deli sandwiches & burgers, plus bowling lanes, table games & karaoke.",
     rating: 4.3,
     userRatingsTotal: 845,
@@ -269,7 +269,7 @@ export const VENUES: Venue[] = [
   {
     id: "slug-lettuce",
     name: "Slug and Lettuce",
-    cat: ["pub", "bar"],
+    cat: ["drinks"],
     description: "Smart bar chain with a cocktail list, a menu of global classics, and contemporary decor.",
     rating: 4.7,
     userRatingsTotal: 12018,
@@ -289,7 +289,7 @@ export const VENUES: Venue[] = [
   {
     id: "refinery",
     name: "The Refinery Liverpool",
-    cat: ["restaurant"],
+    cat: ["food"],
     description: "Casual British fare served in a relaxed environment with cool rustic decor & a full bar.",
     rating: 4.2,
     userRatingsTotal: 712,
@@ -300,7 +300,7 @@ export const VENUES: Venue[] = [
   {
     id: "club-house",
     name: "The Club House",
-    cat: ["bar", "restaurant"],
+    cat: ["drinks", "food"],
     rating: 2,
     userRatingsTotal: 3,
     phone: "0151 709 1719",
@@ -310,7 +310,7 @@ export const VENUES: Venue[] = [
   {
     id: "kazimier",
     name: "Kazimier Garden",
-    cat: ["bar"],
+    cat: ["drinks"],
     description: "Cool split-level venue staging an eclectic programme of live bands and club nights.",
     rating: 4.5,
     userRatingsTotal: 1822,
@@ -329,7 +329,7 @@ export const VENUES: Venue[] = [
   {
     id: "brewdog",
     name: "BrewDog Liverpool",
-    cat: ["bar"],
+    cat: ["drinks"],
     description: "No-nonsense chain bar specialising in the Scottish brewery's craft beers, with regular guest brews.",
     rating: 4.5,
     userRatingsTotal: 2242,
@@ -339,7 +339,7 @@ export const VENUES: Venue[] = [
   {
     id: "buyers-club",
     name: "Buyers Club",
-    cat: ["bar"],
+    cat: ["drinks"],
     description: "Neighbourhood bar, eatery & event space with garden, plus pasta, eclectic wines, cocktails & beers.",
     rating: 4.5,
     userRatingsTotal: 783,
@@ -359,7 +359,7 @@ export const VENUES: Venue[] = [
   {
     id: "baltic-fleet",
     name: "Baltic Fleet",
-    cat: ["pub"],
+    cat: ["drinks"],
     description: "19th-century pub with a mahogany bar and an open fire, serving its own cellar-brewed ales.",
     rating: 4.4,
     userRatingsTotal: 2143,
@@ -379,7 +379,7 @@ export const VENUES: Venue[] = [
   {
     id: "punch-tarmeys",
     name: "Punch Tarmey's",
-    cat: ["pub"],
+    cat: ["drinks"],
     rating: 4.2,
     userRatingsTotal: 507,
     hours: [
@@ -398,7 +398,7 @@ export const VENUES: Venue[] = [
   {
     id: "shenanigans",
     name: "Shenanigans",
-    cat: ["pub"],
+    cat: ["drinks"],
     description: "Lively, quirky Irish bar with eclectic decor and cocktails, plus regular live music and sports TV.",
     rating: 4.6,
     userRatingsTotal: 1099,
@@ -418,13 +418,13 @@ export const VENUES: Venue[] = [
   {
     id: "lodge",
     name: "The Lodge",
-    cat: ["pub"],
+    cat: ["drinks"],
     location: { address: "33 Lark Ln, Liverpool L17 8UW, UK", latLng: [53.3806847, -2.9462838], placeId: "ChIJsxnPJPQge0gRbd_Er36h3zs" },
   },
   {
     id: "bookbinder",
     name: "The Bookbinder",
-    cat: ["pub"],
+    cat: ["drinks"],
     rating: 4.4,
     userRatingsTotal: 559,
     hours: [
@@ -442,7 +442,7 @@ export const VENUES: Venue[] = [
   {
     id: "milo",
     name: "Milo Lounge",
-    cat: ["bar"],
+    cat: ["drinks"],
     description: "Comfortable restaurant offering familiar bites, including wraps & burgers with fries.",
     rating: 4.4,
     userRatingsTotal: 1736,
@@ -462,7 +462,7 @@ export const VENUES: Venue[] = [
   {
     id: "caledonia",
     name: "The Caledonia",
-    cat: ["pub"],
+    cat: ["drinks"],
     description: "Traditional corner pub offering cask ales & pub grub, plus regular live music nights.",
     rating: 4.5,
     userRatingsTotal: 942,
@@ -473,7 +473,7 @@ export const VENUES: Venue[] = [
   {
     id: "peter-kavs",
     name: "Peter Kavanagh's",
-    cat: ["pub"],
+    cat: ["drinks"],
     description: "Traditional ales, quiz nights & live music in funky digs lined with photos, antiques & knick-knacks.",
     rating: 4.7,
     userRatingsTotal: 1200,
@@ -493,7 +493,7 @@ export const VENUES: Venue[] = [
   {
     id: "dovedale",
     name: "Dovedale Towers",
-    cat: ["pub"],
+    cat: ["drinks"],
     description: "Local tavern for hearty pub fare, cocktails and beer in cosy quarters with outdoor seating.",
     rating: 4.2,
     userRatingsTotal: 1004,
@@ -513,7 +513,7 @@ export const VENUES: Venue[] = [
   {
     id: "storrsdale",
     name: "The Storrsdale",
-    cat: ["pub"],
+    cat: ["drinks"],
     rating: 4,
     userRatingsTotal: 6,
     hours: [
@@ -530,7 +530,7 @@ export const VENUES: Venue[] = [
   {
     id: "george-crosby",
     name: "The George Crosby",
-    cat: ["pub"],
+    cat: ["drinks"],
     rating: 4.3,
     userRatingsTotal: 752,
     hours: [
@@ -549,7 +549,7 @@ export const VENUES: Venue[] = [
   {
     id: "freshfield",
     name: "The Freshfield",
-    cat: ["pub"],
+    cat: ["drinks"],
     rating: 4.3,
     userRatingsTotal: 1237,
     hours: [
@@ -568,13 +568,13 @@ export const VENUES: Venue[] = [
   {
     id: "heatons-bridge",
     name: "Heatons Bridge",
-    cat: ["pub"],
+    cat: ["drinks"],
     location: { address: "Heatons Bridge Rd, Scarisbrick, Ormskirk, UK", latLng: [53.5962882, -2.8964182], placeId: "ChIJXd-NChcWe0gRnBQMK2LPWtw" },
   },
   {
     id: "dandelion",
     name: "The Dandelion Tavern",
-    cat: ["pub"],
+    cat: ["drinks"],
     rating: 4.4,
     userRatingsTotal: 807,
     hours: [
@@ -593,7 +593,7 @@ export const VENUES: Venue[] = [
   {
     id: "doctor-duncans",
     name: "Doctor Duncans",
-    cat: ["pub"],
+    cat: ["drinks"],
     description: "1901 setting with an ornate tiled interior offering comfort food with craft beer, TVs & live music.",
     rating: 4.4,
     userRatingsTotal: 1290,
@@ -613,7 +613,7 @@ export const VENUES: Venue[] = [
   {
     id: "pen-factory",
     name: "The Pen Factory",
-    cat: ["bar", "restaurant"],
+    cat: ["drinks", "food"],
     rating: 4.4,
     userRatingsTotal: 999,
     hours: [
@@ -632,7 +632,7 @@ export const VENUES: Venue[] = [
   {
     id: "monro",
     name: "The Monro",
-    cat: ["restaurant"],
+    cat: ["food"],
     rating: 4.6,
     userRatingsTotal: 332,
     hours: [
@@ -650,7 +650,7 @@ export const VENUES: Venue[] = [
   {
     id: "one-oclock-gun",
     name: "The One O'Clock Gun",
-    cat: ["pub"],
+    cat: ["drinks"],
     rating: 4.6,
     userRatingsTotal: 424,
     hours: [
@@ -668,7 +668,7 @@ export const VENUES: Venue[] = [
   {
     id: "dog-house",
     name: "The Dog House",
-    cat: ["pub"],
+    cat: ["drinks"],
     rating: 4.6,
     userRatingsTotal: 392,
     hours: [
@@ -687,7 +687,7 @@ export const VENUES: Venue[] = [
   {
     id: "head-of-steam",
     name: "The Head of Steam",
-    cat: ["pub"],
+    cat: ["drinks"],
     description: "Large pub in former hotel, with 4 distinct bars, including grand, panelled hall and chic studio bar.",
     rating: 4.3,
     userRatingsTotal: 1260,
@@ -707,7 +707,7 @@ export const VENUES: Venue[] = [
   {
     id: "farmers-arms",
     name: "The Farmers Arms",
-    cat: ["pub"],
+    cat: ["drinks"],
     rating: 4.1,
     userRatingsTotal: 1135,
     hours: [
@@ -726,7 +726,7 @@ export const VENUES: Venue[] = [
   {
     id: "pho",
     name: "Pho Castle Street",
-    cat: ["restaurant"],
+    cat: ["food"],
     description: "Simple, modern chain dining room serving Vietnamese noodle soup & street-food dishes.",
     rating: 4.8,
     userRatingsTotal: 1587,
@@ -746,7 +746,7 @@ export const VENUES: Venue[] = [
   {
     id: "lock-quay",
     name: "Lock and Quay",
-    cat: ["pub"],
+    cat: ["drinks"],
     rating: 4.7,
     userRatingsTotal: 524,
     hours: [
@@ -765,7 +765,7 @@ export const VENUES: Venue[] = [
   {
     id: "royal-standard",
     name: "The Royal Standard",
-    cat: ["pub"],
+    cat: ["drinks"],
     rating: 4.4,
     userRatingsTotal: 858,
     hours: [
@@ -784,7 +784,7 @@ export const VENUES: Venue[] = [
   {
     id: "white-hart",
     name: "White Hart",
-    cat: ["pub", "bar"],
+    cat: ["drinks"],
     rating: 4.7,
     userRatingsTotal: 313,
     hours: [
@@ -802,7 +802,7 @@ export const VENUES: Venue[] = [
   {
     id: "queen-hope",
     name: "Queen of Hope Street",
-    cat: ["pub", "bar"],
+    cat: ["drinks"],
     rating: 4.6,
     userRatingsTotal: 197,
     hours: [
@@ -820,7 +820,7 @@ export const VENUES: Venue[] = [
   {
     id: "swan",
     name: "Swan",
-    cat: ["pub"],
+    cat: ["drinks"],
     description: "Longtime drinking joint offering a wide selection of ales & beers, plus spirits & a jukebox.",
     rating: 4.5,
     userRatingsTotal: 1312,
@@ -838,7 +838,7 @@ export const VENUES: Venue[] = [
   {
     id: "mayflower",
     name: "Mayflower",
-    cat: ["pub"],
+    cat: ["drinks"],
     rating: 4.8,
     userRatingsTotal: 28,
     hours: [
@@ -857,7 +857,7 @@ export const VENUES: Venue[] = [
   {
     id: "blondies",
     name: "Blondies",
-    cat: ["bar"],
+    cat: ["drinks"],
     rating: 4.3,
     userRatingsTotal: 67,
     hours: [
@@ -874,7 +874,7 @@ export const VENUES: Venue[] = [
   {
     id: "trap-hatch",
     name: "Trap and Hatch",
-    cat: ["bar"],
+    cat: ["drinks"],
     rating: 4.7,
     userRatingsTotal: 327,
     hours: [
@@ -891,7 +891,7 @@ export const VENUES: Venue[] = [
   {
     id: "cobden",
     name: "Cobden",
-    cat: ["pub"],
+    cat: ["drinks"],
     rating: 4.6,
     userRatingsTotal: 331,
     hours: [
@@ -910,7 +910,7 @@ export const VENUES: Venue[] = [
   {
     id: "three-piggies",
     name: "Three Piggies",
-    cat: ["pub"],
+    cat: ["drinks"],
     rating: 4.5,
     userRatingsTotal: 878,
     hours: [
@@ -929,7 +929,7 @@ export const VENUES: Venue[] = [
   {
     id: "rhubarb",
     name: "Rhubarb",
-    cat: ["restaurant"],
+    cat: ["food"],
     rating: 4.3,
     userRatingsTotal: 426,
     hours: [
@@ -948,7 +948,7 @@ export const VENUES: Venue[] = [
   {
     id: "queens-arms",
     name: "Queens Arms",
-    cat: ["pub"],
+    cat: ["drinks"],
     rating: 4.6,
     userRatingsTotal: 7,
     hours: [
@@ -965,7 +965,7 @@ export const VENUES: Venue[] = [
   {
     id: "permit-room",
     name: "Permit Room by Dishoom",
-    cat: ["restaurant"],
+    cat: ["food"],
     rating: 4.9,
     userRatingsTotal: 495,
     hours: [
@@ -984,7 +984,7 @@ export const VENUES: Venue[] = [
   {
     id: "mowgli",
     name: "Mowgli",
-    cat: ["restaurant"],
+    cat: ["food"],
     description: "Casual Indian small plates and street food restaurant in wood-furnished space with bare brick walls.",
     rating: 4.6,
     userRatingsTotal: 3135,
@@ -1004,7 +1004,7 @@ export const VENUES: Venue[] = [
   {
     id: "mcnastys",
     name: "McNasty's",
-    cat: ["bar"],
+    cat: ["drinks"],
     description: "Live music venue showcasing local emerging rock & alternative groups, plus touring bands.",
     rating: 4.3,
     userRatingsTotal: 355,
@@ -1024,7 +1024,7 @@ export const VENUES: Venue[] = [
   {
     id: "frederiks",
     name: "Frederiks",
-    cat: ["bar", "restaurant"],
+    cat: ["drinks", "food"],
     rating: 4.4,
     userRatingsTotal: 936,
     hours: [
@@ -1043,7 +1043,7 @@ export const VENUES: Venue[] = [
   {
     id: "shandon-bells",
     name: "The Shandon Bells",
-    cat: ["pub"],
+    cat: ["drinks"],
     rating: 4.5,
     userRatingsTotal: 27,
     hours: [
@@ -1061,7 +1061,7 @@ export const VENUES: Venue[] = [
   {
     id: "duke-st-market",
     name: "Duke Street Food and Drink Market",
-    cat: ["restaurant"],
+    cat: ["food"],
     description: "Industrial-chic food hall with trendy eateries cooking up global fare & desserts.",
     rating: 4.5,
     userRatingsTotal: 1867,
@@ -1080,7 +1080,7 @@ export const VENUES: Venue[] = [
   {
     id: "brasco-mann",
     name: "Brasco Lounge",
-    cat: ["bar", "restaurant"],
+    cat: ["drinks", "food"],
     description: "Informal, all-day venue serving tapas and eclectic global comfort food with seats on the dockside.",
     rating: 4.5,
     userRatingsTotal: 2252,
@@ -1100,7 +1100,7 @@ export const VENUES: Venue[] = [
   {
     id: "petrichor",
     name: "Petrichor",
-    cat: ["bar"],
+    cat: ["drinks"],
     rating: 4.9,
     userRatingsTotal: 130,
     hours: [
@@ -1118,7 +1118,7 @@ export const VENUES: Venue[] = [
   {
     id: "terra-preta",
     name: "Terra Preta Bar and Coffee House",
-    cat: ["cafe"],
+    cat: ["food"],
     rating: 4.8,
     userRatingsTotal: 85,
     hours: [
@@ -1136,7 +1136,7 @@ export const VENUES: Venue[] = [
   {
     id: "alberts-schloss",
     name: "Albert's Schloss",
-    cat: ["bar", "restaurant"],
+    cat: ["drinks", "food"],
     rating: 4.5,
     userRatingsTotal: 2626,
     hours: [
@@ -1155,7 +1155,7 @@ export const VENUES: Venue[] = [
   {
     id: "schillers-hall",
     name: "Schiller's Hall",
-    cat: ["bar", "restaurant"],
+    cat: ["drinks", "food"],
     description: "Woodsy venue offering seasonal Bavarian plates & bottomless brunch, plus a European-style tavern.",
     rating: 4.6,
     userRatingsTotal: 1841,
@@ -1175,7 +1175,7 @@ export const VENUES: Venue[] = [
   {
     id: "nova-scotia",
     name: "Nova Scotia",
-    cat: ["restaurant"],
+    cat: ["food"],
     rating: 4.4,
     userRatingsTotal: 301,
     hours: [
@@ -1194,7 +1194,7 @@ export const VENUES: Venue[] = [
   {
     id: "the-quarter",
     name: "The Quarter",
-    cat: ["restaurant"],
+    cat: ["food"],
     description: "Casual Italian dining in the heart of the Georgian Quarter",
     rating: 4.5,
     userRatingsTotal: 2217,
@@ -1214,7 +1214,7 @@ export const VENUES: Venue[] = [
   {
     id: "the-vibe",
     name: "The Vibe",
-    cat: ["restaurant"],
+    cat: ["food"],
     description: "Hip, bi-level spot for creative, plant-based breakfast & lunch, plus fair-trade coffee & smoothies.",
     rating: 4.8,
     userRatingsTotal: 931,
@@ -1234,7 +1234,7 @@ export const VENUES: Venue[] = [
   {
     id: "papillon",
     name: "Papillon",
-    cat: ["restaurant"],
+    cat: ["food"],
     description: "Convivial eatery offering a menu of international classics, plus a warm bar & open-air dining.",
     rating: 4.3,
     userRatingsTotal: 889,
@@ -1253,7 +1253,7 @@ export const VENUES: Venue[] = [
   {
     id: "ten-streets-social",
     name: "Ten Streets Social",
-    cat: ["bar", "restaurant"],
+    cat: ["drinks", "food"],
     description: "Cocktails, roast dinners and live music",
     rating: 4.6,
     userRatingsTotal: 306,
@@ -1273,7 +1273,7 @@ export const VENUES: Venue[] = [
   {
     id: "the-botanist",
     name: "The Botanist",
-    cat: ["restaurant", "bar"],
+    cat: ["food", "drinks"],
     description: "Pirate-themed bar/restaurant with vaulted ceilings, for rum cocktails, deli boards and BBQ meats.",
     rating: 4.3,
     userRatingsTotal: 3735,
@@ -1296,7 +1296,7 @@ export const VENUES: Venue[] = [
   {
     id: "rudys-pizza",
     name: "Rudy's Pizza Napoletana",
-    cat: ["restaurant"],
+    cat: ["food"],
     rating: 4.7,
     userRatingsTotal: 2617,
     hours: [
@@ -1319,7 +1319,7 @@ export const VENUES: Venue[] = [
   {
     id: "hardware-coffee",
     name: "Hardware Coffee",
-    cat: ["cafe"],
+    cat: ["food"],
     rating: 4.6,
     userRatingsTotal: 826,
     hours: [
@@ -1337,7 +1337,7 @@ export const VENUES: Venue[] = [
   {
     id: "down-the-hatch",
     name: "Down The Hatch",
-    cat: ["restaurant"],
+    cat: ["food"],
     description: "Creative vegan pub fare offered in subterranean, brick-lined digs with a cozy vibe and full bar.",
     rating: 4.7,
     userRatingsTotal: 1662,
@@ -1356,7 +1356,7 @@ export const VENUES: Venue[] = [
   {
     id: "watering-can",
     name: "The Watering Can",
-    cat: ["cafe", "restaurant"],
+    cat: ["food"],
     description: "Creative seasonal plates dished up in a charming, light-filled eatery surrounded by parkland.",
     rating: 4.4,
     userRatingsTotal: 1026,
@@ -1376,7 +1376,7 @@ export const VENUES: Venue[] = [
   {
     id: "sugar-and-dice",
     name: "Sugar and Dice",
-    cat: ["cafe"],
+    cat: ["food"],
     rating: 4.9,
     userRatingsTotal: 841,
     hours: [
@@ -1395,7 +1395,7 @@ export const VENUES: Venue[] = [
   {
     id: "cafe-tabac",
     name: "Cafe Tabac",
-    cat: ["cafe", "restaurant"],
+    cat: ["food"],
     description: "Circa-1974 cafe known for American-style breakfast, burgers & drinks with an arty, intimate vibe.",
     rating: 4.4,
     userRatingsTotal: 1202,
@@ -1415,7 +1415,7 @@ export const VENUES: Venue[] = [
   {
     id: "the-brunch-club",
     name: "The Brunch Club",
-    cat: ["cafe", "restaurant"],
+    cat: ["food"],
     description: "Vintage, brick-lined, warehouse-style eatery featuring classic brunch cocktails & hearty fare.",
     rating: 4.4,
     userRatingsTotal: 1334,
@@ -1435,7 +1435,7 @@ export const VENUES: Venue[] = [
   {
     id: "blackstock-market",
     name: "Blackstock Market",
-    cat: ["restaurant", "bar"],
+    cat: ["food", "drinks"],
     rating: 4.7,
     userRatingsTotal: 1835,
     hours: [
@@ -1454,7 +1454,7 @@ export const VENUES: Venue[] = [
   {
     id: "old-school-house",
     name: "The Old School House",
-    cat: ["pub", "restaurant"],
+    cat: ["drinks", "food"],
     rating: 4,
     userRatingsTotal: 725,
     hours: [
@@ -1472,7 +1472,7 @@ export const VENUES: Venue[] = [
   {
     id: "writers-block",
     name: "Writer's Block",
-    cat: ["bar", "cafe"],
+    cat: ["drinks", "food"],
     rating: 4.3,
     userRatingsTotal: 21,
     website: "https://www.facebook.com/aspacetoclearthedust/",
@@ -1481,7 +1481,7 @@ export const VENUES: Venue[] = [
   {
     id: "annies-tea-rooms",
     name: "Annie's Tea Rooms",
-    cat: ["cafe"],
+    cat: ["food"],
     rating: 4.7,
     userRatingsTotal: 276,
     phone: "0151 924 9730",
@@ -1490,7 +1490,7 @@ export const VENUES: Venue[] = [
   {
     id: "stamps-bar",
     name: "Stamps Bar",
-    cat: ["pub"],
+    cat: ["drinks"],
     description: "Lively pub serving real ales and comfort food from burgers to tapas, plus weekend live music.",
     rating: 4.5,
     userRatingsTotal: 376,
@@ -1510,7 +1510,7 @@ export const VENUES: Venue[] = [
   {
     id: "kellys-dispensary",
     name: "Kelly's Dispensary",
-    cat: ["pub"],
+    cat: ["drinks"],
     rating: 4.4,
     userRatingsTotal: 356,
     hours: [
@@ -1528,7 +1528,7 @@ export const VENUES: Venue[] = [
   {
     id: "big-lolas-taqueria",
     name: "Big Lola's Taqueria",
-    cat: ["restaurant"],
+    cat: ["food"],
     rating: 4.7,
     userRatingsTotal: 227,
     hours: [
@@ -1546,7 +1546,7 @@ export const VENUES: Venue[] = [
   {
     id: "the-red-lion",
     name: "The Red Lion",
-    cat: ["pub"],
+    cat: ["drinks"],
     rating: 4.6,
     userRatingsTotal: 501,
     hours: [
@@ -1564,7 +1564,7 @@ export const VENUES: Venue[] = [
   {
     id: "the-vines",
     name: "The Vines",
-    cat: ["pub"],
+    cat: ["drinks"],
     rating: 4.5,
     userRatingsTotal: 1068,
     hours: [
@@ -1583,7 +1583,7 @@ export const VENUES: Venue[] = [
   {
     id: "the-green-man",
     name: "The Green Man",
-    cat: ["pub"],
+    cat: ["drinks"],
     rating: 4.4,
     userRatingsTotal: 216,
     hours: [
@@ -1601,7 +1601,7 @@ export const VENUES: Venue[] = [
   {
     id: "love-and-rockets",
     name: "Love & Rockets",
-    cat: ["bar"],
+    cat: ["drinks"],
     description: "Woodsy-chic pub with a hip vibe & a menu of comfort favourites like burgers, pizza & nachos.",
     rating: 4.2,
     userRatingsTotal: 845,
@@ -1620,7 +1620,7 @@ export const VENUES: Venue[] = [
   {
     id: "st-peters-tavern",
     name: "St Peter's Tavern",
-    cat: ["pub", "bar"],
+    cat: ["drinks"],
     rating: 4.6,
     userRatingsTotal: 440,
     hours: [
@@ -1638,7 +1638,7 @@ export const VENUES: Venue[] = [
   {
     id: "moose-coffee",
     name: "Moose Coffee",
-    cat: ["cafe", "restaurant"],
+    cat: ["food"],
     rating: 4.7,
     userRatingsTotal: 2730,
     hours: [
@@ -1660,7 +1660,7 @@ export const VENUES: Venue[] = [
   {
     id: "black-cat",
     name: "Black Cat",
-    cat: ["bar"],
+    cat: ["drinks"],
     rating: 4.5,
     userRatingsTotal: 553,
     hours: [
@@ -1682,7 +1682,7 @@ export const VENUES: Venue[] = [
   {
     id: "picnic",
     name: "Picnic",
-    cat: ["cafe", "restaurant"],
+    cat: ["food"],
     rating: 4.4,
     userRatingsTotal: 319,
     hours: [
@@ -1700,6 +1700,99 @@ export const VENUES: Venue[] = [
       { address: "509a Smithdown Rd, Liverpool L15 5AE, United Kingdom", latLng: [53.3900888, -2.9248465], placeId: "ChIJR5cgThYhe0gRmqGMpMSKivA" },
       { address: "26 Almond's Grn, Liverpool L12 5HS, United Kingdom", latLng: [53.4331328, -2.9110422], placeId: "ChIJV91tZo0he0gR2KnmIeOCyoQ" },
     ],
+  },
+  {
+    id: "pattersons",
+    name: "Pattersons",
+    cat: ["food"],
+    rating: 4.4,
+    userRatingsTotal: 1129,
+    hours: [
+      "Monday: 2:00 – 10:00 PM",
+      "Tuesday: 2:00 – 10:00 PM",
+      "Wednesday: 2:00 – 10:00 PM",
+      "Thursday: 2:00 – 10:00 PM",
+      "Friday: 12:00 – 10:00 PM",
+      "Saturday: 12:00 – 10:00 PM",
+      "Sunday: 12:00 – 10:00 PM",
+    ],
+    phone: "07383 083279",
+    website: "http://www.pattersonsliverpool.com/",
+    location: { address: "28 Gradwell St, Liverpool L1 4JH, United Kingdom", latLng: [53.4024519, -2.9829354], placeId: "ChIJv2s35CUhe0gRW0cwx4hisCg" },
+  },
+  {
+    id: "barnacle",
+    name: "Barnacle",
+    cat: ["food"],
+    rating: 4.5,
+    userRatingsTotal: 132,
+    hours: [
+      "Monday: Closed",
+      "Tuesday: Closed",
+      "Wednesday: 12:00 PM – 12:00 AM",
+      "Thursday: 12:00 PM – 12:00 AM",
+      "Friday: 12:00 PM – 2:00 AM",
+      "Saturday: 12:00 PM – 2:00 AM",
+      "Sunday: 12:00 PM – 12:00 AM",
+    ],
+    phone: "0151 245 5113",
+    website: "https://barnacleliverpool.co.uk/",
+    location: { address: "Barnacle Restaurant & Bar, The School For The Blind, 24 Hardman St, Liverpool L1 9AX, United Kingdom", latLng: [53.4015245, -2.9713721], placeId: "ChIJQTarlgYhe0gRGLnhalc5pjU" },
+  },
+  {
+    id: "dog-and-collar",
+    name: "Dog and Collar",
+    cat: ["drinks", "food"],
+    rating: 4.2,
+    userRatingsTotal: 237,
+    hours: [
+      "Monday: 12:00 PM – 12:00 AM",
+      "Tuesday: 12:00 PM – 12:00 AM",
+      "Wednesday: 12:00 PM – 12:00 AM",
+      "Thursday: 11:00 AM – 12:00 AM",
+      "Friday: 11:00 AM – 12:00 AM",
+      "Saturday: 10:30 AM – 12:00 AM",
+      "Sunday: 12:00 PM – 12:00 AM",
+    ],
+    phone: "0151 370 0181",
+    website: "https://www.dogandcollarpub.co.uk/",
+    location: { address: "60 Hope St, Liverpool L1 9BZ, United Kingdom", latLng: [53.4002179, -2.9713158], placeId: "ChIJXRWhG2che0gRhZnCqOw2_Do" },
+  },
+  {
+    id: "chin-zano",
+    name: "Chin-zano",
+    cat: ["food"],
+    rating: 4.7,
+    userRatingsTotal: 99,
+    hours: [
+      "Monday: Closed",
+      "Tuesday: Closed",
+      "Wednesday: 12:00 PM – 12:00 AM",
+      "Thursday: 12:00 PM – 12:00 AM",
+      "Friday: 12:00 PM – 12:00 AM",
+      "Saturday: 12:00 PM – 12:00 AM",
+      "Sunday: 12:00 – 9:00 PM",
+    ],
+    phone: "0151 705 7733",
+    location: { address: "19 Love Ln, Liverpool L3 7DD, United Kingdom", latLng: [53.4170915, -2.9946873], placeId: "ChIJ0W7v-Wwhe0gRV-yWBFNozx8" },
+  },
+  {
+    id: "the-pilgrim",
+    name: "The Pilgrim",
+    cat: ["drinks"],
+    rating: 4.4,
+    userRatingsTotal: 1046,
+    hours: [
+      "Monday: 12:00 PM – 12:00 AM",
+      "Tuesday: 12:00 PM – 12:00 AM",
+      "Wednesday: 12:00 PM – 12:00 AM",
+      "Thursday: 12:00 PM – 12:00 AM",
+      "Friday: 12:00 PM – 12:30 AM",
+      "Saturday: 11:00 AM – 12:30 AM",
+      "Sunday: 11:00 AM – 12:00 AM",
+    ],
+    website: "https://www.pilgrimpub.co.uk/",
+    location: { address: "34 Pilgrim St, Liverpool L1 9HB, United Kingdom", latLng: [53.4003806, -2.9730556], placeId: "ChIJIaSVuiEhe0gRHKqO-lltSfs" },
   },
 ];
 
