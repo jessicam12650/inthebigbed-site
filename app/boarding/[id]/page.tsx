@@ -65,6 +65,9 @@ export default function BoarderDetailPage({ params }: { params: Params }) {
               {boarder.name}
             </h1>
             <p className="mt-1 text-base text-ink/60">{boarder.area}</p>
+            {boarder.features.map((f) => (
+              <p key={f} className="mt-1 text-sm italic text-ink/55">{f}</p>
+            ))}
             <div className="mt-3">{renderBoardingTypeChip(boarder.location)}</div>
 
             <div className="mt-4 flex flex-wrap items-center gap-3">
@@ -204,18 +207,6 @@ export default function BoarderDetailPage({ params }: { params: Params }) {
         </div>
       </section>
 
-      <section className="px-5 pb-12 md:px-12 md:pb-16">
-        <div className="mx-auto max-w-4xl">
-          <h2 className="mb-3 font-head text-2xl text-ink">What {boarder.name.split(" ")[0]} offers</h2>
-          <ul className="flex flex-wrap gap-2">
-            {boarder.features.map((f) => (
-              <li key={f} className="chip">
-                {f}
-              </li>
-            ))}
-          </ul>
-        </div>
-      </section>
 
       <section className="bg-ink px-5 py-12 text-cream md:px-12 md:py-16">
         <div className="mx-auto max-w-4xl">

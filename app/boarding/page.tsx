@@ -138,6 +138,9 @@ export default function BoardingPage() {
                               </p>
                             )}
                             <p className="mt-1 text-sm text-ink/60">{b.area}</p>
+                            {b.features.map((f) => (
+                              <p key={f} className="mt-1 text-xs italic text-ink/55">{f}</p>
+                            ))}
                             <div className="mt-2">{renderBoardingTypeChip(b.location)}</div>
                           </div>
                           <span className="chip border-sage/30 bg-sage/10 text-sage">
@@ -226,14 +229,6 @@ export default function BoardingPage() {
                         <dd className="font-head text-xl text-ink">£{b.pricePerNight}</dd>
                       </div>
                     </dl>
-
-                    <ul className="flex flex-wrap gap-1.5">
-                      {b.features.map((f) => (
-                        <li key={f} className="chip">
-                          {f}
-                        </li>
-                      ))}
-                    </ul>
 
                     <div className="mt-auto flex items-center justify-end pt-2">
                       <span
