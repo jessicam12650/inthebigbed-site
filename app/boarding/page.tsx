@@ -28,7 +28,12 @@ const COUNCIL_LABELS: Record<"Liverpool" | "Sefton" | "Knowsley" | "St Helens" |
 function licensedByLine(b: { council?: "Liverpool" | "Sefton" | "Knowsley" | "St Helens" | "Wirral"; licenceNumber: string }) {
   const council = b.council ?? "Liverpool";
   const label = COUNCIL_LABELS[council];
-  if (b.licenceNumber === "—") return `Licensed by ${label} (licence number pending)`;
+  if (b.licenceNumber === "—") {
+    const suffix = council === "Knowsley"
+      ? "licence number not published by council"
+      : "licence number pending";
+    return `Licensed by ${label} (${suffix})`;
+  }
   return `Licensed by ${label} · ${b.licenceNumber}`;
 }
 
@@ -127,9 +132,9 @@ export default function BoardingPage() {
                           <div>
                             <h3 className="font-head text-xl text-ink group-hover:underline">{b.name}</h3>
                             <p className="mt-1 text-xs text-ink/60">{licensedByLine(b)}</p>
-                            {b.licenceNumber === "—" && (
+                            {b.licenceNumber === "—" && b.council === "Knowsley" && (
                               <p className="mt-1 text-xs italic text-ink/55">
-                                Licence number pending verification — confirmed licensed via Knowsley Council register
+                                Licence number not published by Knowsley Council
                               </p>
                             )}
                             <p className="mt-1 text-sm text-ink/60">{b.area}</p>

@@ -2290,7 +2290,7 @@ export const BOARDERS: Boarder[] = [
     location: "In the home",
     garden: "Not specified",
     available: true,
-    features: ["Licensed to arrange home boarding throughout Knowsley, not just from licence holder's address"],
+    features: ["Licensed to arrange home boarding throughout Knowsley, not just from this address."],
     claimed: false,
     council: "Knowsley",
   },

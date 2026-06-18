@@ -37,7 +37,7 @@ export function generateMetadata({ params }: { params: Params }): Metadata {
   const label = councilLabel(boarder.council);
   const licenceClause =
     boarder.licenceNumber === "—"
-      ? `${label} licence (number pending verification)`
+      ? `${label} licence (number not published by council)`
       : `${label} licence ${boarder.licenceNumber}`;
   return {
     title: `${boarder.name} — licensed dog boarder in ${boarder.area}`,
@@ -73,7 +73,7 @@ export default function BoarderDetailPage({ params }: { params: Params }) {
               </span>
               <span className="chip border-ink/15 text-ink/70">
                 {boarder.licenceNumber === "—"
-                  ? `${councilLabel(boarder.council)} (licence number pending)`
+                  ? `${councilLabel(boarder.council)} (licence number not published by council)`
                   : `${councilLabel(boarder.council)} licence ${boarder.licenceNumber}`}
               </span>
             </div>
@@ -165,7 +165,7 @@ export default function BoarderDetailPage({ params }: { params: Params }) {
             <Rating rating={boarder.rating} reviews={boarder.reviews} />
             <span className="chip border-sage/30 bg-sage/10 text-sage">
               🏛 {boarder.licenceNumber === "—"
-                ? `${councilLabel(boarder.council)} (licence pending)`
+                ? `${councilLabel(boarder.council)} (licence number not published by council)`
                 : `${councilLabel(boarder.council)} licence ${boarder.licenceNumber}`}
             </span>
             {boarder.available ? (
