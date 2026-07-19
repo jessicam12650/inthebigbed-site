@@ -105,22 +105,27 @@ export default function LostPage() {
       }
 
       const { error: insertErr } = await supabase.from("lost_dog_alerts").insert({
-        reporter_id: reporterId,
+        owner_user_id: reporterId,
         dog_name: dogName,
-        last_location: lastLocation,
-        phone,
+        last_seen_location: lastLocation,
+        owner_phone: phone,
         photo_url: photoUrl,
       });
 
-      // Never fail loudly on a panicked form — log instead.
       if (insertErr) {
         console.error("lost_dog_alerts insert failed", insertErr);
+        setError(
+          "Something went wrong sending your alert — please try again, or contact us if this keeps happening."
+        );
+        return;
       }
 
       setSubmitted(true);
     } catch (err) {
       console.error(err);
-      setSubmitted(true);
+      setError(
+        "Something went wrong sending your alert — please try again, or contact us if this keeps happening."
+      );
     } finally {
       setSubmitting(false);
     }
@@ -138,7 +143,8 @@ export default function LostPage() {
           </div>
           <h1 className="mb-4 font-head text-4xl tracking-tight text-white md:text-6xl">Find my dog.</h1>
           <p className="max-w-xl text-base leading-relaxed text-white/85 md:text-lg">
-            One tap alerts every In The Big Bed user within 2 miles. The whole community helps — that's the point.
+            Report your dog's last-known location and a photo in seconds — every second counts when your dog is
+            missing.
           </p>
         </div>
       </section>
@@ -150,9 +156,10 @@ export default function LostPage() {
               <div className="mb-3 text-4xl">🚨</div>
               <h2 className="mb-3 font-head text-3xl text-ink">Alert sent.</h2>
               <p className="mb-6 text-base leading-relaxed text-ink/70">
-                Everyone within 2 miles of{" "}
-                <strong className="text-ink">{lastLocation || "your location"}</strong> has been notified.
-                We'll text you the moment someone reports a sighting.
+                Alert saved to Find My Dog. We've recorded{" "}
+                <strong className="text-ink">{dogName || "your dog"}</strong>'s details and last-seen location.
+                Now's a good time to share the word yourself — local Facebook groups, Nextdoor, or a call to your
+                neighbours all help more eyes start looking.
               </p>
               <button
                 onClick={() => {
@@ -275,8 +282,8 @@ export default function LostPage() {
               </button>
 
               <p className="text-xs leading-relaxed text-ink/55">
-                In The Big Bed will never share your personal details publicly. Your phone number is only shared
-                with verified users who report a sighting.
+                In The Big Bed will never share your personal details publicly. Your phone number stays private in
+                our system.
               </p>
             </form>
           )}

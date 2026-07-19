@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Find my dog — emergency alert",
   description:
-    "One tap alerts every In The Big Bed user within 2 miles. The whole community helps you find your lost dog.",
+    "Report your lost dog to In The Big Bed in seconds, with a photo and last-seen location, so the community can help you look.",
   robots: { index: false, follow: true },
 };
 
